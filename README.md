@@ -47,7 +47,7 @@ Có nhiều loại Enemy trong Bomberman, tuy nhiên trong phiên bản này ch�
 
 ## Nhiệm vụ của bạn (tối đa +10đ)
 - Gói bắt buộc (+6đ)
-1. Xây dựng bản đồ màn chơi từ tệp cấu hình (có mẫu tệp cấu hình, xem [tại đây](/res/levels/Level1.txt)) +1đ
+1. Xây dựng bản đồ màn chơi từ tệp cấu hình (có mẫu tệp cấu hình, xem [tại đây](https://raw.githubusercontent.com/bqcuong/bomberman-starter/starter-project-1/res/levels/Level1.txt)) +1đ
 2. Di chuyển Bomber theo sự điều khiển từ người chơi +1đ
 3. Tự động di chuyển các Enemy +1đ
 4. Xử lý va chạm cho các đối tượng Bomber, Enemy, Wall, Brick, Bomb +1đ
