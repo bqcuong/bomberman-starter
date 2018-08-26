@@ -4,7 +4,7 @@ Trong bài tập lớn này, nhiệm vụ của bạn là viết một phiên b�
 
 Bạn có thể thể sử dụng hai mẫu mã nguồn dưới đây để làm starter project:
 1. [Starter project số 1](https://github.com/bqcuong/bomberman-starter/tree/starter-project-1) (đã cung cấp đầy đủ trừ những chức năng trong phần gói nhiệm vụ bắt buộc)
-1. [Starter project số 2](https://github.com/bqcuong/bomberman-starter/tree/starter-project-2) (sử dụng mã nguồn starter project số 1 nhưng chỉ giữ lại các lớp abstract và lớp cần thiết, phương thức renderEntity() của Screen. Tất cả mã nguồn xử lý update() và render() của các Entity đã được xóa bỏ)
+1. [Starter project số 2](https://github.com/bqcuong/bomberman-starter/tree/starter-project-2) (sử dụng mã nguồn starter project số 1 nhưng chỉ giữ lại các lớp abstract và lớp cần thiết. Tất cả mã nguồn xử lý update() và render() của các Entity đã được xóa bỏ. Tuy nhiên phương thức renderEntity() của lớp Screen vẫn được giữ lại cho các phương render() của entity có thể sử dụng để render hình ảnh của entity lên màn hình)
 
 ## Mô tả về các đối tượng trong trò chơi
 Nếu bạn đã từng chơi Bomberman, bạn sẽ cảm thấy quen thuộc với những đối tượng này. Chúng được được chia làm hai loại chính là nhóm đối tượng động (*Bomber*, *Enemy*, *Bomb*) và nhóm đối tượng tĩnh (*Grass*, *Wall*, *Brick*, *Door*, *Item*).
