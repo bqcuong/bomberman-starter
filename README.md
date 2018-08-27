@@ -45,10 +45,10 @@ Có nhiều loại Enemy trong Bomberman, tuy nhiên trong phiên bản này ch�
 - Có thể chơi được ít nhất cho một màn chơi (chiến thắng một màn chơi)
 - Có thể thay đổi được tệp cấu hình khác cho màn chơi (tương tự mẫu cho trước)
 
-## Nhiệm vụ của bạn (tối đa +10đ)
-- Gói bắt buộc (+6đ)
-1. Xây dựng bản đồ màn chơi từ tệp cấu hình (có mẫu tệp cấu hình, xem [tại đây](https://raw.githubusercontent.com/bqcuong/bomberman-starter/starter-project-1/res/levels/Level1.txt)) +1đ
-2. Di chuyển Bomber theo sự điều khiển từ người chơi +1đ
+## Nhiệm vụ của bạn (tối đa +12đ)
+- Gói bắt buộc (+8đ)
+1. Xây dựng bản đồ màn chơi từ tệp cấu hình (có mẫu tệp cấu hình, xem [tại đây](https://raw.githubusercontent.com/bqcuong/bomberman-starter/starter-project-1/res/levels/Level1.txt)) +2đ
+2. Di chuyển Bomber theo sự điều khiển từ người chơi +2đ
 3. Tự động di chuyển các Enemy +1đ
 4. Xử lý va chạm cho các đối tượng Bomber, Enemy, Wall, Brick, Bomb +1đ
 5. Xử lý bom nổ +1đ
@@ -65,4 +65,4 @@ Có nhiều loại Enemy trong Bomberman, tuy nhiên trong phiên bản này ch�
 5. Những ý tưởng khác sẽ được đánh giá và cộng điểm theo mức tương ứng
 
 *Lưu ý*:
-- Gói tùy chọn 1 chỉ được tính điểm khi hoàn thành ít nhất 1 nhiệm vụ ở Gói bắt buộc và phần mã nguồn bạn viết không giống starter project số 1 quá 50% 
+- Gói tùy chọn 1 chỉ được tính điểm khi hoàn thành ít nhất 1 nhiệm vụ ở Gói bắt buộc và phần mã nguồn bạn viết không giống starter project số 1 quá 20% 
