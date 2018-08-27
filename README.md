@@ -40,6 +40,7 @@ Có nhiều loại Enemy trong Bomberman, tuy nhiên trong phiên bản này ch�
 - Khi các Flame xuất hiện, nếu có một đối tượng thuộc loại Brick/Wall nằm trên vị trí một trong các Flame thì độ dài Flame đó sẽ được giảm đi để sao cho Flame chỉ xuất hiện đến vị trí đối tượng Brick/Wall theo hướng xuất hiện. Lúc đó chỉ có đối tượng Brick/Wall bị ảnh hưởng bởi Flame, các đối tượng tiếp theo không bị ảnh hưởng. Còn nếu vật cản Flame là một đối tượng Bomb khác thì đối tượng Bomb đó cũng sẽ nổ ngay lập tức.
 
 ## Mô tả starter project
+Xem comment ở các starter project
 
 ## Yêu cầu chung
 - Có thể chơi được ít nhất cho một màn chơi (chiến thắng một màn chơi)
@@ -58,14 +59,14 @@ Có nhiều loại Enemy trong Bomberman, tuy nhiên trong phiên bản này ch�
 1. Sử dụng [Starter project số 2](https://github.com/bqcuong/bomberman-starter/tree/starter-project-2) hoặc tự xây dựng project (+3đ)
 
 - Gói tùy chọn 2 (tối đa +4đ)
-1. Nâng cấp và cài đặt thêm Enemy +1đ
-2. Thiết kế màn chơi hay và thú vị +1đ
+1. Nâng cấp thuật toán tìm đường cho Enemy và cài đặt thêm các loại Enemy khác +1đ
+2. Cài đặt thuật toán AI cho Bomber (tự chơi) +1đ
 3. Xử lý hiệu ứng âm thanh (thêm music & sound effects) +1đ
-4. Phát triển hệ thống server để nhiều người có thể cùng chơi qua Internet +1đ
+4. Phát triển hệ thống server-client để nhiều người có thể cùng chơi qua mạng LAN hoặc Internet +1đ
 5. Những ý tưởng khác sẽ được đánh giá và cộng điểm theo mức tương ứng
 
 *Lưu ý*:
 - Gói tùy chọn 1 chỉ được tính điểm khi hoàn thành ít nhất 1 nhiệm vụ ở Gói bắt buộc và phần mã nguồn bạn viết không giống starter project số 1 quá 20% 
 
 *Tham khảo*:
-- Mã nguồn các starter project được tham khảo và chỉnh sửa từ https://github.com/carlosflorencio/bomberman
+- Mã nguồn các starter project được tham khảo và chỉnh sửa từ [đây](https://github.com/carlosflorencio/bomberman)
