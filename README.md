@@ -66,3 +66,6 @@ Có nhiều loại Enemy trong Bomberman, tuy nhiên trong phiên bản này ch�
 
 *Lưu ý*:
 - Gói tùy chọn 1 chỉ được tính điểm khi hoàn thành ít nhất 1 nhiệm vụ ở Gói bắt buộc và phần mã nguồn bạn viết không giống starter project số 1 quá 20% 
+
+*Tham khảo*:
+- Mã nguồn các starter project được tham khảo và chỉnh sửa từ https://github.com/carlosflorencio/bomberman
