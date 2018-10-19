@@ -1,10 +1,12 @@
 package uet.oop.bomberman.entities.bomb;
 
+import uet.oop.bomberman.Board;
 import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.graphics.Screen;
 
 public class Flame extends Entity {
 
+	protected Board _board;
 	protected int _direction;
 	private int _radius;
 	protected int xOrigin, yOrigin;
@@ -17,13 +19,14 @@ public class Flame extends Entity {
 	 * @param direction là hướng của Flame
 	 * @param radius độ dài cực đại của Flame
 	 */
-	public Flame(int x, int y, int direction, int radius) {
+	public Flame(int x, int y, int direction, int radius, Board board) {
 		xOrigin = x;
 		yOrigin = y;
 		_x = x;
 		_y = y;
 		_direction = direction;
 		_radius = radius;
+		_board = board;
 		createFlameSegments();
 	}
 

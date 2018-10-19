@@ -12,7 +12,7 @@ public class Bomb extends AnimatedEntitiy {
 	public int _timeAfter = 20;
 	
 	protected Board _board;
-	protected Flame[] _flames = new Flame[0];
+	protected Flame[] _flames;
 	protected boolean _exploded = false;
 	protected boolean _allowedToPassThru = true;
 	
