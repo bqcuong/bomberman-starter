@@ -60,7 +60,8 @@ Xem comment ở starter project
 1. Tự xây dựng project mà không dùng starter code (+3đ)
 
 - Gói tùy chọn 2 (tối đa +4đ)
-1. Nâng cấp thuật toán tìm đường cho Enemy và cài đặt thêm các loại Enemy khác +1đ
+1. Nâng cấp thuật toán tìm đường cho Enemy +0.5đ
+   Cài đặt thêm các loại Enemy khác: +0.25đ cho mỗi loại enemy
 2. Cài đặt thuật toán AI cho Bomber (tự chơi) +1đ
 3. Xử lý hiệu ứng âm thanh (thêm music & sound effects) +1đ
 4. Phát triển hệ thống server-client để nhiều người có thể cùng chơi qua mạng LAN hoặc Internet +1đ
