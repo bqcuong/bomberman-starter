@@ -12,6 +12,7 @@ public class Sprite {
 	
 	public static final int DEFAULT_SIZE = 16;
 	public static final int SCALED_SIZE = DEFAULT_SIZE * 2;
+    private static final int TRANSPARENT_COLOR = 0xffff00ff;
 	public final int SIZE;
 	private int _x, _y;
 	public int[] _pixels;
@@ -248,7 +249,12 @@ public class Sprite {
         PixelWriter pw = wr.getPixelWriter();
         for (int x = 0; x < SIZE; x++) {
             for (int y = 0; y < SIZE; y++) {
-                pw.setArgb(x, y, _pixels[x + y * SIZE]);
+                if ( _pixels[x + y * SIZE] == TRANSPARENT_COLOR) {
+                    pw.setArgb(x, y, 0);
+                }
+                else {
+                    pw.setArgb(x, y, _pixels[x + y * SIZE]);
+                }
             }
         }
         Image input = new ImageView(wr).getImage();
