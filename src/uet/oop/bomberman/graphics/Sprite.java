@@ -11,6 +11,7 @@ import java.nio.IntBuffer;
 public class Sprite {
 	
 	public static final int DEFAULT_SIZE = 16;
+	public static final int SCALED_SIZE = DEFAULT_SIZE * 2;
 	public final int SIZE;
 	private int _x, _y;
 	public int[] _pixels;
@@ -250,6 +251,34 @@ public class Sprite {
                 pw.setArgb(x, y, _pixels[x + y * SIZE]);
             }
         }
-        return new ImageView(wr).getImage();
+        Image input = new ImageView(wr).getImage();
+        return resample(input, SCALED_SIZE / DEFAULT_SIZE);
     }
+
+	private Image resample(Image input, int scaleFactor) {
+		final int W = (int) input.getWidth();
+		final int H = (int) input.getHeight();
+		final int S = scaleFactor;
+
+		WritableImage output = new WritableImage(
+				W * S,
+				H * S
+		);
+
+		PixelReader reader = input.getPixelReader();
+		PixelWriter writer = output.getPixelWriter();
+
+		for (int y = 0; y < H; y++) {
+			for (int x = 0; x < W; x++) {
+				final int argb = reader.getArgb(x, y);
+				for (int dy = 0; dy < S; dy++) {
+					for (int dx = 0; dx < S; dx++) {
+						writer.setArgb(x * S + dx, y * S + dy, argb);
+					}
+				}
+			}
+		}
+
+		return output;
+	}
 }
