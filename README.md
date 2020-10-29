@@ -51,7 +51,7 @@ Xem comment ở starter project
 ## Nhiệm vụ của bạn
 - Gói bắt buộc (+8đ)
 1. Thiết kế cây thừa kế cho các đối tượng game +2đ
-2. Xây dựng bản đồ màn chơi từ tệp cấu hình (có mẫu tệp cấu hình, xem [tại đây](https://raw.githubusercontent.com/bqcuong/bomberman-starter/starter-2/res/levels/Level1.txt) +1đ
+2. Xây dựng bản đồ màn chơi từ tệp cấu hình (có mẫu tệp cấu hình, xem [tại đây](https://raw.githubusercontent.com/bqcuong/bomberman-starter/starter-2/res/levels/Level1.txt)) +1đ
 3. Di chuyển Bomber theo sự điều khiển từ người chơi +1đ
 4. Tự động di chuyển các Enemy +1đ
 5. Xử lý va chạm cho các đối tượng Bomber, Enemy, Wall, Brick, Bomb +1đ
