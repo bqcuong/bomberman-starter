@@ -23,6 +23,15 @@ public abstract class Entity {
         this.img = img;
     }
 
+    //Kiem tra xem thuc the co nam tren diem (x, y) trong toa do canvas hay khong?
+    public boolean existOn(int x, int y) {
+        if (this.x <= x && x < this.x + Sprite.SCALED_SIZE
+            && this.y <= y && y < this.y + Sprite.SCALED_SIZE) {
+            return true;
+        }
+        return false;
+    }
+
     public void render(GraphicsContext gc) {
         gc.drawImage(img, x, y);
     }
