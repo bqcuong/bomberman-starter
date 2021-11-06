@@ -6,6 +6,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import uet.oop.bomberman.entities.Bomber;
 import uet.oop.bomberman.entities.Entity;
@@ -15,6 +16,7 @@ import uet.oop.bomberman.graphics.Sprite;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class BombermanGame extends Application {
     
@@ -60,6 +62,9 @@ public class BombermanGame extends Application {
                 case DOWN:
                     ((Bomber) bomberman).moveDown(entities, stillObjects);
                     break;
+                case SPACE:
+                    ((Bomber) bomberman).planBomb(entities);
+                    break;
             }
         });
 
@@ -68,10 +73,17 @@ public class BombermanGame extends Application {
         stage.show();
 
         AnimationTimer timer = new AnimationTimer() {
+            private long lastUpdate = 0 ;
             @Override
             public void handle(long l) {
+                // update every 29 ms, this setting equivalent to speed
+                if (l - lastUpdate >= 29_000_000) {
+                    lastUpdate = l ;
+//                    ((Bomber) bomberman2).moveRight(entities, stillObjects);
+                }
                 render();
                 update();
+
             }
         };
         timer.start();

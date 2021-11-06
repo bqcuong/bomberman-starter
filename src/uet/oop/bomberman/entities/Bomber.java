@@ -17,6 +17,18 @@ public class Bomber extends Entity {
         super( x, y, img);
     }
 
+    public static void setTimeout(Runnable runnable, int delay){
+        new Thread(() -> {
+            try {
+                Thread.sleep(delay);
+                runnable.run();
+            }
+            catch (Exception e){
+                System.err.println(e.getMessage());
+            }
+        }).start();
+    }
+
     private void moveTo(int x, int y, List<Entity> entities, List<Entity> stillObjects) {
         for (Entity element: stillObjects) {
             if (element.getClass().getTypeName()
@@ -49,6 +61,18 @@ public class Bomber extends Entity {
 
     public void moveDown(List<Entity> entities, List<Entity> stillObjects) {
         moveTo(x, y + 5, entities, stillObjects);
+    }
+
+    public void planBomb(List<Entity> entities) {
+        int xBomb = (int) Math.round((1.0 * x / Sprite.SCALED_SIZE) / 1.0);
+        int yBomb = (int) Math.round((1.0 * y / Sprite.SCALED_SIZE) / 1.0);
+        Entity bomb = new Bomb(xBomb, yBomb, Sprite.bomb.getFxImage());
+        entities.add(bomb);
+        ((Bomb) bomb).active();
+        setTimeout(() -> {
+            entities.remove(bomb);
+            ((Bomb) bomb).deactivate();
+        }, 2000);
     }
 
     @Override
