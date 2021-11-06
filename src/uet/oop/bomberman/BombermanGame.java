@@ -8,13 +8,11 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
-import uet.oop.bomberman.entities.Bomber;
-import uet.oop.bomberman.entities.Entity;
-import uet.oop.bomberman.entities.Grass;
-import uet.oop.bomberman.entities.Wall;
+import uet.oop.bomberman.entities.*;
 import uet.oop.bomberman.graphics.Sprite;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -22,11 +20,11 @@ public class BombermanGame extends Application {
     
     public static final int WIDTH = 20;
     public static final int HEIGHT = 15;
-    
+    public static List<Entity> entities = new ArrayList<>();
+    public static List<Entity> stillObjects = new ArrayList<>();
+    public static List<Entity> updateQueue = new ArrayList<>();
     private GraphicsContext gc;
     private Canvas canvas;
-    private List<Entity> entities = new ArrayList<>();
-    private List<Entity> stillObjects = new ArrayList<>();
 
     public static void main(String[] args) {
         Application.launch(BombermanGame.class);
@@ -39,7 +37,7 @@ public class BombermanGame extends Application {
         gc = canvas.getGraphicsContext2D();
 
         // Tao bomberman
-        Entity bomberman = new Bomber(1, 1, Sprite.player_right.getFxImage());
+        Bomber bomberman = new Bomber(1, 1, Sprite.player_right.getFxImage());
         entities.add(bomberman);
 
         // Tao root container
@@ -51,19 +49,19 @@ public class BombermanGame extends Application {
         scene.setOnKeyPressed(keyEvent -> {
             switch (keyEvent.getCode()) {
                 case RIGHT:
-                    ((Bomber) bomberman).moveRight(entities, stillObjects);
+                    bomberman.moveRight(entities, stillObjects);
                     break;
                 case LEFT:
-                    ((Bomber) bomberman).moveLeft(entities, stillObjects);
+                    bomberman.moveLeft(entities, stillObjects);
                     break;
                 case UP:
-                    ((Bomber) bomberman).moveUp(entities, stillObjects);
+                    bomberman.moveUp(entities, stillObjects);
                     break;
                 case DOWN:
-                    ((Bomber) bomberman).moveDown(entities, stillObjects);
+                    bomberman.moveDown(entities, stillObjects);
                     break;
                 case SPACE:
-                    ((Bomber) bomberman).planBomb(entities);
+                    bomberman.planBomb(entities, stillObjects);
                     break;
             }
         });
@@ -76,13 +74,12 @@ public class BombermanGame extends Application {
             private long lastUpdate = 0 ;
             @Override
             public void handle(long l) {
-                // update every 29 ms, this setting equivalent to speed
-                if (l - lastUpdate >= 29_000_000) {
-                    lastUpdate = l ;
-//                    ((Bomber) bomberman2).moveRight(entities, stillObjects);
+                /** update and render every 10 ms */
+                if (l - lastUpdate >= 10_000_000) {
+                    lastUpdate = l;
+                    update();
+                    render();
                 }
-                render();
-                update();
 
             }
         };
@@ -108,12 +105,21 @@ public class BombermanGame extends Application {
     }
 
     public void update() {
-        entities.forEach(Entity::update);
+        updateQueue.forEach(entity -> entities.add(entity));
+        updateQueue.clear();
     }
 
     public void render() {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        stillObjects.forEach(g -> g.render(gc));
-        entities.forEach(g -> g.render(gc));
+        stillObjects.forEach(g -> {
+            if (g.isVisible()) {
+                g.render(gc);
+            }
+        });
+        entities.forEach(g -> {
+            if (g.isVisible()) {
+                g.render(gc);
+            }
+        });
     }
 }
