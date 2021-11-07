@@ -2,3 +2,6 @@
 /bin
 /.idea
 *.iml
+.classpath
+.project
+/.settings
