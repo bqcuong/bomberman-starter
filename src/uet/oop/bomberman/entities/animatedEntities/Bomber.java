@@ -5,6 +5,8 @@ import uet.oop.bomberman.BombermanGame;
 import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.graphics.Sprite;
 
+import java.util.ArrayList;
+
 public class Bomber extends AnimatedEntity {
     public static final String UP = "UP";
     public static final String DOWN = "DOWN";
@@ -12,13 +14,15 @@ public class Bomber extends AnimatedEntity {
     public static final String RIGHT = "RIGHT";
     public static final String CENTER = "CENTER";
 
+    private int maxBombs;
     private String direction;
-//    private boolean planBomb;
+    private ArrayList<Bomb> plannedBomb;
 
     public Bomber(int x, int y, Image img) {
         super( x, y, img);
         direction = CENTER;
-//        planBomb = false;
+        maxBombs = 1;
+        plannedBomb = new ArrayList<>();
     }
 
     private void moveTo(int x, int y) {
@@ -56,11 +60,18 @@ public class Bomber extends AnimatedEntity {
     }
 
     public void planBomb() {
-//        planBomb = true;
+        int numOfActiveBombs = (int) plannedBomb.stream()
+                .filter(bomb -> !bomb.isExploded())
+                .count();
+        if (maxBombs <= numOfActiveBombs) {
+            return;
+        }
+
         int xBomb = (int) Math.round((1.0 * x / Sprite.SCALED_SIZE) / 1.0);
         int yBomb = (int) Math.round((1.0 * y / Sprite.SCALED_SIZE) / 1.0);
         Bomb bomb = new Bomb(xBomb, yBomb);
         BombermanGame.updateQueue.add(bomb);
+        plannedBomb.add(bomb);
     }
 
     public void setDirection(String direction) {
