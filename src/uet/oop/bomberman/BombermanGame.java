@@ -6,20 +6,24 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.input.KeyEvent;
+import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import uet.oop.bomberman.entities.*;
+import uet.oop.bomberman.entities.animatedEntities.Bomber;
+import uet.oop.bomberman.entities.staticEntities.Grass;
+import uet.oop.bomberman.entities.staticEntities.Wall;
 import uet.oop.bomberman.graphics.Sprite;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 public class BombermanGame extends Application {
     
     public static final int WIDTH = 20;
     public static final int HEIGHT = 15;
+    public static final long TIME_UNIT = 10_000_000; // 10 ms
+    public static final int MOVING_UNIT = 2;
+
     public static List<Entity> entities = new ArrayList<>();
     public static List<Entity> stillObjects = new ArrayList<>();
     public static List<Entity> updateQueue = new ArrayList<>();
@@ -49,20 +53,28 @@ public class BombermanGame extends Application {
         scene.setOnKeyPressed(keyEvent -> {
             switch (keyEvent.getCode()) {
                 case RIGHT:
-                    bomberman.moveRight(entities, stillObjects);
+                    bomberman.setDirection(Bomber.RIGHT);
                     break;
                 case LEFT:
-                    bomberman.moveLeft(entities, stillObjects);
+                    bomberman.setDirection(Bomber.LEFT);
                     break;
                 case UP:
-                    bomberman.moveUp(entities, stillObjects);
+                    bomberman.setDirection(Bomber.UP);
                     break;
                 case DOWN:
-                    bomberman.moveDown(entities, stillObjects);
+                    bomberman.setDirection(Bomber.DOWN);
                     break;
                 case SPACE:
-                    bomberman.planBomb(entities, stillObjects);
+                    bomberman.planBomb();
                     break;
+            }
+        });
+        scene.setOnKeyReleased(keyEvent -> {
+            if (keyEvent.getCode() == KeyCode.UP ||
+                    keyEvent.getCode() == KeyCode.DOWN ||
+                    keyEvent.getCode() == KeyCode.LEFT ||
+                    keyEvent.getCode() == KeyCode.RIGHT) {
+                bomberman.setDirection(Bomber.CENTER);
             }
         });
 
@@ -74,8 +86,8 @@ public class BombermanGame extends Application {
             private long lastUpdate = 0 ;
             @Override
             public void handle(long l) {
-                /** update and render every 10 ms */
-                if (l - lastUpdate >= 10_000_000) {
+                /** update and render every TIME_UNIT. */
+                if (l - lastUpdate >= TIME_UNIT) {
                     lastUpdate = l;
                     update();
                     render();
@@ -105,8 +117,16 @@ public class BombermanGame extends Application {
     }
 
     public void update() {
+        // add waiting entities to this.entities
         updateQueue.forEach(entity -> entities.add(entity));
         updateQueue.clear();
+
+        // update each entity
+        entities.forEach(entity -> {
+            if (entity.isVisible()) {
+                entity.update();
+            }
+        });
     }
 
     public void render() {

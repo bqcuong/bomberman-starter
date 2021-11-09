@@ -236,6 +236,26 @@ public class Sprite {
 		return (animate % time > diff) ? x1 : x2; 
 	}
 	
+	public static Sprite movingSprite(Sprite normal, Sprite x1, Sprite x2, long animate, long time) {
+		long calc = animate % time;
+		long diff = time / 3;
+
+		if(calc < diff) {
+			return normal;
+		}
+
+		if(calc < diff * 2) {
+			return x1;
+		}
+
+		return x2;
+	}
+
+	public static Sprite movingSprite(Sprite x1, Sprite x2, long animate, long time) {
+		long diff = time / 2;
+		return (animate % time > diff) ? x1 : x2;
+	}
+
 	public int getSize() {
 		return SIZE;
 	}
