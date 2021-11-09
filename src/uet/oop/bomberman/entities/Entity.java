@@ -39,10 +39,22 @@ public abstract class Entity {
         this.img = img;
     }
 
-    //Kiem tra xem thuc the co nam tren diem (x, y) trong toa do canvas hay khong?
+    // Kiem tra xem thuc the co nam tren diem (x, y) trong toa do canvas hay khong?
     public boolean existOn(int x, int y) {
         if (this.x <= x && x < this.x + Sprite.SCALED_SIZE
             && this.y <= y && y < this.y + Sprite.SCALED_SIZE) {
+            return true;
+        }
+        return false;
+    }
+
+    // Kiem tra thuc the co nam tren o vuong bat dau bang toa do (x, y) hay khong
+    public boolean existOnSquare(int x, int y) {
+        if (existOn(x, y)
+                || existOn(x, y + Sprite.SCALED_SIZE - 1)
+                || existOn(x + Sprite.SCALED_SIZE - 1, y)
+                || existOn(x + Sprite.SCALED_SIZE - 1,
+                y + Sprite.SCALED_SIZE - 1)) {
             return true;
         }
         return false;
