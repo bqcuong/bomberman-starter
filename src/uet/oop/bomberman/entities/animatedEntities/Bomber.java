@@ -5,6 +5,8 @@ import uet.oop.bomberman.BombermanGame;
 import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.graphics.Sprite;
 
+import java.util.ArrayList;
+
 public class Bomber extends AnimatedEntity {
     public static final String UP = "UP";
     public static final String DOWN = "DOWN";
@@ -12,26 +14,59 @@ public class Bomber extends AnimatedEntity {
     public static final String RIGHT = "RIGHT";
     public static final String CENTER = "CENTER";
 
+    private int maxBombs;
     private String direction;
-//    private boolean planBomb;
+    private ArrayList<Bomb> plannedBomb;
+
+    /** buff state; -1 is inactive. */
+    private long bombsBuff = -1;
+
+    /** time limit of buff. */
+    private long bombsBuffTime = 5_000_000_000l; // 5s
 
     public Bomber(int x, int y, Image img) {
         super( x, y, img);
         direction = CENTER;
-//        planBomb = false;
+        maxBombs = 1;
+        plannedBomb = new ArrayList<>();
+    }
+
+    public void setDirection(String direction) {
+        this.direction = direction;
     }
 
     private void moveTo(int x, int y) {
-        for (Entity element: BombermanGame.stillObjects) {
-            if (element.getClass().getTypeName()
-                    .equals("uet.oop.bomberman.entities.staticEntities.Grass")) {
+        for (Entity entity: BombermanGame.stillObjects) {
+            String className = entity.getClass().getTypeName();
+            if (className.equals("uet.oop.bomberman.entities.staticEntities.Grass")) {
                 continue;
             }
-            if (element.existOn(x, y)
-                    || element.existOn(x, y + Sprite.SCALED_SIZE - 1)
-                    || element.existOn(x + Sprite.SCALED_SIZE - 1, y)
-                    || element.existOn(x + Sprite.SCALED_SIZE - 1,
-                        y + Sprite.SCALED_SIZE - 1)) {
+            if (entity.existOnSquare(x, y)) {
+                if (className.contains("buffItems")) {
+                    if (className.contains("IncreaseBombs")) {
+                        maxBombs++;
+                        entity.setVisible(false);
+                    }
+                }
+                return;
+            }
+        }
+
+        for (Entity entity: BombermanGame.entities) {
+            String className = entity.getClass().getTypeName();
+            if (className.equals("uet.oop.bomberman.entities.animatedEntities.Bomber") ||
+                className.equals("uet.oop.bomberman.entities.animatedEntities.Bomb") ||
+                !entity.isVisible()) {
+                continue;
+            }
+            if (entity.existOnSquare(x, y)) {
+                if (className.contains("buffItems")) {
+                    if (className.contains("IncreaseBombs")) {
+                        maxBombs = 2;
+                        bombsBuff = 0; // active buff
+                        entity.setVisible(false);
+                    }
+                }
                 return;
             }
         }
@@ -41,35 +76,66 @@ public class Bomber extends AnimatedEntity {
 
     public void moveRight() {
         moveTo(x + BombermanGame.MOVING_UNIT, y);
+        img = Sprite.movingSprite(Sprite.player_right,
+                Sprite.player_right_1,
+                Sprite.player_right_2,
+                animatedTime, 200_000_000).getFxImage();
     }
 
     public void moveLeft() {
         moveTo(x - BombermanGame.MOVING_UNIT, y);
+        img = Sprite.movingSprite(Sprite.player_left,
+                Sprite.player_left_1,
+                Sprite.player_left_2,
+                animatedTime, 200_000_000).getFxImage();
     }
 
     public void moveUp() {
         moveTo(x, y - BombermanGame.MOVING_UNIT);
+        img = Sprite.movingSprite(Sprite.player_up,
+                Sprite.player_up_1,
+                Sprite.player_up_2,
+                animatedTime, 200_000_000).getFxImage();
     }
 
     public void moveDown() {
         moveTo(x, y + BombermanGame.MOVING_UNIT);
+        img = Sprite.movingSprite(Sprite.player_down,
+                Sprite.player_down_1,
+                Sprite.player_down_2,
+                animatedTime, 200_000_000).getFxImage();
     }
 
     public void planBomb() {
-//        planBomb = true;
+        int numOfActiveBombs = (int) plannedBomb.stream()
+                .filter(bomb -> !bomb.isExploded())
+                .count();
+        if (maxBombs <= numOfActiveBombs) {
+            return;
+        }
+
         int xBomb = (int) Math.round((1.0 * x / Sprite.SCALED_SIZE) / 1.0);
         int yBomb = (int) Math.round((1.0 * y / Sprite.SCALED_SIZE) / 1.0);
         Bomb bomb = new Bomb(xBomb, yBomb);
         BombermanGame.updateQueue.add(bomb);
+        plannedBomb.add(bomb);
     }
 
-    public void setDirection(String direction) {
-        this.direction = direction;
+    private void updateBuff() {
+        if (bombsBuff != -1) { // -1 is inactive state
+            bombsBuffTime -= BombermanGame.TIME_UNIT;
+        }
+        if (bombsBuffTime < 0) { // expiration of activation
+            bombsBuff = -1;
+            maxBombs = 1;
+            bombsBuffTime = 5_000_000_000l;
+        }
     }
 
     @Override
     public void update() {
         animate();
+        updateBuff();
 
         switch (direction) {
             case UP:

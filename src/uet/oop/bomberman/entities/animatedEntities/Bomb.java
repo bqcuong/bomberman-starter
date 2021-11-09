@@ -7,11 +7,15 @@ import uet.oop.bomberman.graphics.Sprite;
 
 public class Bomb extends AnimatedEntity{
     private final long limitedTime = 2_000_000_000l; // 2s
-    private boolean isExploded;
+    private boolean exploded;
 
     public Bomb(int xUnit, int yUnit) {
         super(xUnit, yUnit, Sprite.bomb.getFxImage());
-        isExploded = false;
+        exploded = false;
+    }
+
+    public boolean isExploded() {
+        return exploded;
     }
 
     /** Add an explosion to position (x, y)
@@ -117,11 +121,11 @@ public class Bomb extends AnimatedEntity{
                     Sprite.bomb_1,
                     Sprite.bomb_2,
                     animatedTime, 500_000_000).getFxImage();
-        } else if (!isExploded) {
+        } else if (!exploded) {
             setVisible(false);
 //            explode(x, y);
             explode();
-            isExploded = true;
+            exploded = true;
         }
     }
 }

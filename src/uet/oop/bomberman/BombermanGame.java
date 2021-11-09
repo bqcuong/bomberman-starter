@@ -10,6 +10,7 @@ import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import uet.oop.bomberman.entities.*;
 import uet.oop.bomberman.entities.animatedEntities.Bomber;
+import uet.oop.bomberman.entities.buffItems.IncreaseBombs;
 import uet.oop.bomberman.entities.staticEntities.Grass;
 import uet.oop.bomberman.entities.staticEntities.Wall;
 import uet.oop.bomberman.graphics.Sprite;
@@ -43,6 +44,10 @@ public class BombermanGame extends Application {
         // Tao bomberman
         Bomber bomberman = new Bomber(1, 1, Sprite.player_right.getFxImage());
         entities.add(bomberman);
+
+        /** testing */
+        entities.add(new IncreaseBombs(4, 5, Sprite.powerup_bombs.getFxImage()));
+        /** end test */
 
         // Tao root container
         Group root = new Group();
