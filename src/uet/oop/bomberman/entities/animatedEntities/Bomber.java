@@ -116,8 +116,8 @@ public class Bomber extends AnimatedEntity {
             return;
         }
 
-        int xBomb = (int) Math.round((1.0 * x / Sprite.SCALED_SIZE) / 1.0);
-        int yBomb = (int) Math.round((1.0 * y / Sprite.SCALED_SIZE) / 1.0);
+        int xBomb = (int) Math.round((1.0 * x / Sprite.SCALED_SIZE));
+        int yBomb = (int) Math.round((1.0 * y / Sprite.SCALED_SIZE));
         Bomb bomb = new Bomb(xBomb, yBomb);
         BombermanGame.updateQueue.add(bomb);
         plannedBomb.add(bomb);
