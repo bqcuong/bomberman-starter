@@ -18,6 +18,9 @@ public class Bomber extends AnimatedEntity {
     private String direction;
     private ArrayList<Bomb> plannedBomb;
 
+    private boolean alive;
+    private long dyingAnimatedTime = 1_000_000_000l;
+
     /** buff state; -1 is inactive. */
     private long bombsBuff = -1;
 
@@ -29,10 +32,15 @@ public class Bomber extends AnimatedEntity {
         direction = CENTER;
         maxBombs = 1;
         plannedBomb = new ArrayList<>();
+        alive = true;
     }
 
     public void setDirection(String direction) {
         this.direction = direction;
+    }
+
+    public void setAlive(boolean alive) {
+        this.alive = alive;
     }
 
     private void moveTo(int x, int y) {
@@ -134,8 +142,22 @@ public class Bomber extends AnimatedEntity {
 
     @Override
     public void update() {
-        animate();
         updateBuff();
+
+        if (alive) {
+            animate();
+        } else {
+            if (dyingAnimatedTime > 0) {
+                img = Sprite.movingSprite(Sprite.player_dead1,
+                        Sprite.player_dead2,
+                        Sprite.player_dead3,
+                        dyingAnimatedTime,
+                        500_000_000).getFxImage();
+                dyingAnimatedTime -= BombermanGame.TIME_UNIT;
+            } else {
+                setVisible(false);
+            }
+        }
 
         switch (direction) {
             case UP:

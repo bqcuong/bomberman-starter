@@ -108,6 +108,24 @@ public class Bomb extends AnimatedEntity{
         if (bottomLastCanExplode) {
             explosion(new DownLast(xUnit, bottomLastUnit));
         }
+
+        // check bomber collide
+        for (Entity entity: BombermanGame.entities) {
+           if (entity.getClass().getTypeName().contains("Bomber")) {
+               if (entity.existOnSquare(x, y) ||
+                   entity.existOn(left, yScaled) ||
+                   entity.existOn(right, yScaled) ||
+                   entity.existOn(xScaled, top) ||
+                   entity.existOn(xScaled, bottom) ||
+                   entity.existOn(leftLast, yScaled) ||
+                   entity.existOn(rightLast, yScaled) ||
+                   entity.existOn(xScaled, topLast) ||
+                   entity.existOn(xScaled, bottomLast)) {
+                   ((Bomber) entity).setAlive(false);
+               }
+               break;
+           }
+        }
     }
 
     private void explosion(Explosion flame) {
