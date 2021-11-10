@@ -5,10 +5,8 @@ import javafx.scene.image.Image;
 import uet.oop.bomberman.graphics.Sprite;
 
 public abstract class Entity {
-    //Tọa độ X tính từ góc trái trên trong Canvas
+    //Tọa độ tính từ góc trái trên trong Canvas
     protected int x;
-
-    //Tọa độ Y tính từ góc trái trên trong Canvas
     protected int y;
 
     // Tọa độ đơn vị
@@ -25,6 +23,14 @@ public abstract class Entity {
 
     public void setVisible(boolean visible) {
         this.visible = visible;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
     }
 
     //Khởi tạo đối tượng, chuyển từ tọa độ đơn vị sang tọa độ trong canvas
