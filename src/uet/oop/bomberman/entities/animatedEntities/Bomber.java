@@ -49,15 +49,6 @@ public class Bomber extends AnimatedEntity {
             if (className.equals("uet.oop.bomberman.entities.staticEntities.Grass")) {
                 continue;
             }
-            if (entity.existOnSquare(x, y)) {
-                if (className.contains("buffItems")) {
-                    if (className.contains("IncreaseBombs")) {
-                        maxBombs++;
-                        entity.setVisible(false);
-                    }
-                }
-                return;
-            }
         }
 
         for (Entity entity: BombermanGame.entities) {
