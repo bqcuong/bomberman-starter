@@ -58,6 +58,9 @@ public class Bomber extends AnimatedEntity {
                 !entity.isVisible()) {
                 continue;
             }
+            if (className.contains("flames") && entity.existOnSquare(x, y)) {
+                setAlive(false);
+            }
             if (entity.existOnSquare(x, y)) {
                 if (className.contains("buffItems")) {
                     if (className.contains("IncreaseBombs")) {
