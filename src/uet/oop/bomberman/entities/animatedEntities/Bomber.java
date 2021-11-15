@@ -46,15 +46,19 @@ public class Bomber extends AnimatedEntity {
     private void moveTo(int x, int y) {
         for (Entity entity: BombermanGame.stillObjects) {
             String className = entity.getClass().getTypeName();
-            if (className.equals("uet.oop.bomberman.entities.staticEntities.Grass")) {
+            if (className.contains("Grass")) {
                 continue;
+            } else {
+                if (entity.existOnSquare(x, y)) {
+                    return;
+                }
             }
         }
 
         for (Entity entity: BombermanGame.entities) {
             String className = entity.getClass().getTypeName();
-            if (className.equals("uet.oop.bomberman.entities.animatedEntities.Bomber") ||
-                className.equals("uet.oop.bomberman.entities.animatedEntities.Bomb") ||
+            if (className.contains("Bomber") ||
+                className.contains("Bomb") ||
                 !entity.isVisible()) {
                 continue;
             }
