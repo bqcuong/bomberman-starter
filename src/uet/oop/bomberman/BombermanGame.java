@@ -20,7 +20,8 @@ import java.util.List;
 
 public class BombermanGame extends Application {
     
-    public static final int WIDTH = 20;
+    public static final int WINDOW_WIDTH = 20;
+    public static final int WIDTH = 30;
     public static final int HEIGHT = 15;
     public static final long TIME_UNIT = 10_000_000; // 10 ms
     public static final int MOVING_UNIT = 2;
@@ -54,7 +55,9 @@ public class BombermanGame extends Application {
         root.getChildren().add(canvas);
 
         // Tao scene
-        Scene scene = new Scene(root);
+        Scene scene = new Scene(root,
+                Sprite.SCALED_SIZE * WINDOW_WIDTH,
+                Sprite.SCALED_SIZE * HEIGHT);
         scene.setOnKeyPressed(keyEvent -> {
             switch (keyEvent.getCode()) {
                 case RIGHT:
@@ -96,6 +99,12 @@ public class BombermanGame extends Application {
                     lastUpdate = l;
                     update();
                     render();
+
+                    if (bomberman.getX() > (WINDOW_WIDTH * Sprite.SCALED_SIZE) / 2 &&
+                    bomberman.getX() < (WIDTH - WINDOW_WIDTH / 2) * Sprite.SCALED_SIZE) {
+                        root.setLayoutX((WINDOW_WIDTH * Sprite.SCALED_SIZE) / 2 - bomberman.getX());
+                    }
+
                 }
 
             }
