@@ -14,17 +14,17 @@ public class KeyListener implements EventHandler<KeyEvent> {
         scene.setOnKeyPressed(this);
         scene.setOnKeyReleased(this);
     }
-
+    
     @Override
     public void handle(KeyEvent event) {
         if (KeyEvent.KEY_PRESSED.equals(event.getEventType())) {
+
             activeKeys.add(event.getCode());
         } else if (KeyEvent.KEY_RELEASED.equals(event.getEventType())) {
             activeKeys.remove(event.getCode());
         }
     }
 
-    
     public boolean isPressed(KeyCode keyCode) {
         return activeKeys.contains(keyCode);
     }

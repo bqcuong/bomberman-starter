@@ -55,13 +55,13 @@ public class CollisionManager {
                 //return true;
             
             case LEFT:
-                return true;
+                //return true;
 
             case UP:
-                return true;
+                //return true;
 
             case DOWN:
-                return true;
+                //return true;
         
             default:
                 throw new ArithmeticException("WRONG DRIECTION in [CollisionManager]");

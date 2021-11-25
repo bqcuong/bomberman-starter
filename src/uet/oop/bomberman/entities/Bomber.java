@@ -13,37 +13,36 @@ import uet.oop.bomberman.Map;
 import uet.oop.bomberman.controller.CollisionManager;
 import uet.oop.bomberman.controller.KeyListener;
 import uet.oop.bomberman.controller.CollisionManager.DIRECTION;
+import uet.oop.bomberman.graphics.Graphics;
 import uet.oop.bomberman.graphics.Sprite;
+import uet.oop.bomberman.controller.Camera;
 
 public class Bomber extends Entity {
 
     private KeyListener keyListener;
     private CollisionManager collisionManager;
 
-    public Bomber(int x, int y, Image img, Scene scene, CollisionManager collisionManager) {
+    public Bomber(int x, int y, Image img, KeyListener keyListener, CollisionManager collisionManager) {
         super(x, y, img);
-        this.keyListener = new KeyListener(scene);
+        this.keyListener = keyListener;
         this.collisionManager = collisionManager;
     }
 
     @Override
     public void update() {
         if (keyListener.isPressed(KeyCode.D)) {
-            System.out.println(x + " " + y);
             x += CollisionManager.STEP;
             // if (!collisionManager.checkCollision(x + CollisionManager.STEP, y)) {
             // }            
             //System.out.println("[Key Pressed]: D - " + x);
         }
         if (keyListener.isPressed(KeyCode.A)) {
-            System.out.println(x + " " + y);
             //if (!(map.getCoordinate(x - 1, y) instanceof Obstacle)) {
                 x -= CollisionManager.STEP;
             //}
             //System.out.println("[Key Pressed]: A - " + x);
         }
         if (keyListener.isPressed(KeyCode.W)) {
-            System.out.println(x + " " + y);
             //if (!(map.getCoordinate(x, y - 1) instanceof Obstacle)) {
                 y -= CollisionManager.STEP;
             //}
@@ -57,4 +56,20 @@ public class Bomber extends Entity {
             //System.out.println("[Key Pressed]: S - " + y);
         }
     }
+
+    @Override
+    public void render(GraphicsContext gc, Camera camera) {
+        // TODO Auto-generated method stub
+        if (camera.getX() > 0 && camera.getX() < camera.getScreenWidth() * Sprite.SCALED_SIZE - Graphics.WIDTH * Sprite.SCALED_SIZE) {
+            int tempX = Graphics.WIDTH * Sprite.DEFAULT_SIZE;
+            gc.drawImage(img, tempX, y);
+        } else if (camera.getX() == camera.getScreenWidth() * Sprite.SCALED_SIZE - Graphics.WIDTH * Sprite.SCALED_SIZE) {
+            int tempX = x - (camera.getScreenWidth()* Sprite.SCALED_SIZE - Graphics.WIDTH * Sprite.SCALED_SIZE);
+            gc.drawImage(img, tempX, y);
+        } else {
+            gc.drawImage(img, x, y);
+        }
+    }
+
+    
 }
