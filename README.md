@@ -1,5 +1,5 @@
 # Bài tập lớn OOP - Bomberman Game
-Thành viên nhóm:
+Thành viên nhóm 66:
 - Hoàng Huy Thắng
 - Trần Quốc Phi
 
