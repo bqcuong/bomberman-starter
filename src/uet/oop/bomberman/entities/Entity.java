@@ -27,4 +27,40 @@ public abstract class Entity {
         gc.drawImage(img, x, y);
     }
     public abstract void update();
+    public int getX() {
+        return x;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    public int getXBlock() {
+        return x/Sprite.SCALED_SIZE;
+    }
+
+    public int getYBlock() {
+        return y/Sprite.SCALED_SIZE;
+    }
+
+    public void setXBlock(int x) {
+        this.x = x * Sprite.SCALED_SIZE;
+    }
+
+    public void setYBlock(int y) {
+        this.y = y * Sprite.SCALED_SIZE;
+    }
+
+    public void setXYBlock(int x, int y) {
+        this.x = x * Sprite.SCALED_SIZE;
+        this.y = y * Sprite.SCALED_SIZE;
+    }
 }
