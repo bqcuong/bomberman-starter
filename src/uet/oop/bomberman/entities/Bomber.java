@@ -8,12 +8,14 @@ import javafx.scene.paint.Color;
 
 public class Bomber extends Entity {
 
+    int i = 1;
     public Bomber(int x, int y, Image img) {
         super( x, y, img);
     }
 
     @Override
     public void update() {
-
+        setXYBlock(1, 1);
+        //setXYBlock(i++%10, 1);
     }
 }

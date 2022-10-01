@@ -12,6 +12,7 @@ import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.entities.Grass;
 import uet.oop.bomberman.entities.Wall;
 import uet.oop.bomberman.graphics.Sprite;
+import uet.oop.bomberman.utils.FileUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,22 +65,52 @@ public class BombermanGame extends Application {
     }
 
     public void createMap() {
-        for (int i = 0; i < WIDTH; i++) {
-            for (int j = 0; j < HEIGHT; j++) {
-                Entity object;
-                if (j == 0 || j == HEIGHT - 1 || i == 0 || i == WIDTH - 1) {
-                    object = new Wall(i, j, Sprite.wall.getFxImage());
+
+        String path = this.getClass().getResource("/map.txt").getPath();
+        System.out.println(path);
+        List<String> map = new ArrayList<>();
+        try {
+            map = FileUtils.readFileLineByLine(path);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (map.isEmpty()) System.out.println("Load map fail!");
+        else {
+            for (int i = 0; i < map.size(); i++) {
+                String line = map.get(i);
+                //System.out.println(line);
+                for (int j = 0; j < line.length(); j++) {
+                    int codeID = Integer.parseInt(String.valueOf(line.charAt(j))) ;
+                    Entity entity = null;
+                    switch (codeID) {
+                        case Sprite.CODE_ID_WALL: {
+                            entity = new Wall(j, i, Sprite.wall.getFxImage());
+                            break;
+                        }
+                        case Sprite.CODE_ID_GRASS: {
+                            entity = new Grass(j, i, Sprite.grass.getFxImage());
+                            break;
+                        }
+                        case Sprite.CODE_ID_BOMBERMAN: {
+                            entity = new Bomber(j, i, Sprite.player_right.getFxImage());
+                            break;
+                        }
+                    }
+                    if (entity instanceof Bomber) {
+                        Entity grass = new Grass(j, i, Sprite.grass.getFxImage());
+                        stillObjects.add(grass);
+                        entities.add(entity);
+                    }
+                    else stillObjects.add(entity);
                 }
-                else {
-                    object = new Grass(i, j, Sprite.grass.getFxImage());
-                }
-                stillObjects.add(object);
             }
         }
     }
 
     public void update() {
-        entities.forEach(Entity::update);
+        for (Entity ett : entities) {
+            ett.update();
+        }
     }
 
     public void render() {
