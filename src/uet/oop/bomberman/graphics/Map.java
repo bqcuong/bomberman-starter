@@ -1,6 +1,6 @@
 package uet.oop.bomberman.graphics;
 
-import uet.oop.bomberman.Event.KeyboardEvent;
+import uet.oop.bomberman.events.KeyboardEvent;
 import uet.oop.bomberman.entities.Bomber;
 import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.entities.Grass;

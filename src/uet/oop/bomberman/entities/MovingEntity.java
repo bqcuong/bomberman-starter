@@ -2,7 +2,7 @@ package uet.oop.bomberman.entities;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import uet.oop.bomberman.Event.Direction;
+import uet.oop.bomberman.events.Direction;
 
 public class MovingEntity extends Entity {
     protected boolean isMoving = false;
@@ -41,20 +41,32 @@ public class MovingEntity extends Entity {
             isMoving = true;
             this.direction = direction;
             if (direction == Direction.DOWN) {
-                y += speedRun;
+                moveDown();
             }
             if (direction == Direction.UP) {
-                y -= speedRun;
+                moveUp();
             }
             if (direction == Direction.LEFT) {
-                x -= speedRun;
+                moveLeft();
             }
             if (direction == Direction.RIGHT) {
-                x += speedRun;
+                moveRight();
             }
         } else {
             isMoving = false;
         }
     }
 
+    public void moveUp(){
+        y-=speedRun;
+    }
+    public void moveDown(){
+        y+=speedRun;
+    }
+    public void moveRight(){
+        x+=speedRun;
+    }
+    public void moveLeft(){
+        x-=speedRun;
+    }
 }

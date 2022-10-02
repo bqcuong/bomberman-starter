@@ -1,4 +1,4 @@
-package uet.oop.bomberman.Event;
+package uet.oop.bomberman.events;
 
 import javafx.event.EventHandler;
 import javafx.scene.Scene;

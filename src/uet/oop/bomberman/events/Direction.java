@@ -1,4 +1,4 @@
-package uet.oop.bomberman.Event;
+package uet.oop.bomberman.events;
 
 public enum Direction {
     LEFT, RIGHT, UP, DOWN

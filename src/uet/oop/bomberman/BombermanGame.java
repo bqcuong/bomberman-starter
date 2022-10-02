@@ -6,7 +6,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.stage.Stage;
-import uet.oop.bomberman.Event.KeyboardEvent;
+import uet.oop.bomberman.events.KeyboardEvent;
 import uet.oop.bomberman.graphics.GraphicsMGR;
 import uet.oop.bomberman.graphics.Map;
 import uet.oop.bomberman.graphics.Sprite;
@@ -26,7 +26,7 @@ public class BombermanGame extends Application {
     @Override
     public void start(Stage stage) {
         // Tao Canvas
-        canvas = new Canvas(Sprite.SCALED_SIZE * GraphicsMGR.WIDTH, Sprite.SCALED_SIZE *GraphicsMGR.HEIGHT);
+        canvas = new Canvas(Sprite.SCALED_SIZE * GraphicsMGR.WIDTH, Sprite.SCALED_SIZE * GraphicsMGR.HEIGHT);
         graphics = new GraphicsMGR(canvas);
 
         // Tao root container
@@ -41,7 +41,7 @@ public class BombermanGame extends Application {
 
         // Tao map
         map = new Map();
-        map.createMap(1,keyboardEvent);
+        map.createMap(1, keyboardEvent);
 
         // Them scene vao stage
         stage.setScene(scene);
