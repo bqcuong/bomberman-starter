@@ -108,7 +108,7 @@ public class BombermanGame extends Application {
                             break;
                         }
                         case Sprite.CODE_ID_BOMBERMAN: {
-                            entity = new Bomber(j, i, Sprite.player_right.getFxImage());
+                            entity = bomber;
                             break;
                         }
                     }
