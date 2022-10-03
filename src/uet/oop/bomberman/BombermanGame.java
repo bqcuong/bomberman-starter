@@ -17,10 +17,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BombermanGame extends Application {
-    
+
+    public static String[] map = {
+            "###############################",
+            "#p     ** *  1 * 2 *  * * *   #",
+            "# # # #*# # #*#*# # # #*#*#*# #",
+            "#  x*     ***  *  1   * 2 * * #",
+            "# # # # # #*# # #*#*# #*#*# #*#",
+            "#f         x **  *  *         #",
+            "# # # # # # # # # #*# #*# # # #",
+            "#*  *      *  *      *        #",
+            "# # # # #*# # # #*#*# # # # # #",
+            "#* 1  **  *       *           #",
+            "# #*# # # # # # #*# # # # # # #",
+            "#           *   *  *          #",
+            "###############################"
+    };
+
     public static final int WIDTH = 20;
     public static final int HEIGHT = 15;
-    
+
     private GraphicsContext gc;
     private Canvas canvas;
     private List<Entity> entities = new ArrayList<>();
@@ -87,4 +103,5 @@ public class BombermanGame extends Application {
         stillObjects.forEach(g -> g.render(gc));
         entities.forEach(g -> g.render(gc));
     }
+
 }

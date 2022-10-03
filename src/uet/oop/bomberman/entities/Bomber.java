@@ -8,8 +8,9 @@ import javafx.scene.paint.Color;
 
 public class Bomber extends Entity {
 
+
     public Bomber(int x, int y, Image img) {
-        super( x, y, img);
+        super(x, y, img);
     }
 
     @Override
