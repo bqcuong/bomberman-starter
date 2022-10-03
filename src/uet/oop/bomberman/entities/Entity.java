@@ -23,6 +23,9 @@ public abstract class Entity {
         this.img = img;
     }
 
+    public Entity () {
+    }
+
     public void render(GraphicsContext gc) {
         gc.drawImage(img, x, y);
     }
@@ -63,4 +66,13 @@ public abstract class Entity {
         this.x = x * Sprite.SCALED_SIZE;
         this.y = y * Sprite.SCALED_SIZE;
     }
+
+    public void setImg(Image img) {
+        this.img = img;
+    }
+
+    public Image getImg() {
+        return img;
+    }
+
 }

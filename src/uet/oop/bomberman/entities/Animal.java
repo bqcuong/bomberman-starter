@@ -1,0 +1,93 @@
+package uet.oop.bomberman.entities;
+
+import javafx.scene.image.Image;
+import uet.oop.bomberman.graphics.Sprite;
+
+public class Animal extends Entity {
+    protected int is_move;        // move ( pixel )
+    protected int swap;           // swap image
+    protected String direction;   // in4 from user (move bomber)
+    protected int count;          // count step of a jump
+    protected int count_to_run;   // run after count frame
+    protected boolean life;       // life of enemy
+
+
+    public Animal(int x_unit, int y_unit, Image img) {
+        super(x_unit, y_unit, img);
+    }
+
+    public Animal(int is_move, int swap, String direction, int count, int count_to_run) {
+        this.is_move = is_move;
+        this.swap = swap;
+        this.direction = direction;
+        this.count = count;
+        this.count_to_run = count_to_run;
+    }
+
+
+    public Animal(boolean life) {
+        this.life = life;
+    }
+
+    public boolean isLife() {
+        return life;
+    }
+
+    public void setLife(boolean life) {
+        this.life = life;
+    }
+
+    public int getIsMove() {
+        return is_move;
+    }
+
+    public void setIsMove(int is_move) {
+        this.is_move = is_move;
+    }
+
+    public int getSwap() {
+        return swap;
+    }
+
+    public void setSwap(int swap) {
+        this.swap = swap;
+    }
+
+    public String getDirection() {
+        return direction;
+    }
+
+    public void setDirection(String direction) {
+        this.direction = direction;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
+
+    public int getCountToRun() {
+        return count_to_run;
+    }
+
+    public void setCountToRun(int count_to_run) {
+        this.count_to_run = count_to_run;
+    }
+
+    public Animal() {
+
+    }
+
+    @Override
+    public void update() {
+
+    }
+    //set map
+//    public void setXYBlock(int x, int y) {
+//        this.x = x * Sprite.SCALED_SIZE;
+//        this.y = y * Sprite.SCALED_SIZE;
+//    }
+}

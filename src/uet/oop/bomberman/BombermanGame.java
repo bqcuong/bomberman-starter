@@ -7,10 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.stage.Stage;
-import uet.oop.bomberman.entities.Bomber;
-import uet.oop.bomberman.entities.Entity;
-import uet.oop.bomberman.entities.Grass;
-import uet.oop.bomberman.entities.Wall;
+import uet.oop.bomberman.entities.*;
 import uet.oop.bomberman.graphics.Sprite;
 import uet.oop.bomberman.utils.FileUtils;
 
@@ -21,7 +18,8 @@ public class BombermanGame extends Application {
     
     public static final int WIDTH = 20;
     public static final int HEIGHT = 15;
-    
+
+    public Animal bomber;
     private GraphicsContext gc;
     private Canvas canvas;
     private List<Entity> entities = new ArrayList<>();
@@ -49,6 +47,25 @@ public class BombermanGame extends Application {
         stage.setScene(scene);
         stage.show();
 
+        // xu li yeu cau tu ban phim, di chuyen bomber
+        scene.setOnKeyPressed(event -> {
+            switch (event.getCode()) {
+                case UP:
+                    Move.up(bomber);
+                    break;
+                case DOWN:
+                    Move.down(bomber);
+                    break;
+                case RIGHT:
+                    Move.right(bomber);
+                    break;
+                case LEFT:
+                    Move.left(bomber);
+                    break;
+            }
+        });
+        // init bomber
+        bomber = new Bomber(1, 1, Sprite.player_right.getFxImage());
         AnimationTimer timer = new AnimationTimer() {
             @Override
             public void handle(long l) {
@@ -78,7 +95,6 @@ public class BombermanGame extends Application {
         else {
             for (int i = 0; i < map.size(); i++) {
                 String line = map.get(i);
-                //System.out.println(line);
                 for (int j = 0; j < line.length(); j++) {
                     int codeID = Integer.parseInt(String.valueOf(line.charAt(j))) ;
                     Entity entity = null;
@@ -111,11 +127,20 @@ public class BombermanGame extends Application {
         for (Entity ett : entities) {
             ett.update();
         }
+        //update bomber
+        bomber.update();
+        bomber.setCountToRun(bomber.getCountToRun() + 1);
+        if (bomber.getCountToRun() == 4) {
+            Move.checkRun(bomber);
+            bomber.setCountToRun(0);
+        }
     }
+
 
     public void render() {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         stillObjects.forEach(g -> g.render(gc));
         entities.forEach(g -> g.render(gc));
+        bomber.render(gc);
     }
 }
