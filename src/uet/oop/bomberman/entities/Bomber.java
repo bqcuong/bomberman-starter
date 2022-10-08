@@ -2,41 +2,85 @@ package uet.oop.bomberman.entities;
 
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
+import uet.oop.bomberman.controllers.CollisionDetector;
 import uet.oop.bomberman.events.Direction;
 import uet.oop.bomberman.events.KeyboardEvent;
 import uet.oop.bomberman.graphics.Sprite;
 
 public class Bomber extends MovingEntity {
-
     private KeyboardEvent keyboardEvent;
 
-    private int statusBomberMoveUpSprite = 0;
-    private int statusBomberMoveDownSprite = 0;
-    private int statusBomberMoveRightSprite = 0;
-    private int statusBomberMoveLeftSprite = 0;
+    private int speedRun = 2;
+    private CollisionDetector collisionDetector;
+
+    private int indexBomberSprite = 0;
 
     public Bomber(int x, int y, Image img) {
         super(x, y, img);
     }
 
-    public Bomber(int x, int y, Image img, KeyboardEvent keyboardEvent) {
+    public Bomber(int x, int y, Image img, KeyboardEvent keyboardEvent, CollisionDetector collisionDetector) {
         super(x, y, img);
         this.keyboardEvent = keyboardEvent;
+        this.collisionDetector = collisionDetector;
     }
 
     private void updatePosition() {
+        boolean isPressed = false;
         if (keyboardEvent.isPressed(KeyCode.W)) {
-            super.update(direction.UP, true);
+            isPressed = true;
+            if (collisionDetector.checkCollision(this.x, this.y - speedRun)) {
+                super.updateDirection(direction.UP, false, speedRun);
+                indexBomberSprite = 0;
+            } else {
+                super.updateDirection(direction.UP, true, speedRun);
+            }
             System.out.println("W");
-        } else if (keyboardEvent.isPressed(KeyCode.S)) {
-            super.update(direction.DOWN, true);
-            System.out.println("S");
-        } else if (keyboardEvent.isPressed(KeyCode.A)) {
-            super.update(direction.LEFT, true);
+            setImg(Sprite.movingSprite(Sprite.player_up, Sprite.player_up_1,
+                    Sprite.player_up_2, indexBomberSprite, 15).getImage());
+            ++indexBomberSprite;
+        }
+        if (keyboardEvent.isPressed(KeyCode.A)) {
+            isPressed = true;
+            if (collisionDetector.checkCollision(this.x - speedRun, this.y)) {
+                super.updateDirection(direction.LEFT, false, speedRun);
+                indexBomberSprite = 0;
+            } else {
+                super.updateDirection(direction.LEFT, true, speedRun);
+            }
             System.out.println("A");
-        } else if (keyboardEvent.isPressed(KeyCode.D)) {
-            super.update(direction.RIGHT, true);
+            setImg(Sprite.movingSprite(Sprite.player_left, Sprite.player_left_1,
+                    Sprite.player_left_2, indexBomberSprite, 15).getImage());
+            ++indexBomberSprite;
+        }
+        if (keyboardEvent.isPressed(KeyCode.S)) {
+            isPressed = true;
+            if (collisionDetector.checkCollision(this.x, this.y + speedRun)) {
+                super.updateDirection(direction.DOWN, false, speedRun);
+                indexBomberSprite = 0;
+            } else {
+                super.updateDirection(direction.DOWN, true, speedRun);
+            }
+            System.out.println("S");
+            setImg(Sprite.movingSprite(Sprite.player_down, Sprite.player_down_1,
+                    Sprite.player_down_2, indexBomberSprite, 15).getImage());
+            ++indexBomberSprite;
+        }
+        if (keyboardEvent.isPressed(KeyCode.D)) {
+            isPressed = true;
+            if (collisionDetector.checkCollision(this.x + speedRun, this.y)) {
+                super.updateDirection(direction.RIGHT, false, speedRun);
+                indexBomberSprite = 0;
+            } else {
+                super.updateDirection(direction.RIGHT, true, speedRun);
+            }
             System.out.println("D");
+            setImg(Sprite.movingSprite(Sprite.player_right, Sprite.player_right_1,
+                    Sprite.player_right_2, indexBomberSprite, 15).getImage());
+            ++indexBomberSprite;
+        }
+        if (!isPressed) {
+            indexBomberSprite = 0;
         }
     }
 
@@ -46,99 +90,7 @@ public class Bomber extends MovingEntity {
     }
 
     @Override
-    public void updateDirection(Direction direction, boolean isSuccess) {
-        super.updateDirection(direction, isSuccess);
-    }
-
-    @Override
-    public void moveUp() {
-        super.moveUp();
-        if (statusBomberMoveUpSprite >= 0 && statusBomberMoveUpSprite < 3) {
-            setImg(Sprite.player_up.getFxImage());
-            statusBomberMoveUpSprite++;
-        } else {
-            if (statusBomberMoveUpSprite >= 3 && statusBomberMoveUpSprite < 6) {
-                setImg(Sprite.player_up_1.getFxImage());
-                statusBomberMoveUpSprite++;
-            } else {
-                if (statusBomberMoveUpSprite >= 6 && statusBomberMoveUpSprite < 9) {
-                    setImg(Sprite.player_up_2.getFxImage());
-                    statusBomberMoveUpSprite++;
-                } else {
-                    if (statusBomberMoveUpSprite == 9) {
-                        statusBomberMoveUpSprite = 0;
-                    }
-                }
-            }
-        }
-    }
-
-    @Override
-    public void moveDown() {
-        super.moveDown();
-        if (statusBomberMoveDownSprite >= 0 && statusBomberMoveDownSprite < 3) {
-            setImg(Sprite.player_down.getFxImage());
-            statusBomberMoveDownSprite++;
-        } else {
-            if (statusBomberMoveDownSprite >= 3 && statusBomberMoveDownSprite < 6) {
-                setImg(Sprite.player_down_1.getFxImage());
-                statusBomberMoveDownSprite++;
-            } else {
-                if (statusBomberMoveDownSprite >= 6 && statusBomberMoveDownSprite < 9) {
-                    setImg(Sprite.player_down_2.getFxImage());
-                    statusBomberMoveDownSprite++;
-                } else {
-                    if (statusBomberMoveDownSprite == 9) {
-                        statusBomberMoveDownSprite = 0;
-                    }
-                }
-            }
-        }
-    }
-
-    @Override
-    public void moveRight() {
-        super.moveRight();
-        if (statusBomberMoveRightSprite >= 0 && statusBomberMoveRightSprite < 3) {
-            setImg(Sprite.player_right.getFxImage());
-            statusBomberMoveRightSprite++;
-        } else {
-            if (statusBomberMoveRightSprite >= 3 && statusBomberMoveRightSprite < 6) {
-                setImg(Sprite.player_right_1.getFxImage());
-                statusBomberMoveRightSprite++;
-            } else {
-                if (statusBomberMoveRightSprite >= 6 && statusBomberMoveRightSprite < 9) {
-                    setImg(Sprite.player_right_2.getFxImage());
-                    statusBomberMoveRightSprite++;
-                } else {
-                    if (statusBomberMoveRightSprite == 9) {
-                        statusBomberMoveRightSprite = 0;
-                    }
-                }
-            }
-        }
-    }
-
-    @Override
-    public void moveLeft() {
-        super.moveLeft();
-        if (statusBomberMoveLeftSprite >= 0 && statusBomberMoveLeftSprite < 3) {
-            setImg(Sprite.player_left.getFxImage());
-            statusBomberMoveLeftSprite++;
-        } else {
-            if (statusBomberMoveLeftSprite >= 3 && statusBomberMoveLeftSprite < 6) {
-                setImg(Sprite.player_left_1.getFxImage());
-                statusBomberMoveLeftSprite++;
-            } else {
-                if (statusBomberMoveLeftSprite >= 6 && statusBomberMoveLeftSprite < 9) {
-                    setImg(Sprite.player_left_2.getFxImage());
-                    statusBomberMoveLeftSprite++;
-                } else {
-                    if (statusBomberMoveLeftSprite == 9) {
-                        statusBomberMoveLeftSprite = 0;
-                    }
-                }
-            }
-        }
+    public void updateDirection(Direction direction, boolean isAllowedToMove, int speedRun) {
+        super.updateDirection(direction, isAllowedToMove, speedRun);
     }
 }

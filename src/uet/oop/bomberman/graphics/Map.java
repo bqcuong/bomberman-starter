@@ -1,10 +1,8 @@
 package uet.oop.bomberman.graphics;
 
+import uet.oop.bomberman.controllers.CollisionDetector;
+import uet.oop.bomberman.entities.*;
 import uet.oop.bomberman.events.KeyboardEvent;
-import uet.oop.bomberman.entities.Bomber;
-import uet.oop.bomberman.entities.Entity;
-import uet.oop.bomberman.entities.Grass;
-import uet.oop.bomberman.entities.Wall;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -15,8 +13,6 @@ import java.util.Scanner;
 
 public class Map {
     private List<Entity> entities = new ArrayList<>();
-    private List<Entity> stillObjects = new ArrayList<>();
-
     private List<List<Entity>> map = new ArrayList<>();
 
     private int mapHeight;
@@ -57,24 +53,27 @@ public class Map {
             sc.nextLine();
 
             /// Display Bomber
-            Entity bomber = new Bomber(1, 1, Sprite.player_right.getFxImage(), keyboardEvent);
+            Entity bomber = new Bomber(1, 1, Sprite.player_right.getImage(), keyboardEvent, new CollisionDetector(this));
             entities.add(bomber);
 
             /// Display Map
             for (int i = 0; i < mapHeight; i++) {
                 String tempLine = sc.nextLine();
-                List<Entity> tempMapList = new ArrayList<>();
+                List<Entity> tmpMapList = new ArrayList<>();
                 for (int j = 0; j < mapWidth; j++) {
                     switch (tempLine.charAt(j)) {
                         case '#':
-                            tempMapList.add(new Wall(j, i, Sprite.wall.getFxImage()));
+                            tmpMapList.add(new Wall(j, i, Sprite.wall.getImage()));
+                            break;
+                        case '*':
+                            tmpMapList.add(new Brick(j, i, Sprite.brick.getImage()));
                             break;
                         default:
-                            tempMapList.add(new Grass(j, i, Sprite.grass.getFxImage()));
+                            tmpMapList.add(new Grass(j, i, Sprite.grass.getImage()));
                             break;
                     }
                 }
-                map.add(tempMapList);
+                map.add(tmpMapList);
             }
             sc.close();
         } catch (FileNotFoundException e) {
@@ -91,13 +90,14 @@ public class Map {
         return map;
     }
 
+    public Entity getEntityAtPosition(int x, int y) {
+        int X =  x / Sprite.SCALED_SIZE;
+        int Y = y / Sprite.SCALED_SIZE;
+        return map.get(Y).get(X);
+    }
+
     public List<Entity> getEntities() {
         return entities;
     }
-
-    public List<Entity> getStillObjects() {
-        return stillObjects;
-    }
-
 
 }

@@ -8,6 +8,7 @@ public class MovingEntity extends Entity {
     protected boolean isMoving = false;
     public Direction direction = Direction.RIGHT;
 
+    //default speed
     private int speedRun = 2;
 
     public MovingEntity(int xUnit, int yUnit, Image img) {
@@ -32,41 +33,42 @@ public class MovingEntity extends Entity {
 
     }
 
-    public void update(Direction direction, boolean isSuccess) {
-        updateDirection(direction, isSuccess);
-    }
-
-    public void updateDirection(Direction direction, boolean isSuccess) {
-        if (isSuccess) {
+        public void updateDirection(Direction direction, boolean isAllowedToMove, int speedRun) {
+        if (isAllowedToMove) {
             isMoving = true;
             this.direction = direction;
-            if (direction == Direction.DOWN) {
-                moveDown();
-            }
-            if (direction == Direction.UP) {
-                moveUp();
-            }
-            if (direction == Direction.LEFT) {
-                moveLeft();
-            }
-            if (direction == Direction.RIGHT) {
-                moveRight();
+            switch (direction){
+                case LEFT:
+                    moveLeft(speedRun);
+                    break;
+                case RIGHT:
+                    moveRight(speedRun);
+                    break;
+                case UP:
+                    moveUp(speedRun);
+                    break;
+                case DOWN:
+                    moveDown(speedRun);
+                    break;
             }
         } else {
             isMoving = false;
         }
     }
 
-    public void moveUp(){
-        y-=speedRun;
+    public void moveUp(int speedRun) {
+        y -= speedRun;
     }
-    public void moveDown(){
-        y+=speedRun;
+
+    public void moveDown(int speedRun) {
+        y += speedRun;
     }
-    public void moveRight(){
-        x+=speedRun;
+
+    public void moveRight(int speedRun) {
+        x += speedRun;
     }
-    public void moveLeft(){
-        x-=speedRun;
+
+    public void moveLeft(int speedRun) {
+        x -= speedRun;
     }
 }

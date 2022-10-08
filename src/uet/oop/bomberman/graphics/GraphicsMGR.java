@@ -38,13 +38,8 @@ public class GraphicsMGR {
         map.getEntities().forEach(g -> g.render(gc));
     }
 
-    public void renderStillObjects(Map map) {
-        map.getStillObjects().forEach(g -> g.render(gc));
-    }
-
     public void render(Map map) {
         renderMap(map);
-        renderStillObjects(map);
         renderBomber(map);
     }
 }

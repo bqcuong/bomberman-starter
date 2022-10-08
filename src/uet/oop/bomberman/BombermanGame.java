@@ -36,7 +36,7 @@ public class BombermanGame extends Application {
         // Tao scene
         Scene scene = new Scene(root);
 
-        // Tao key board event
+        // Tao keyboard event
         keyboardEvent = new KeyboardEvent(scene);
 
         // Tao map
@@ -61,7 +61,7 @@ public class BombermanGame extends Application {
 
     public void render() {
         graphics.clrscr(canvas);
-        //Render map, entities, stillObject
+        //Render map, entities
         graphics.render(map);
     }
 
