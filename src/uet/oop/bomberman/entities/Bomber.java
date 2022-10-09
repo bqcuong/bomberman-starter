@@ -8,6 +8,9 @@ import javafx.scene.paint.Color;
 
 // Hellllllllllllooooooooooooooooooooooooooooo
 
+// Ngay mai ra Arya =)))))))))
+
+
 public class Bomber extends Entity {
 
     public Bomber(int x, int y, Image img) {
