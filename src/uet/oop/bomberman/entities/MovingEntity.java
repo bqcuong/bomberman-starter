@@ -33,7 +33,7 @@ public class MovingEntity extends Entity {
 
     }
 
-        public void updateDirection(Direction direction, boolean isAllowedToMove, int speedRun) {
+        public void updateDirection(final Direction direction, boolean isAllowedToMove, int speedRun) {
         if (isAllowedToMove) {
             isMoving = true;
             this.direction = direction;

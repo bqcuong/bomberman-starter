@@ -34,12 +34,17 @@ public class GraphicsMGR {
         }
     }
 
+    public void renderItem(Map map) {
+        map.getItem().forEach(g -> g.render(gc));
+    }
+
     public void renderBomber(Map map) {
         map.getEntities().forEach(g -> g.render(gc));
     }
 
     public void render(Map map) {
         renderMap(map);
+        renderItem(map);
         renderBomber(map);
     }
 }

@@ -1,5 +1,6 @@
 package uet.oop.bomberman.graphics;
 
+import javafx.scene.Group;
 import uet.oop.bomberman.controllers.CollisionDetector;
 import uet.oop.bomberman.entities.*;
 import uet.oop.bomberman.events.KeyboardEvent;
@@ -14,6 +15,9 @@ import java.util.Scanner;
 public class Map {
     private List<Entity> entities = new ArrayList<>();
     private List<List<Entity>> map = new ArrayList<>();
+
+    private List<Entity> item = new ArrayList<>();
+
 
     private int mapHeight;
     private int mapWidth;
@@ -52,10 +56,6 @@ public class Map {
             mapWidth = sc.nextInt();
             sc.nextLine();
 
-            /// Display Bomber
-            Entity bomber = new Bomber(1, 1, Sprite.player_right.getImage(), keyboardEvent, new CollisionDetector(this));
-            entities.add(bomber);
-
             /// Display Map
             for (int i = 0; i < mapHeight; i++) {
                 String tempLine = sc.nextLine();
@@ -67,6 +67,16 @@ public class Map {
                             break;
                         case '*':
                             tmpMapList.add(new Brick(j, i, Sprite.brick.getImage()));
+                            break;
+                        case 'p':
+                            /// Display Bomber
+                            Entity bomber = new Bomber(j, i, Sprite.player_right.getImage(), keyboardEvent, new CollisionDetector(this));
+                            entities.add(bomber);
+                            tmpMapList.add(new Grass(j, i, Sprite.grass.getImage()));
+                            break;
+                        case 's':
+                            item.add(new ItemSpeed(j,i, Sprite.powerup_speed.getImage()));
+                            tmpMapList.add(new Grass(j, i, Sprite.grass.getImage()));
                             break;
                         default:
                             tmpMapList.add(new Grass(j, i, Sprite.grass.getImage()));
@@ -83,6 +93,7 @@ public class Map {
 
     public void update() {
         entities.forEach(Entity::update);
+        item.forEach(Entity::update);
     }
 
 
@@ -91,13 +102,27 @@ public class Map {
     }
 
     public Entity getEntityAtPosition(int x, int y) {
-        int X =  x / Sprite.SCALED_SIZE;
-        int Y = y / Sprite.SCALED_SIZE;
-        return map.get(Y).get(X);
+        int xUnit = x / Sprite.SCALED_SIZE;
+        int yUnit = y / Sprite.SCALED_SIZE;
+        return map.get(yUnit).get(xUnit);
     }
 
     public List<Entity> getEntities() {
         return entities;
     }
 
+    public List<Entity> getItem() {
+        return item;
+    }
+    public Entity getItemAtPosition(int x, int y){
+        int xUnit = x / Sprite.SCALED_SIZE;
+        int yUnit = y / Sprite.SCALED_SIZE;
+        for (int i=0; i<item.size(); i++){
+            if (item.get(i).getX()==xUnit && item.get(i).getY()==yUnit){
+                return item.get(i);
+            }
+        }
+        System.out.println("NULL");
+        return null;
+    }
 }

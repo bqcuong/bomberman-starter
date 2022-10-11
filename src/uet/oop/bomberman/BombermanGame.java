@@ -17,8 +17,6 @@ public class BombermanGame extends Application {
     private GraphicsMGR graphics;
     private Canvas canvas;
 
-    private KeyboardEvent keyboardEvent;
-
     public static void main(String[] args) {
         Application.launch(BombermanGame.class);
     }
@@ -37,7 +35,7 @@ public class BombermanGame extends Application {
         Scene scene = new Scene(root);
 
         // Tao keyboard event
-        keyboardEvent = new KeyboardEvent(scene);
+        KeyboardEvent keyboardEvent = new KeyboardEvent(scene);
 
         // Tao map
         map = new Map();

@@ -5,11 +5,13 @@ import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
-import java.util.HashSet;
-import java.util.Set;
-
 public class KeyboardEvent implements EventHandler<KeyEvent> {
-    private Set<KeyCode> pressedKeys = new HashSet<KeyCode>();
+    private boolean isKeyUp = false;
+    private boolean isKeyDown = false;
+    private boolean isKeyLeft = false;
+    private boolean isKeyRight = false;
+    private boolean isKeySpace = false;
+
 
     public KeyboardEvent(Scene scene) {
         scene.setOnKeyPressed(this);
@@ -19,14 +21,64 @@ public class KeyboardEvent implements EventHandler<KeyEvent> {
     @Override
     public void handle(KeyEvent event) {
         if (event.getEventType().equals(KeyEvent.KEY_PRESSED)) {
-            pressedKeys.add(event.getCode());
+            switch (event.getCode()) {
+                case A:
+                    isKeyLeft = true;
+                    break;
+                case D:
+                    isKeyRight = true;
+                    break;
+                case S:
+                    isKeyDown = true;
+                    break;
+                case W:
+                    isKeyUp = true;
+                    break;
+                case SPACE:
+                    isKeySpace = true;
+                    break;
+            }
         } else if (event.getEventType().equals(KeyEvent.KEY_RELEASED)) {
-            pressedKeys.remove(event.getCode());
+            switch (event.getCode()) {
+                case A:
+                    isKeyLeft = false;
+                    break;
+                case D:
+                    isKeyRight = false;
+                    break;
+                case S:
+                    isKeyDown = false;
+                    break;
+                case W:
+                    isKeyUp = false;
+                    break;
+                case SPACE:
+                    isKeySpace = false;
+                    break;
+            }
         }
     }
 
     public boolean isPressed(KeyCode keys) {
-        return pressedKeys.contains(keys);
+        boolean result = false;
+        switch (keys) {
+            case A:
+                result = isKeyLeft;
+                break;
+            case S:
+                result = isKeyDown;
+                break;
+            case D:
+                result = isKeyRight;
+                break;
+            case W:
+                result = isKeyUp;
+                break;
+            case SPACE:
+                result = isKeySpace;
+                break;
+        }
+        return result;
     }
 
 }
