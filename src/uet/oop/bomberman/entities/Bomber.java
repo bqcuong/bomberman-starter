@@ -10,6 +10,8 @@ import javafx.scene.paint.Color;
 
 // Ngay mai ra Arya =)))))))))
 
+// map feature 2 add
+
 
 public class Bomber extends Entity {
 
