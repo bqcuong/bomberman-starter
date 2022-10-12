@@ -8,12 +8,12 @@ import javafx.scene.canvas.Canvas;
 import javafx.stage.Stage;
 import uet.oop.bomberman.events.KeyboardEvent;
 import uet.oop.bomberman.graphics.GraphicsMGR;
-import uet.oop.bomberman.graphics.Map;
+import uet.oop.bomberman.graphics.GameMap;
 import uet.oop.bomberman.graphics.Sprite;
 
 public class BombermanGame extends Application {
 
-    private Map map;
+    private GameMap gameMap;
     private GraphicsMGR graphics;
     private Canvas canvas;
 
@@ -38,8 +38,8 @@ public class BombermanGame extends Application {
         KeyboardEvent keyboardEvent = new KeyboardEvent(scene);
 
         // Tao map
-        map = new Map();
-        map.createMap(1, keyboardEvent);
+        gameMap = new GameMap();
+        gameMap.createMap(1, keyboardEvent);
 
         // Them scene vao stage
         stage.setScene(scene);
@@ -60,11 +60,11 @@ public class BombermanGame extends Application {
     public void render() {
         graphics.clrscr(canvas);
         //Render map, entities
-        graphics.render(map);
+        graphics.render(gameMap);
     }
 
     public void update() {
-        map.update();
+        gameMap.update();
     }
 }
 

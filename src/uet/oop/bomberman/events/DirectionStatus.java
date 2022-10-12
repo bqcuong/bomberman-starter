@@ -1,5 +1,5 @@
 package uet.oop.bomberman.events;
 
-public enum Direction {
+public enum DirectionStatus {
     LEFT, RIGHT, UP, DOWN
 }

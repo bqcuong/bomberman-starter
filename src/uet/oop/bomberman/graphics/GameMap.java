@@ -1,6 +1,5 @@
 package uet.oop.bomberman.graphics;
 
-import javafx.scene.Group;
 import uet.oop.bomberman.controllers.CollisionDetector;
 import uet.oop.bomberman.entities.*;
 import uet.oop.bomberman.events.KeyboardEvent;
@@ -12,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class Map {
+public class GameMap {
     private List<Entity> entities = new ArrayList<>();
     private List<List<Entity>> map = new ArrayList<>();
 

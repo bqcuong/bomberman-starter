@@ -2,11 +2,11 @@ package uet.oop.bomberman.entities;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import uet.oop.bomberman.events.Direction;
+import uet.oop.bomberman.events.DirectionStatus;
 
-public class MovingEntity extends Entity {
+public abstract class MovingEntity extends Entity {
     protected boolean isMoving = false;
-    public Direction direction = Direction.RIGHT;
+    public DirectionStatus directionStatus = DirectionStatus.RIGHT;
 
     //default speed
     private int speedRun = 2;
@@ -24,20 +24,15 @@ public class MovingEntity extends Entity {
     }
 
     @Override
-    public void render(GraphicsContext gc) {
-        super.render(gc);
-    }
-
-    @Override
     public void update() {
 
     }
 
-        public void updateDirection(final Direction direction, boolean isAllowedToMove, int speedRun) {
+    public void updateDirection(final DirectionStatus directionStatus, boolean isAllowedToMove, int speedRun) {
         if (isAllowedToMove) {
             isMoving = true;
-            this.direction = direction;
-            switch (direction){
+            this.directionStatus = directionStatus;
+            switch (directionStatus) {
                 case LEFT:
                     moveLeft(speedRun);
                     break;

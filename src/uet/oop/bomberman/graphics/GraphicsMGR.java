@@ -1,10 +1,8 @@
 package uet.oop.bomberman.graphics;
 
-import com.sun.prism.Graphics;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import uet.oop.bomberman.entities.Entity;
-import uet.oop.bomberman.graphics.Map;
 
 
 import java.util.List;
@@ -27,24 +25,24 @@ public class GraphicsMGR {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
     }
 
-    public void renderMap(Map map) {
-        for (int i = 0; i < map.getMap().size(); i++) {
-            List<Entity> tempMap = map.getMap().get(i);
+    public void renderMap(GameMap gameMap) {
+        for (int i = 0; i < gameMap.getMap().size(); i++) {
+            List<Entity> tempMap = gameMap.getMap().get(i);
             tempMap.forEach(g -> g.render(gc));
         }
     }
 
-    public void renderItem(Map map) {
-        map.getItem().forEach(g -> g.render(gc));
+    public void renderItem(GameMap gameMap) {
+        gameMap.getItem().forEach(g -> g.render(gc));
     }
 
-    public void renderBomber(Map map) {
-        map.getEntities().forEach(g -> g.render(gc));
+    public void renderBomber(GameMap gameMap) {
+        gameMap.getEntities().forEach(g -> g.render(gc));
     }
 
-    public void render(Map map) {
-        renderMap(map);
-        renderItem(map);
-        renderBomber(map);
+    public void render(GameMap gameMap) {
+        renderMap(gameMap);
+        renderItem(gameMap);
+        renderBomber(gameMap);
     }
 }
