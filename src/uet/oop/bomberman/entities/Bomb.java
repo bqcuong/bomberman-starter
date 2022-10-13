@@ -12,9 +12,10 @@ import java.util.TimerTask;
 
 public class Bomb extends Entity implements IObstacle {
 
-    public enum WentOffPhraseStatus{
+    public enum WentOffPhraseStatus {
         OPENNING, CLOSING
     }
+
     GameMap gameMap;
 
     private boolean isAllowedToGoThrough = true;
@@ -56,6 +57,7 @@ public class Bomb extends Entity implements IObstacle {
         flameDown.add(new Flame(xUnit, yUnit + 1, Sprite.explosion_vertical_down_last.getImage()));
         flameLeft.add(new Flame(xUnit - 1, yUnit, Sprite.explosion_horizontal_left_last.getImage()));
         flameRight.add(new Flame(xUnit + 1, yUnit, Sprite.explosion_horizontal_right_last.getImage()));
+        increaseBombLevel();
     }
 
     public BombStatus getBombStatus() {
@@ -163,7 +165,21 @@ public class Bomb extends Entity implements IObstacle {
         this.bombLevel = bombLevel;
     }
 
-    public void increaseBombLevel(int bombLevel) {
+    public void increaseBombLevel() {
+        for (int i = 0; i < bombLevel; i++) {
+            flameUp.get(i).changeYByValue(-Sprite.SCALED_SIZE);
+            flameDown.get(i).changeYByValue(Sprite.SCALED_SIZE);
+            flameLeft.get(i).changeXByValue(-Sprite.SCALED_SIZE);
+            flameRight.get(i).changeXByValue(Sprite.SCALED_SIZE);
+        }
         ++this.bombLevel;
+        flameUp.add(0, new Flame(this.getX() / Sprite.SCALED_SIZE
+                , this.getY() / Sprite.SCALED_SIZE - 1, Sprite.explosion_vertical.getImage()));
+        flameDown.add(0, new Flame(this.getX() / Sprite.SCALED_SIZE
+                , this.getY() / Sprite.SCALED_SIZE + 1, Sprite.explosion_vertical.getImage()));
+        flameLeft.add(0, new Flame(this.getX() / Sprite.SCALED_SIZE - 1
+                , this.getY() / Sprite.SCALED_SIZE, Sprite.explosion_horizontal.getImage()));
+        flameRight.add(0, new Flame(this.getX() / Sprite.SCALED_SIZE + 1
+                , this.getY() / Sprite.SCALED_SIZE, Sprite.explosion_horizontal.getImage()));
     }
 }
