@@ -28,7 +28,7 @@ public class Bomb extends Entity implements IObstacle {
     private List<Entity> flameLeft = new ArrayList<>();
     private List<Entity> flameRight = new ArrayList<>();
 
-    public WentOffPhraseStatus wentOffPhrase;
+    private WentOffPhraseStatus wentOffPhrase;
     private BombStatus bombStatus = BombStatus.WAIT;
     private Timer timer = new Timer();
     private TimerTask timerTask = new TimerTask() {
@@ -57,7 +57,7 @@ public class Bomb extends Entity implements IObstacle {
         flameDown.add(new Flame(xUnit, yUnit + 1, Sprite.explosion_vertical_down_last.getImage()));
         flameLeft.add(new Flame(xUnit - 1, yUnit, Sprite.explosion_horizontal_left_last.getImage()));
         flameRight.add(new Flame(xUnit + 1, yUnit, Sprite.explosion_horizontal_right_last.getImage()));
-        increaseBombLevel();
+//        increaseBombLevel();
     }
 
     public BombStatus getBombStatus() {
