@@ -16,8 +16,13 @@ import java.util.List;
 public class Bomber extends MovingEntity {
     private KeyboardEvent keyboardEvent;
 
+    //Main game map
     private GameMap gameMap;
+
+    //Real Width of bomber
     public static int REAL_WIDTH = 20;
+
+    //Real Height of bomber
     public static int REAL_HEIGHT = 29;
 
     private static int MAX_SPEED = 4;
@@ -27,8 +32,10 @@ public class Bomber extends MovingEntity {
     //Bomb list
     private List<Entity> bombList = new ArrayList<>();
     private List<Integer> bombListTest = new ArrayList<>();
+
     //Max number of bomb can set at the same time
-    private int bombListMaxSize = 3;
+    private int bombListMaxSize = 1;
+
     //Check if current bomb is place or not
     boolean isPlantBomb = false;
 
@@ -167,7 +174,6 @@ public class Bomber extends MovingEntity {
         if (bombList.size() > 0) {
             Bomb bomb = (Bomb) bombList.get(0);
             if (bomb.getBombStatus() == BombStatus.DISAPEAR) {
-                System.out.println("DEL");
                 bombList.remove(0);
             }
         }
@@ -186,6 +192,7 @@ public class Bomber extends MovingEntity {
     public void setBombListMaxSize(int bombListMaxSize) {
         this.bombListMaxSize = bombListMaxSize;
     }
+
 
     public int getBombListMaxSize() {
         return bombListMaxSize;

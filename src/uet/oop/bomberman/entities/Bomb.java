@@ -5,11 +5,16 @@ import javafx.scene.image.Image;
 import uet.oop.bomberman.graphics.GameMap;
 import uet.oop.bomberman.graphics.Sprite;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class Bomb extends Entity implements IObstacle {
 
+    public enum WentOffPhraseStatus{
+        OPENNING, CLOSING
+    }
     GameMap gameMap;
 
     private boolean isAllowedToGoThrough = true;
@@ -17,6 +22,12 @@ public class Bomb extends Entity implements IObstacle {
 
     private int bombLevel = 1;
 
+    private List<Entity> flameUp = new ArrayList<>();
+    private List<Entity> flameDown = new ArrayList<>();
+    private List<Entity> flameLeft = new ArrayList<>();
+    private List<Entity> flameRight = new ArrayList<>();
+
+    public WentOffPhraseStatus wentOffPhrase;
     private BombStatus bombStatus = BombStatus.WAIT;
     private Timer timer = new Timer();
     private TimerTask timerTask = new TimerTask() {
@@ -30,6 +41,7 @@ public class Bomb extends Entity implements IObstacle {
                 bombStatus = BombStatus.WAIT;
             } else {
                 bombStatus = BombStatus.WENTOFF;
+                wentOffPhrase = WentOffPhraseStatus.OPENNING;
                 timer.cancel();
                 indexBombSprite = 0;
             }
@@ -40,6 +52,10 @@ public class Bomb extends Entity implements IObstacle {
         super(xUnit, yUnit, img);
         this.gameMap = gameMap;
         timer.schedule(timerTask, 0, 1000);
+        flameUp.add(new Flame(xUnit, yUnit - 1, Sprite.explosion_vertical_top_last.getImage()));
+        flameDown.add(new Flame(xUnit, yUnit + 1, Sprite.explosion_vertical_down_last.getImage()));
+        flameLeft.add(new Flame(xUnit - 1, yUnit, Sprite.explosion_horizontal_left_last.getImage()));
+        flameRight.add(new Flame(xUnit + 1, yUnit, Sprite.explosion_horizontal_right_last.getImage()));
     }
 
     public BombStatus getBombStatus() {
@@ -54,10 +70,60 @@ public class Bomb extends Entity implements IObstacle {
                 setImg(Sprite.movingSprite(Sprite.bomb, Sprite.bomb_1, Sprite.bomb_2, indexBombSprite, 60).getImage());
                 break;
             case WENTOFF:
-                ++indexBombSprite;
-                setImg(Sprite.movingSprite(Sprite.bomb_exploded, Sprite.bomb_exploded1, Sprite.bomb_exploded2, indexBombSprite, 30).getImage());
-                if (indexBombSprite == 30) {
-                    bombStatus = BombStatus.DISAPEAR;
+                if (wentOffPhrase == WentOffPhraseStatus.OPENNING) {
+                    ++indexBombSprite;
+                    this.setImg(Sprite.movingSprite(Sprite.bomb_exploded, Sprite.bomb_exploded1, Sprite.bomb_exploded2, indexBombSprite, 10).getImage());
+                    for (int i = 0; i < bombLevel - 1; i++) {
+                        flameUp.get(i).setImg(Sprite.movingSprite(Sprite.explosion_vertical
+                                , Sprite.explosion_vertical1, Sprite.explosion_vertical2, indexBombSprite, 10).getImage());
+                        flameDown.get(i).setImg(Sprite.movingSprite(Sprite.explosion_vertical
+                                , Sprite.explosion_vertical1, Sprite.explosion_vertical2, indexBombSprite, 10).getImage());
+                        flameLeft.get(i).setImg(Sprite.movingSprite(Sprite.explosion_horizontal
+                                , Sprite.explosion_horizontal1, Sprite.explosion_horizontal2, indexBombSprite, 10).getImage());
+                        flameRight.get(i).setImg(Sprite.movingSprite(Sprite.explosion_horizontal
+                                , Sprite.explosion_horizontal1, Sprite.explosion_horizontal2, indexBombSprite, 10).getImage());
+                    }
+
+                    flameUp.get(bombLevel - 1).setImg(Sprite.movingSprite(Sprite.explosion_vertical_top_last
+                            , Sprite.explosion_vertical_top_last1, Sprite.explosion_vertical_top_last2, indexBombSprite, 10).getImage());
+                    flameDown.get(bombLevel - 1).setImg(Sprite.movingSprite(Sprite.explosion_vertical_down_last
+                            , Sprite.explosion_vertical_down_last1, Sprite.explosion_vertical_down_last2, indexBombSprite, 10).getImage());
+                    flameLeft.get(bombLevel - 1).setImg(Sprite.movingSprite(Sprite.explosion_horizontal_left_last
+                            , Sprite.explosion_horizontal_left_last1, Sprite.explosion_horizontal_left_last2, indexBombSprite, 10).getImage());
+                    flameRight.get(bombLevel - 1).setImg(Sprite.movingSprite(Sprite.explosion_horizontal_right_last
+                            , Sprite.explosion_horizontal_right_last1, Sprite.explosion_horizontal_right_last2, indexBombSprite, 10).getImage());
+
+                    if (indexBombSprite == 10) {
+                        wentOffPhrase = WentOffPhraseStatus.CLOSING;
+                        indexBombSprite = 0;
+                    }
+
+                }
+                if (wentOffPhrase == WentOffPhraseStatus.CLOSING) {
+                    ++indexBombSprite;
+                    this.setImg(Sprite.movingSprite(Sprite.bomb_exploded2, Sprite.bomb_exploded1, Sprite.bomb_exploded, indexBombSprite, 10).getImage());
+                    for (int i = 0; i < bombLevel - 1; i++) {
+                        flameUp.get(i).setImg(Sprite.movingSprite(Sprite.explosion_vertical2
+                                , Sprite.explosion_vertical1, Sprite.explosion_vertical, indexBombSprite, 10).getImage());
+                        flameDown.get(i).setImg(Sprite.movingSprite(Sprite.explosion_vertical2
+                                , Sprite.explosion_vertical1, Sprite.explosion_vertical, indexBombSprite, 10).getImage());
+                        flameLeft.get(i).setImg(Sprite.movingSprite(Sprite.explosion_horizontal2
+                                , Sprite.explosion_horizontal1, Sprite.explosion_horizontal, indexBombSprite, 10).getImage());
+                        flameRight.get(i).setImg(Sprite.movingSprite(Sprite.explosion_horizontal2
+                                , Sprite.explosion_horizontal1, Sprite.explosion_horizontal, indexBombSprite, 10).getImage());
+                    }
+
+                    flameUp.get(bombLevel - 1).setImg(Sprite.movingSprite(Sprite.explosion_vertical_top_last2
+                            , Sprite.explosion_vertical_top_last1, Sprite.explosion_vertical_top_last, indexBombSprite, 10).getImage());
+                    flameDown.get(bombLevel - 1).setImg(Sprite.movingSprite(Sprite.explosion_vertical_down_last2
+                            , Sprite.explosion_vertical_down_last1, Sprite.explosion_vertical_down_last, indexBombSprite, 10).getImage());
+                    flameLeft.get(bombLevel - 1).setImg(Sprite.movingSprite(Sprite.explosion_horizontal_left_last2
+                            , Sprite.explosion_horizontal_left_last1, Sprite.explosion_horizontal_left_last, indexBombSprite, 10).getImage());
+                    flameRight.get(bombLevel - 1).setImg(Sprite.movingSprite(Sprite.explosion_horizontal_right_last2
+                            , Sprite.explosion_horizontal_right_last1, Sprite.explosion_horizontal_right_last, indexBombSprite, 10).getImage());
+                    if (indexBombSprite == 10) {
+                        bombStatus = BombStatus.DISAPEAR;
+                    }
                 }
                 break;
         }
@@ -65,7 +131,20 @@ public class Bomb extends Entity implements IObstacle {
 
     @Override
     public void render(GraphicsContext gc) {
-        super.render(gc);
+        switch (bombStatus) {
+            case WAIT:
+                super.render(gc);
+                break;
+            case WENTOFF:
+                super.render(gc);
+                for (int i = 0; i < bombLevel; i++) {
+                    flameUp.get(i).render(gc);
+                    flameDown.get(i).render(gc);
+                    flameLeft.get(i).render(gc);
+                    flameRight.get(i).render(gc);
+                }
+                break;
+        }
     }
 
     public boolean isAllowedToGoThrough() {
@@ -74,5 +153,17 @@ public class Bomb extends Entity implements IObstacle {
 
     public void setAllowedToGoThrough(boolean allowedToGoThrough) {
         isAllowedToGoThrough = allowedToGoThrough;
+    }
+
+    public int getBombLevel() {
+        return bombLevel;
+    }
+
+    public void setBombLevel(int bombLevel) {
+        this.bombLevel = bombLevel;
+    }
+
+    public void increaseBombLevel(int bombLevel) {
+        ++this.bombLevel;
     }
 }
