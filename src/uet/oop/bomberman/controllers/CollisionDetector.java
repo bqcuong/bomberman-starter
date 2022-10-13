@@ -1,10 +1,7 @@
 package uet.oop.bomberman.controllers;
 
 import javafx.scene.shape.Rectangle;
-import uet.oop.bomberman.entities.Bomb;
-import uet.oop.bomberman.entities.Bomber;
-import uet.oop.bomberman.entities.Entity;
-import uet.oop.bomberman.entities.IObstacle;
+import uet.oop.bomberman.entities.*;
 import uet.oop.bomberman.graphics.GameMap;
 import uet.oop.bomberman.graphics.Sprite;
 
@@ -56,9 +53,33 @@ public class CollisionDetector {
                 } else {
                     return true;
                 }
-            }else{
+            } else {
                 bomb.setAllowedToGoThrough(false);
             }
+        }
+        return false;
+    }
+
+    public boolean checkCollisionWithItem(int x, int y, Bomber bomber) {
+        Rectangle rectBomber = new Rectangle(x, y, Bomber.REAL_WIDTH, Bomber.REAL_HEIGHT);
+        int delPos = -1;
+        for (int i = 0; i < gameMap.getItem().size(); i++) {
+            if (rectBomber.intersects(gameMap.getItem().get(i).getX(),
+                    gameMap.getItem().get(i).getY(), Sprite.SCALED_SIZE, Sprite.SCALED_SIZE)) {
+                delPos = i;
+                if (gameMap.getItem().get(i) instanceof ItemSpeed) {
+                    bomber.setSpeedRun(bomber.getSpeedRun()+1);
+                }
+                if (gameMap.getItem().get(i) instanceof ItemBombs){
+                    bomber.increaseBombListMaxSize();
+                }
+                if (gameMap.getItem().get(i) instanceof ItemFlames){
+                    bomber.increaseBombLevel();
+                }
+            }
+        }
+        if (delPos!=-1){
+            gameMap.getItem().remove(delPos);
         }
         return false;
     }

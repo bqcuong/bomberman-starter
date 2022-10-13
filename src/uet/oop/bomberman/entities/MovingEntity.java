@@ -9,7 +9,7 @@ public abstract class MovingEntity extends Entity {
     public DirectionStatus directionStatus = DirectionStatus.RIGHT;
 
     //default speed
-    private int speedRun = 2;
+    protected int speedRun = 2;
 
     public MovingEntity(int xUnit, int yUnit, Image img) {
         super(xUnit, yUnit, img);

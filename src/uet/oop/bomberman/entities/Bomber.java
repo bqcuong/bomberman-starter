@@ -26,7 +26,6 @@ public class Bomber extends MovingEntity {
     public static int REAL_HEIGHT = 29;
 
     private static int MAX_SPEED = 4;
-    private int speedRun = 2;
     private CollisionDetector collisionDetector;
 
     //Bomb list
@@ -37,7 +36,9 @@ public class Bomber extends MovingEntity {
     private int bombListMaxSize = 1;
 
     //Check if current bomb is place or not
-    boolean isPlantBomb = false;
+    private boolean isPlantBomb = false;
+
+    private int bombLevel = 1;
 
     private int indexBomberSprite = 0;
 
@@ -113,13 +114,13 @@ public class Bomber extends MovingEntity {
             isPlantBomb = false;
         }
 
-//        if (collisionDetector.checkCollision(x, y, CheckCollisionObject.ITEM_SPEED)) {
-//            System.out.println("bum");
-//        }
+        collisionDetector.checkCollisionWithItem(this.x, this.y, this);
+
         if (!isPressed) {
             indexBomberSprite = 0;
             isPlantBomb = false;
         }
+        System.out.println(speedRun);
     }
 
     @Override
@@ -156,12 +157,12 @@ public class Bomber extends MovingEntity {
                     }
                 }
                 if (!isDuplicateBomb) {
-                    bombList.add(new Bomb(xUnit, yUnit, Sprite.bomb.getImage(), gameMap));
+                    bombList.add(new Bomb(xUnit, yUnit, Sprite.bomb.getImage(), bombLevel, gameMap));
                 }
 
             }
             if (bombList.isEmpty() && isPlantBomb) {
-                bombList.add(new Bomb(xUnit, yUnit, Sprite.bomb.getImage(), gameMap));
+                bombList.add(new Bomb(xUnit, yUnit, Sprite.bomb.getImage(), bombLevel, gameMap));
             }
         }
         isPlantBomb = false;
@@ -196,5 +197,26 @@ public class Bomber extends MovingEntity {
 
     public int getBombListMaxSize() {
         return bombListMaxSize;
+    }
+
+    @Override
+    public int getSpeedRun() {
+        return speedRun;
+    }
+
+    @Override
+    public void setSpeedRun(int speedRun) {
+        if (this.speedRun == MAX_SPEED) {
+            return;
+        }
+        this.speedRun = speedRun;
+    }
+
+    public void increaseBombLevel() {
+        ++bombLevel;
+    }
+
+    public int getBombLevel() {
+        return bombLevel;
     }
 }

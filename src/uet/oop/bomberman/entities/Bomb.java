@@ -21,7 +21,7 @@ public class Bomb extends Entity implements IObstacle {
     private boolean isAllowedToGoThrough = true;
     private int indexBombSprite = 0;
 
-    private int bombLevel = 1;
+    private int bombLevel = 0;
 
     private List<Entity> flameUp = new ArrayList<>();
     private List<Entity> flameDown = new ArrayList<>();
@@ -49,7 +49,7 @@ public class Bomb extends Entity implements IObstacle {
         }
     };
 
-    public Bomb(int xUnit, int yUnit, Image img, GameMap gameMap) {
+    public Bomb(int xUnit, int yUnit, Image img, int bombLevel, GameMap gameMap) {
         super(xUnit, yUnit, img);
         this.gameMap = gameMap;
         timer.schedule(timerTask, 0, 1000);
@@ -57,7 +57,9 @@ public class Bomb extends Entity implements IObstacle {
         flameDown.add(new Flame(xUnit, yUnit + 1, Sprite.explosion_vertical_down_last.getImage()));
         flameLeft.add(new Flame(xUnit - 1, yUnit, Sprite.explosion_horizontal_left_last.getImage()));
         flameRight.add(new Flame(xUnit + 1, yUnit, Sprite.explosion_horizontal_right_last.getImage()));
-//        increaseBombLevel();
+        for (int i = 0; i < bombLevel; i++) {
+            increaseBombLevel();
+        }
     }
 
     public BombStatus getBombStatus() {

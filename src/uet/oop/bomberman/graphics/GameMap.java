@@ -73,8 +73,16 @@ public class GameMap {
                             entities.add(bomber);
                             tmpMapList.add(new Grass(j, i, Sprite.grass.getImage()));
                             break;
+                        case 'b':
+                            item.add(new ItemBombs(j, i, Sprite.powerup_bombs.getImage()));
+                            tmpMapList.add(new Grass(j, i, Sprite.grass.getImage()));
+                            break;
+                        case 'f':
+                            item.add(new ItemFlames(j, i, Sprite.powerup_flames.getImage()));
+                            tmpMapList.add(new Grass(j, i, Sprite.grass.getImage()));
+                            break;
                         case 's':
-                            item.add(new ItemSpeed(j,i, Sprite.powerup_speed.getImage()));
+                            item.add(new ItemSpeed(j, i, Sprite.powerup_speed.getImage()));
                             tmpMapList.add(new Grass(j, i, Sprite.grass.getImage()));
                             break;
                         default:
@@ -113,11 +121,12 @@ public class GameMap {
     public List<Entity> getItem() {
         return item;
     }
-    public Entity getItemAtPosition(int x, int y){
+
+    public Entity getItemAtPosition(int x, int y) {
         int xUnit = x / Sprite.SCALED_SIZE;
         int yUnit = y / Sprite.SCALED_SIZE;
-        for (int i=0; i<item.size(); i++){
-            if (item.get(i).getX()==xUnit && item.get(i).getY()==yUnit){
+        for (int i = 0; i < item.size(); i++) {
+            if (item.get(i).getX() == xUnit && item.get(i).getY() == yUnit) {
                 return item.get(i);
             }
         }
