@@ -69,7 +69,7 @@ public class GameMap {
                             break;
                         case 'p':
                             /// Display Bomber
-                            Entity bomber = new Bomber(j, i, Sprite.player_right.getImage(), keyboardEvent, new CollisionDetector(this));
+                            Entity bomber = new Bomber(j, i, Sprite.player_right.getImage(), keyboardEvent, new CollisionDetector(this), this);
                             entities.add(bomber);
                             tmpMapList.add(new Grass(j, i, Sprite.grass.getImage()));
                             break;

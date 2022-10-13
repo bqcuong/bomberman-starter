@@ -7,6 +7,7 @@ import uet.oop.bomberman.controllers.CheckCollisionObject;
 import uet.oop.bomberman.controllers.CollisionDetector;
 import uet.oop.bomberman.events.DirectionStatus;
 import uet.oop.bomberman.events.KeyboardEvent;
+import uet.oop.bomberman.graphics.GameMap;
 import uet.oop.bomberman.graphics.Sprite;
 
 import java.util.ArrayList;
@@ -14,10 +15,12 @@ import java.util.List;
 
 public class Bomber extends MovingEntity {
     private KeyboardEvent keyboardEvent;
+
+    private GameMap gameMap;
     public static int REAL_WIDTH = 20;
     public static int REAL_HEIGHT = 29;
 
-    public static int MAX_SPEED = 4;
+    private static int MAX_SPEED = 4;
     private int speedRun = 2;
     private CollisionDetector collisionDetector;
 
@@ -25,7 +28,7 @@ public class Bomber extends MovingEntity {
     private List<Entity> bombList = new ArrayList<>();
     private List<Integer> bombListTest = new ArrayList<>();
     //Max number of bomb can set at the same time
-    private int bombListMaxSize = 1;
+    private int bombListMaxSize = 3;
     //Check if current bomb is place or not
     boolean isPlantBomb = false;
 
@@ -35,7 +38,7 @@ public class Bomber extends MovingEntity {
         super(x, y, img);
     }
 
-    public Bomber(int x, int y, Image img, KeyboardEvent keyboardEvent, CollisionDetector collisionDetector) {
+    public Bomber(int x, int y, Image img, KeyboardEvent keyboardEvent, CollisionDetector collisionDetector, GameMap gameMap) {
         super(x, y, img);
         this.keyboardEvent = keyboardEvent;
         this.collisionDetector = collisionDetector;
@@ -45,7 +48,8 @@ public class Bomber extends MovingEntity {
         boolean isPressed = false;
         if (keyboardEvent.isPressed(KeyCode.W)) {
             isPressed = true;
-            if (collisionDetector.checkCollision(this.x, this.y - speedRun, CheckCollisionObject.OBSTACLE)) {
+            if (collisionDetector.checkCollision(this.x, this.y - speedRun, CheckCollisionObject.OBSTACLE)
+                    || collisionDetector.checkCollisionWithBombWhenMove(this.x, this.y - speedRun, bombList)) {
                 super.updateDirection(directionStatus.UP, false, speedRun);
                 indexBomberSprite = 0;
             } else {
@@ -57,7 +61,8 @@ public class Bomber extends MovingEntity {
         }
         if (keyboardEvent.isPressed(KeyCode.A)) {
             isPressed = true;
-            if (collisionDetector.checkCollision(this.x - speedRun, this.y, CheckCollisionObject.OBSTACLE)) {
+            if (collisionDetector.checkCollision(this.x - speedRun, this.y, CheckCollisionObject.OBSTACLE)
+                    || collisionDetector.checkCollisionWithBombWhenMove(this.x - speedRun, this.y, bombList)) {
                 super.updateDirection(directionStatus.LEFT, false, speedRun);
                 indexBomberSprite = 0;
             } else {
@@ -70,7 +75,8 @@ public class Bomber extends MovingEntity {
         }
         if (keyboardEvent.isPressed(KeyCode.S)) {
             isPressed = true;
-            if (collisionDetector.checkCollision(this.x, this.y + speedRun, CheckCollisionObject.OBSTACLE)) {
+            if (collisionDetector.checkCollision(this.x, this.y + speedRun, CheckCollisionObject.OBSTACLE)
+                    || collisionDetector.checkCollisionWithBombWhenMove(this.x, this.y + speedRun, bombList)) {
                 super.updateDirection(directionStatus.DOWN, false, speedRun);
                 indexBomberSprite = 0;
             } else {
@@ -82,7 +88,8 @@ public class Bomber extends MovingEntity {
         }
         if (keyboardEvent.isPressed(KeyCode.D)) {
             isPressed = true;
-            if (collisionDetector.checkCollision(this.x + speedRun, this.y, CheckCollisionObject.OBSTACLE)) {
+            if (collisionDetector.checkCollision(this.x + speedRun, this.y, CheckCollisionObject.OBSTACLE)
+                    || collisionDetector.checkCollisionWithBombWhenMove(this.x + speedRun, this.y, bombList)) {
                 super.updateDirection(directionStatus.RIGHT, false, speedRun);
                 indexBomberSprite = 0;
             } else {
@@ -95,6 +102,8 @@ public class Bomber extends MovingEntity {
         if (keyboardEvent.isPressed(KeyCode.SPACE)) {
             isPlantBomb = true;
             isPressed = true;
+        } else {
+            isPlantBomb = false;
         }
 
 //        if (collisionDetector.checkCollision(x, y, CheckCollisionObject.ITEM_SPEED)) {
@@ -102,6 +111,7 @@ public class Bomber extends MovingEntity {
 //        }
         if (!isPressed) {
             indexBomberSprite = 0;
+            isPlantBomb = false;
         }
     }
 
@@ -109,24 +119,57 @@ public class Bomber extends MovingEntity {
     public void update() {
         updateKeyHandle();
         updatePlantBomb();
-        for (Entity element:bombList){
-            element.update();
-        }
+        updateBombList();
     }
+
     @Override
-    public void render(GraphicsContext gc){
-        for (Entity element: bombList){
+    public void render(GraphicsContext gc) {
+        for (Entity element : bombList) {
             element.render(gc);
         }
         super.render(gc);
     }
 
     public void updatePlantBomb() {
-        if (isPlantBomb && bombList.size() < bombListMaxSize) {
-            System.out.println("is place");
-            int xUnit = getX() / Sprite.SCALED_SIZE;
-            int yUnit = getY() / Sprite.SCALED_SIZE;
-            bombList.add(new Bomb(xUnit,yUnit,Sprite.bomb.getImage()));
+        int xUnit = (getX() + Sprite.DEFAULT_SIZE) / Sprite.SCALED_SIZE;
+        int yUnit = (getY() + Sprite.DEFAULT_SIZE) / Sprite.SCALED_SIZE;
+//        if (bombListMaxSize == 1) {
+//            if (bombList.isEmpty() && isPlantBomb) {
+//                bombList.add(new Bomb(xUnit, yUnit, Sprite.bomb.getImage(), gameMap));
+//            }
+//        }
+        if (bombList.size() < bombListMaxSize) {
+            if (!bombList.isEmpty() && isPlantBomb) {
+                //check duplicate bomb has already in the list or not
+                boolean isDuplicateBomb = false;
+                for (Entity element : bombList) {
+                    if ((element.getX() / Sprite.SCALED_SIZE == xUnit
+                            && element.getY() / Sprite.SCALED_SIZE == yUnit)) {
+                        isDuplicateBomb = true;
+                    }
+                }
+                if (!isDuplicateBomb) {
+                    bombList.add(new Bomb(xUnit, yUnit, Sprite.bomb.getImage(), gameMap));
+                }
+
+            }
+            if (bombList.isEmpty() && isPlantBomb) {
+                bombList.add(new Bomb(xUnit, yUnit, Sprite.bomb.getImage(), gameMap));
+            }
+        }
+        isPlantBomb = false;
+    }
+
+    public void updateBombList() {
+        for (Entity element : bombList) {
+            element.update();
+        }
+        if (bombList.size() > 0) {
+            Bomb bomb = (Bomb) bombList.get(0);
+            if (bomb.getBombStatus() == BombStatus.DISAPEAR) {
+                System.out.println("DEL");
+                bombList.remove(0);
+            }
         }
     }
 

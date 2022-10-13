@@ -1,11 +1,14 @@
 package uet.oop.bomberman.controllers;
 
 import javafx.scene.shape.Rectangle;
+import uet.oop.bomberman.entities.Bomb;
 import uet.oop.bomberman.entities.Bomber;
 import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.entities.IObstacle;
 import uet.oop.bomberman.graphics.GameMap;
 import uet.oop.bomberman.graphics.Sprite;
+
+import java.util.List;
 
 public class CollisionDetector {
     private GameMap gameMap;
@@ -39,6 +42,23 @@ public class CollisionDetector {
                     }
                 }
                 break;
+        }
+        return false;
+    }
+
+    public boolean checkCollisionWithBombWhenMove(int x, int y, List<Entity> bombList) {
+        Rectangle rectBomber = new Rectangle(x, y, Bomber.REAL_WIDTH, Bomber.REAL_HEIGHT);
+        for (Entity element : bombList) {
+            Bomb bomb = (Bomb) element;
+            if (rectBomber.intersects(element.getX(), element.getY(), Sprite.SCALED_SIZE, Sprite.SCALED_SIZE)) {
+                if (bomb.isAllowedToGoThrough()) {
+                    return false;
+                } else {
+                    return true;
+                }
+            }else{
+                bomb.setAllowedToGoThrough(false);
+            }
         }
         return false;
     }
