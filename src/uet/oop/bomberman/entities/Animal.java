@@ -9,7 +9,7 @@ public class Animal extends Entity {
     protected String direction;   // in4 from user (move bomber)
     protected int count;          // count step of a jump
     protected int count_to_run;   // run after count frame
-    protected boolean life;       // life of enemy
+    protected boolean life = true;       // life of enemy
 
 
     public Animal(int x_unit, int y_unit, Image img) {
@@ -85,9 +85,4 @@ public class Animal extends Entity {
     public void update() {
 
     }
-    //set map
-//    public void setXYBlock(int x, int y) {
-//        this.x = x * Sprite.SCALED_SIZE;
-//        this.y = y * Sprite.SCALED_SIZE;
-//    }
 }
