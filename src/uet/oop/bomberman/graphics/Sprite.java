@@ -14,6 +14,8 @@ public class Sprite {
 	public static final int CODE_ID_GRASS = 1;
 	public static final int CODE_ID_BOMBERMAN = 2;
 	public static final int CODE_ID_BOOM = 3;
+	public static final int CODE_ID_BRICK = 4;
+
 	public static final int DEFAULT_SIZE = 16;
 	public static final int SCALED_SIZE = DEFAULT_SIZE * 2;
     private static final int TRANSPARENT_COLOR = 0xffff00ff;
@@ -24,6 +26,9 @@ public class Sprite {
 	protected int _realHeight;
 	private SpriteSheet _sheet;
 
+	private static final int ORIGINAL_SIZE = 16;
+	public static Sprite transparent = new Sprite(ORIGINAL_SIZE, 15, 15, SpriteSheet.tiles, 16, 16);
+	
 	/*
 	|--------------------------------------------------------------------------
 	| Board sprites
