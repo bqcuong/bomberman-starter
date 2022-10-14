@@ -13,9 +13,9 @@ import java.util.Scanner;
 
 public class GameMap {
     private List<Entity> entities = new ArrayList<>();
-    private List<List<Entity>> map = new ArrayList<>();
-
-    private List<Entity> item = new ArrayList<>();
+    private List<List<Entity>> wallAndGrass = new ArrayList<>();
+    private List<Entity> bricks = new ArrayList<>();
+    private List<Entity> items = new ArrayList<>();
 
 
     private int mapHeight;
@@ -65,7 +65,8 @@ public class GameMap {
                             tmpMapList.add(new Wall(j, i, Sprite.wall.getImage()));
                             break;
                         case '*':
-                            tmpMapList.add(new Brick(j, i, Sprite.brick.getImage()));
+                            bricks.add(new Brick(j, i, Sprite.brick.getImage()));
+                            tmpMapList.add(new Grass(j, i, Sprite.grass.getImage()));
                             break;
                         case 'p':
                             /// Display Bomber
@@ -74,23 +75,24 @@ public class GameMap {
                             tmpMapList.add(new Grass(j, i, Sprite.grass.getImage()));
                             break;
                         case 'b':
-                            item.add(new ItemBombs(j, i, Sprite.powerup_bombs.getImage()));
+                            items.add(new ItemBombs(j, i, Sprite.powerup_bombs.getImage()));
                             tmpMapList.add(new Grass(j, i, Sprite.grass.getImage()));
                             break;
                         case 'f':
-                            item.add(new ItemFlames(j, i, Sprite.powerup_flames.getImage()));
+                            bricks.add(new Brick(j, i, Sprite.brick.getImage()));
+                            items.add(new ItemFlames(j, i, Sprite.powerup_flames.getImage()));
                             tmpMapList.add(new Grass(j, i, Sprite.grass.getImage()));
                             break;
                         case 's':
-                            item.add(new ItemSpeed(j, i, Sprite.powerup_speed.getImage()));
-                            tmpMapList.add(new Grass(j, i, Sprite.grass.getImage()));
+                            items.add(new ItemSpeed(j, i, Sprite.powerup_speed.getImage()));
+                            tmpMapList.add(new Brick(j, i, Sprite.grass.getImage()));
                             break;
                         default:
                             tmpMapList.add(new Grass(j, i, Sprite.grass.getImage()));
                             break;
                     }
                 }
-                map.add(tmpMapList);
+                wallAndGrass.add(tmpMapList);
             }
             sc.close();
         } catch (FileNotFoundException e) {
@@ -99,38 +101,71 @@ public class GameMap {
     }
 
     public void update() {
+        items.forEach(Entity::update);
+        bricks.forEach(Entity::update);
         entities.forEach(Entity::update);
-        item.forEach(Entity::update);
     }
 
 
-    public List<List<Entity>> getMap() {
-        return map;
+    public List<List<Entity>> getWallAndGrass() {
+        return wallAndGrass;
     }
 
-    public Entity getEntityAtPosition(int x, int y) {
+    public Entity getWallsAndGrassAtPosition(int x, int y) {
         int xUnit = x / Sprite.SCALED_SIZE;
         int yUnit = y / Sprite.SCALED_SIZE;
-        return map.get(yUnit).get(xUnit);
+        return wallAndGrass.get(yUnit).get(xUnit);
+    }
+
+    public Entity getBrickAtPosition(int x, int y) {
+        int xUnit = x / Sprite.SCALED_SIZE;
+        int yUnit = y / Sprite.SCALED_SIZE;
+        for (int i = 0; i < bricks.size(); i++) {
+            if ((bricks.get(i).getX() / Sprite.SCALED_SIZE) == xUnit
+                    && (bricks.get(i).getY() / Sprite.SCALED_SIZE) == yUnit) {
+                return bricks.get(i);
+            }
+        }
+        return null;
     }
 
     public List<Entity> getEntities() {
         return entities;
     }
 
-    public List<Entity> getItem() {
-        return item;
+    public List<Entity> getItems() {
+        return items;
+    }
+
+    public void setEntities(List<Entity> entities) {
+        this.entities = entities;
+    }
+
+    public void setWallAndGrass(List<List<Entity>> wallAndGrass) {
+        this.wallAndGrass = wallAndGrass;
+    }
+
+    public List<Entity> getBricks() {
+        return bricks;
+    }
+
+    public void setBricks(List<Entity> bricks) {
+        this.bricks = bricks;
+    }
+
+    public void setItems(List<Entity> items) {
+        this.items = items;
     }
 
     public Entity getItemAtPosition(int x, int y) {
         int xUnit = x / Sprite.SCALED_SIZE;
         int yUnit = y / Sprite.SCALED_SIZE;
-        for (int i = 0; i < item.size(); i++) {
-            if (item.get(i).getX() == xUnit && item.get(i).getY() == yUnit) {
-                return item.get(i);
+        for (int i = 0; i < items.size(); i++) {
+            if ((items.get(i).getX() / Sprite.SCALED_SIZE) == xUnit
+                    && (items.get(i).getY() / Sprite.SCALED_SIZE) == yUnit) {
+                return items.get(i);
             }
         }
-        System.out.println("NULL");
         return null;
     }
 }

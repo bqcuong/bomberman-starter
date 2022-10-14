@@ -25,8 +25,22 @@ public class Bomb extends Entity implements IObstacle {
 
     private List<Entity> flameUp = new ArrayList<>();
     private List<Entity> flameDown = new ArrayList<>();
+
+    //Left flame
     private List<Entity> flameLeft = new ArrayList<>();
+    private boolean brickLeftcheck = false;
+    private boolean wallLeftCheck = false;
+    private boolean itemLeftCheck = false;
+    private int flameLeftLength = 0;
+    private Entity brickLeftExplosion = null;
+
+    //Right flame
     private List<Entity> flameRight = new ArrayList<>();
+    private boolean brickRightcheck = false;
+    private boolean wallRightCheck = false;
+    private boolean itemRightCheck = false;
+    private int flameRightLength = 0;
+    private Entity brickRightExplosion = null;
 
     private WentOffPhraseStatus wentOffPhrase;
     private BombStatus bombStatus = BombStatus.WAIT;
@@ -52,13 +66,79 @@ public class Bomb extends Entity implements IObstacle {
     public Bomb(int xUnit, int yUnit, Image img, int bombLevel, GameMap gameMap) {
         super(xUnit, yUnit, img);
         this.gameMap = gameMap;
+        this.bombLevel = bombLevel;
         timer.schedule(timerTask, 0, 1000);
-        flameUp.add(new Flame(xUnit, yUnit - 1, Sprite.explosion_vertical_top_last.getImage()));
-        flameDown.add(new Flame(xUnit, yUnit + 1, Sprite.explosion_vertical_down_last.getImage()));
-        flameLeft.add(new Flame(xUnit - 1, yUnit, Sprite.explosion_horizontal_left_last.getImage()));
-        flameRight.add(new Flame(xUnit + 1, yUnit, Sprite.explosion_horizontal_right_last.getImage()));
-        for (int i = 0; i < bombLevel; i++) {
-            increaseBombLevel();
+
+        //Right check
+        flameRightLength = bombLevel;
+        for (int i = xUnit + 1; i != xUnit + bombLevel + 1; i++) {
+            if (gameMap.getBrickAtPosition(i * Sprite.SCALED_SIZE,
+                    yUnit * Sprite.SCALED_SIZE) instanceof Brick) {
+                brickRightcheck = true;
+                flameRightLength = i - xUnit - 1;
+                brickRightExplosion = gameMap.getBrickAtPosition(i * Sprite.SCALED_SIZE,
+                        yUnit * Sprite.SCALED_SIZE);
+                break;
+            }
+            if (gameMap.getWallsAndGrassAtPosition(i * Sprite.SCALED_SIZE,
+                    yUnit * Sprite.SCALED_SIZE) instanceof Wall) {
+                wallRightCheck = true;
+                flameRightLength = i - xUnit - 1;
+                break;
+            }
+            if (gameMap.getItemAtPosition(i * Sprite.SCALED_SIZE,
+                    yUnit * Sprite.SCALED_SIZE) instanceof IItem) {
+                itemRightCheck = true;
+                flameRightLength = i - xUnit - 1;
+                break;
+            }
+        }
+        if (wallRightCheck || itemRightCheck || brickRightcheck) {
+            for (int i = 1; i <= flameRightLength; i++) {
+                flameRight.add(new ItemFlames(xUnit + i,
+                        yUnit, Sprite.explosion_horizontal.getImage()));
+            }
+        } else {
+            for (int i = 1; i < bombLevel; i++) {
+                flameRight.add(new ItemFlames(xUnit + i, yUnit, Sprite.explosion_horizontal.getImage()));
+            }
+            flameRight.add(new ItemFlames(xUnit + bombLevel, yUnit, Sprite.explosion_horizontal_right_last.getImage()));
+        }
+
+        //Left
+        flameLeftLength = bombLevel;
+        for (int i = xUnit - 1; i != xUnit - bombLevel - 1; i--) {
+            if (gameMap.getBrickAtPosition(i * Sprite.SCALED_SIZE,
+                    yUnit * Sprite.SCALED_SIZE) instanceof Brick) {
+                brickLeftcheck = true;
+                flameLeftLength = xUnit - i - 1;
+                brickLeftExplosion = gameMap.getBrickAtPosition(i * Sprite.SCALED_SIZE,
+                        yUnit * Sprite.SCALED_SIZE);
+                break;
+            }
+            if (gameMap.getWallsAndGrassAtPosition(i * Sprite.SCALED_SIZE,
+                    yUnit * Sprite.SCALED_SIZE) instanceof Wall) {
+                brickLeftcheck = true;
+                flameLeftLength = xUnit - i - 1;
+                break;
+            }
+            if (gameMap.getItemAtPosition(i * Sprite.SCALED_SIZE,
+                    yUnit * Sprite.SCALED_SIZE) instanceof IItem) {
+                brickLeftcheck = true;
+                flameLeftLength = xUnit - i - 1;
+                break;
+            }
+        }
+        if (wallLeftCheck || itemLeftCheck || brickLeftcheck) {
+            for (int i = 1; i <= flameLeftLength; i++) {
+                flameLeft.add(new ItemFlames(xUnit - i,
+                        yUnit, Sprite.explosion_horizontal.getImage()));
+            }
+        } else {
+            for (int i = 1; i < bombLevel; i++) {
+                flameLeft.add(new ItemFlames(xUnit - i, yUnit, Sprite.explosion_horizontal.getImage()));
+            }
+            flameLeft.add(new ItemFlames(xUnit - bombLevel, yUnit, Sprite.explosion_horizontal_left_last.getImage()));
         }
     }
 
@@ -76,57 +156,104 @@ public class Bomb extends Entity implements IObstacle {
             case WENTOFF:
                 if (wentOffPhrase == WentOffPhraseStatus.OPENNING) {
                     ++indexBombSprite;
-                    this.setImg(Sprite.movingSprite(Sprite.bomb_exploded, Sprite.bomb_exploded1, Sprite.bomb_exploded2, indexBombSprite, 10).getImage());
-                    for (int i = 0; i < bombLevel - 1; i++) {
-                        flameUp.get(i).setImg(Sprite.movingSprite(Sprite.explosion_vertical
-                                , Sprite.explosion_vertical1, Sprite.explosion_vertical2, indexBombSprite, 10).getImage());
-                        flameDown.get(i).setImg(Sprite.movingSprite(Sprite.explosion_vertical
-                                , Sprite.explosion_vertical1, Sprite.explosion_vertical2, indexBombSprite, 10).getImage());
-                        flameLeft.get(i).setImg(Sprite.movingSprite(Sprite.explosion_horizontal
-                                , Sprite.explosion_horizontal1, Sprite.explosion_horizontal2, indexBombSprite, 10).getImage());
-                        flameRight.get(i).setImg(Sprite.movingSprite(Sprite.explosion_horizontal
-                                , Sprite.explosion_horizontal1, Sprite.explosion_horizontal2, indexBombSprite, 10).getImage());
+                    this.setImg(Sprite.movingSprite(Sprite.bomb_exploded,
+                            Sprite.bomb_exploded1, Sprite.bomb_exploded2,
+                            indexBombSprite, 10).getImage());
+
+                    //Right flame opening
+                    if (wallRightCheck || itemRightCheck || brickRightcheck) {
+                        for (Entity element : flameRight) {
+                            element.setImg(Sprite.movingSprite(Sprite.explosion_horizontal,
+                                    Sprite.explosion_horizontal1, Sprite.explosion_horizontal2,
+                                    indexBombSprite, 10).getImage());
+                        }
+                    } else {
+                        for (int i = 0; i < flameRight.size() - 1; i++) {
+                            flameRight.get(i).setImg(Sprite.movingSprite(Sprite.explosion_horizontal,
+                                    Sprite.explosion_horizontal1, Sprite.explosion_horizontal2,
+                                    indexBombSprite, 10).getImage());
+                        }
+                        flameRight.get(flameRight.size() - 1).setImg(Sprite.movingSprite(Sprite.explosion_horizontal_right_last,
+                                Sprite.explosion_horizontal_right_last1,
+                                Sprite.explosion_horizontal_right_last2, indexBombSprite, 10).getImage());
                     }
 
-                    flameUp.get(bombLevel - 1).setImg(Sprite.movingSprite(Sprite.explosion_vertical_top_last
-                            , Sprite.explosion_vertical_top_last1, Sprite.explosion_vertical_top_last2, indexBombSprite, 10).getImage());
-                    flameDown.get(bombLevel - 1).setImg(Sprite.movingSprite(Sprite.explosion_vertical_down_last
-                            , Sprite.explosion_vertical_down_last1, Sprite.explosion_vertical_down_last2, indexBombSprite, 10).getImage());
-                    flameLeft.get(bombLevel - 1).setImg(Sprite.movingSprite(Sprite.explosion_horizontal_left_last
-                            , Sprite.explosion_horizontal_left_last1, Sprite.explosion_horizontal_left_last2, indexBombSprite, 10).getImage());
-                    flameRight.get(bombLevel - 1).setImg(Sprite.movingSprite(Sprite.explosion_horizontal_right_last
-                            , Sprite.explosion_horizontal_right_last1, Sprite.explosion_horizontal_right_last2, indexBombSprite, 10).getImage());
+                    //Left flame opening
+                    if (wallLeftCheck || itemLeftCheck || brickLeftcheck) {
+                        for (Entity element : flameLeft) {
+                            element.setImg(Sprite.movingSprite(Sprite.explosion_horizontal,
+                                    Sprite.explosion_horizontal1, Sprite.explosion_horizontal2,
+                                    indexBombSprite, 10).getImage());
+                        }
+                    } else {
+                        for (int i = 0; i < flameLeft.size() - 1; i++) {
+                            flameLeft.get(i).setImg(Sprite.movingSprite(Sprite.explosion_horizontal,
+                                    Sprite.explosion_horizontal1, Sprite.explosion_horizontal2,
+                                    indexBombSprite, 10).getImage());
+                        }
+                        flameLeft.get(flameLeft.size() - 1).setImg(Sprite.movingSprite(Sprite.explosion_horizontal_left_last,
+                                Sprite.explosion_horizontal_left_last1,
+                                Sprite.explosion_horizontal_left_last2, indexBombSprite, 10).getImage());
+                    }
 
                     if (indexBombSprite == 10) {
                         wentOffPhrase = WentOffPhraseStatus.CLOSING;
                         indexBombSprite = 0;
                     }
-
                 }
                 if (wentOffPhrase == WentOffPhraseStatus.CLOSING) {
                     ++indexBombSprite;
-                    this.setImg(Sprite.movingSprite(Sprite.bomb_exploded2, Sprite.bomb_exploded1, Sprite.bomb_exploded, indexBombSprite, 10).getImage());
-                    for (int i = 0; i < bombLevel - 1; i++) {
-                        flameUp.get(i).setImg(Sprite.movingSprite(Sprite.explosion_vertical2
-                                , Sprite.explosion_vertical1, Sprite.explosion_vertical, indexBombSprite, 10).getImage());
-                        flameDown.get(i).setImg(Sprite.movingSprite(Sprite.explosion_vertical2
-                                , Sprite.explosion_vertical1, Sprite.explosion_vertical, indexBombSprite, 10).getImage());
-                        flameLeft.get(i).setImg(Sprite.movingSprite(Sprite.explosion_horizontal2
-                                , Sprite.explosion_horizontal1, Sprite.explosion_horizontal, indexBombSprite, 10).getImage());
-                        flameRight.get(i).setImg(Sprite.movingSprite(Sprite.explosion_horizontal2
-                                , Sprite.explosion_horizontal1, Sprite.explosion_horizontal, indexBombSprite, 10).getImage());
+                    this.setImg(Sprite.movingSprite(Sprite.bomb_exploded2, Sprite.bomb_exploded1,
+                            Sprite.bomb_exploded, indexBombSprite, 10).getImage());
+
+                    //Right flame closing
+                    if (wallRightCheck || itemRightCheck || brickRightcheck) {
+                        for (Entity element : flameRight) {
+                            element.setImg(Sprite.movingSprite(Sprite.explosion_horizontal2,
+                                    Sprite.explosion_horizontal1, Sprite.explosion_horizontal,
+                                    indexBombSprite, 10).getImage());
+                        }
+                        if (brickRightcheck) {
+                            brickRightExplosion.setImg(Sprite.movingSprite(Sprite.brick_exploded,
+                                    Sprite.brick_exploded1, Sprite.brick_exploded2, indexBombSprite, 10).getImage());
+                        }
+                    } else {
+                        for (int i = 0; i < flameRight.size() - 1; i++) {
+                            flameRight.get(i).setImg(Sprite.movingSprite(Sprite.explosion_horizontal2,
+                                    Sprite.explosion_horizontal1, Sprite.explosion_horizontal,
+                                    indexBombSprite, 10).getImage());
+                        }
+                        flameRight.get(flameRight.size() - 1).setImg(Sprite.movingSprite(Sprite.explosion_horizontal_right_last2,
+                                Sprite.explosion_horizontal_right_last1,
+                                Sprite.explosion_horizontal_right_last, indexBombSprite, 10).getImage());
                     }
 
-                    flameUp.get(bombLevel - 1).setImg(Sprite.movingSprite(Sprite.explosion_vertical_top_last2
-                            , Sprite.explosion_vertical_top_last1, Sprite.explosion_vertical_top_last, indexBombSprite, 10).getImage());
-                    flameDown.get(bombLevel - 1).setImg(Sprite.movingSprite(Sprite.explosion_vertical_down_last2
-                            , Sprite.explosion_vertical_down_last1, Sprite.explosion_vertical_down_last, indexBombSprite, 10).getImage());
-                    flameLeft.get(bombLevel - 1).setImg(Sprite.movingSprite(Sprite.explosion_horizontal_left_last2
-                            , Sprite.explosion_horizontal_left_last1, Sprite.explosion_horizontal_left_last, indexBombSprite, 10).getImage());
-                    flameRight.get(bombLevel - 1).setImg(Sprite.movingSprite(Sprite.explosion_horizontal_right_last2
-                            , Sprite.explosion_horizontal_right_last1, Sprite.explosion_horizontal_right_last, indexBombSprite, 10).getImage());
+                    //Left flame closing
+                    if (wallLeftCheck || itemLeftCheck || brickLeftcheck) {
+                        for (Entity element : flameLeft) {
+                            element.setImg(Sprite.movingSprite(Sprite.explosion_horizontal2,
+                                    Sprite.explosion_horizontal1, Sprite.explosion_horizontal,
+                                    indexBombSprite, 10).getImage());
+                        }
+                        if (brickLeftcheck) {
+                            brickLeftExplosion.setImg(Sprite.movingSprite(Sprite.brick_exploded,
+                                    Sprite.brick_exploded1, Sprite.brick_exploded2, indexBombSprite, 10).getImage());
+                        }
+                    } else {
+                        for (int i = 0; i < flameLeft.size() - 1; i++) {
+                            flameLeft.get(i).setImg(Sprite.movingSprite(Sprite.explosion_horizontal2,
+                                    Sprite.explosion_horizontal1, Sprite.explosion_horizontal,
+                                    indexBombSprite, 10).getImage());
+                        }
+                        flameLeft.get(flameLeft.size() - 1).setImg(Sprite.movingSprite(Sprite.explosion_horizontal_left_last2,
+                                Sprite.explosion_horizontal_left_last1,
+                                Sprite.explosion_horizontal_left_last, indexBombSprite, 10).getImage());
+                    }
+
                     if (indexBombSprite == 10) {
                         bombStatus = BombStatus.DISAPEAR;
+                        gameMap.getBricks().remove(brickRightExplosion);
+                        gameMap.getBricks().remove(brickLeftExplosion);
                     }
                 }
                 break;
@@ -141,11 +268,11 @@ public class Bomb extends Entity implements IObstacle {
                 break;
             case WENTOFF:
                 super.render(gc);
-                for (int i = 0; i < bombLevel; i++) {
-                    flameUp.get(i).render(gc);
-                    flameDown.get(i).render(gc);
-                    flameLeft.get(i).render(gc);
-                    flameRight.get(i).render(gc);
+                for (Entity element : flameRight) {
+                    element.render(gc);
+                }
+                for (Entity element : flameLeft) {
+                    element.render(gc);
                 }
                 break;
         }
@@ -165,23 +292,5 @@ public class Bomb extends Entity implements IObstacle {
 
     public void setBombLevel(int bombLevel) {
         this.bombLevel = bombLevel;
-    }
-
-    public void increaseBombLevel() {
-        for (int i = 0; i < bombLevel; i++) {
-            flameUp.get(i).changeYByValue(-Sprite.SCALED_SIZE);
-            flameDown.get(i).changeYByValue(Sprite.SCALED_SIZE);
-            flameLeft.get(i).changeXByValue(-Sprite.SCALED_SIZE);
-            flameRight.get(i).changeXByValue(Sprite.SCALED_SIZE);
-        }
-        ++this.bombLevel;
-        flameUp.add(0, new Flame(this.getX() / Sprite.SCALED_SIZE
-                , this.getY() / Sprite.SCALED_SIZE - 1, Sprite.explosion_vertical.getImage()));
-        flameDown.add(0, new Flame(this.getX() / Sprite.SCALED_SIZE
-                , this.getY() / Sprite.SCALED_SIZE + 1, Sprite.explosion_vertical.getImage()));
-        flameLeft.add(0, new Flame(this.getX() / Sprite.SCALED_SIZE - 1
-                , this.getY() / Sprite.SCALED_SIZE, Sprite.explosion_horizontal.getImage()));
-        flameRight.add(0, new Flame(this.getX() / Sprite.SCALED_SIZE + 1
-                , this.getY() / Sprite.SCALED_SIZE, Sprite.explosion_horizontal.getImage()));
     }
 }

@@ -50,10 +50,12 @@ public class Bomber extends MovingEntity {
         super(x, y, img);
         this.keyboardEvent = keyboardEvent;
         this.collisionDetector = collisionDetector;
+        this.gameMap = gameMap;
     }
 
     private void updateKeyHandle() {
         boolean isPressed = false;
+        collisionDetector.checkCollisionWithItem(this.x, this.y, this);
         if (keyboardEvent.isPressed(KeyCode.W)) {
             isPressed = true;
             if (collisionDetector.checkCollision(this.x, this.y - speedRun, CheckCollisionObject.OBSTACLE)
@@ -114,13 +116,10 @@ public class Bomber extends MovingEntity {
             isPlantBomb = false;
         }
 
-        collisionDetector.checkCollisionWithItem(this.x, this.y, this);
-
         if (!isPressed) {
             indexBomberSprite = 0;
             isPlantBomb = false;
         }
-        System.out.println(speedRun);
     }
 
     @Override

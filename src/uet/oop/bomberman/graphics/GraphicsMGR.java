@@ -25,24 +25,29 @@ public class GraphicsMGR {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
     }
 
-    public void renderMap(GameMap gameMap) {
-        for (int i = 0; i < gameMap.getMap().size(); i++) {
-            List<Entity> tempMap = gameMap.getMap().get(i);
+    public void renderWallAndGrass(GameMap gameMap) {
+        for (int i = 0; i < gameMap.getWallAndGrass().size(); i++) {
+            List<Entity> tempMap = gameMap.getWallAndGrass().get(i);
             tempMap.forEach(g -> g.render(gc));
         }
     }
 
-    public void renderItem(GameMap gameMap) {
-        gameMap.getItem().forEach(g -> g.render(gc));
+    public void renderItems(GameMap gameMap) {
+        gameMap.getItems().forEach(g -> g.render(gc));
     }
 
     public void renderBomber(GameMap gameMap) {
         gameMap.getEntities().forEach(g -> g.render(gc));
     }
 
+    public void renderBricks(GameMap gameMap) {
+        gameMap.getBricks().forEach(g -> g.render(gc));
+    }
+
     public void render(GameMap gameMap) {
-        renderMap(gameMap);
-        renderItem(gameMap);
+        renderWallAndGrass(gameMap);
+        renderItems(gameMap);
+        renderBricks(gameMap);
         renderBomber(gameMap);
     }
 }
