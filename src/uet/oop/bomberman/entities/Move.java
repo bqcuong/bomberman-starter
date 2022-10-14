@@ -2,19 +2,18 @@ package uet.oop.bomberman.entities;
 
 import uet.oop.bomberman.graphics.Sprite;
 
-import static uet.oop.bomberman.BombermanGame.bomber;
 import static uet.oop.bomberman.BombermanGame.checkWall;
-import static uet.oop.bomberman.entities.SpeedItem.speed;
 
 
 public class Move {
-
+    // chua xu li toc do khi bomber nhan duoc item buff
+    public static int speed = 1;
     public static boolean can_move = true;
 
     public static boolean can_down(Entity entity) {
         can_move = true;
         // getY + 1 để dừng ngay từ pos trên, không đi vào ô chứa wall
-        if (checkWall[entity.getX()/32][entity.getY()/32 + 1] == 0 || checkWall[entity.getX()/32][entity.getY()/32 + 1] == 4)
+        if (checkWall[entity.getX()/32][entity.getY()/32 + 1] == 0)
         {
             can_move = false;
         }
@@ -22,7 +21,7 @@ public class Move {
     }
     public static boolean can_up(Entity entity) {
         can_move = true;
-        if (checkWall[entity.getX()/32][entity.getY()/32 - 1] == 0 || checkWall[entity.getX()/32][entity.getY()/32 - 1] == 4)
+        if (checkWall[entity.getX()/32][entity.getY()/32 - 1] == 0)
         {
             can_move = false;
         }
@@ -30,7 +29,7 @@ public class Move {
     }
     public static boolean can_right(Entity entity) {
         can_move = true;
-        if (checkWall[entity.getX()/32 + 1][entity.getY()/32] == 0 || checkWall[entity.getX()/32 + 1][entity.getY()/32] == 4)
+        if (checkWall[entity.getX()/32 + 1][entity.getY()/32] == 0)
         {
             can_move = false;
         }
@@ -38,7 +37,7 @@ public class Move {
     }
     public static boolean can_left(Entity entity) {
         can_move = true;
-        if (checkWall[entity.getX()/32 - 1][entity.getY()/32] == 0 || checkWall[entity.getX()/32 - 1][entity.getY()/32] == 4)
+        if (checkWall[entity.getX()/32 - 1][entity.getY()/32] == 0)
         {
             can_move = false;
         }

@@ -19,18 +19,16 @@ public class BombermanGame extends Application {
     public static final int WIDTH = 20;
     public static final int HEIGHT = 15;
 
-    public static Animal bomber;
     public static Animal balloom;
     public static Animal oneal;
-    public static SpeedItem speedItem;
 
+    public static Animal bomber;
     private GraphicsContext gc;
     private Canvas canvas;
-
-    public static List<Animal> entity = new ArrayList<>();
     private List<Entity> entities = new ArrayList<>();
     private List<Entity> stillObjects = new ArrayList<>();
     public static int [][] checkWall = new int[WIDTH][HEIGHT];
+    public static List<Animal> entity = new ArrayList<>();
     public static final List<Entity> block = new ArrayList<>(); // chứa bomb
 
 
@@ -75,12 +73,13 @@ public class BombermanGame extends Application {
                     break;
             }
         });
+
         // init bomber
         bomber = new Bomber(1, 1, Sprite.player_right.getFxImage());
-        balloom = new Balloom(15, 1, Sprite.balloom_right1.getFxImage());
-        oneal = new Oneal(10, 10, Sprite.oneal_right1.getFxImage());
-        speedItem = new SpeedItem(2, 1, Sprite.powerup_speed.getFxImage());
+        entities.add(bomber);
 
+        balloom = new Balloom(5, 5, Sprite.balloom_right1.getFxImage());
+        oneal = new Oneal(10, 10, Sprite.oneal_right1.getFxImage());
         entity.add(balloom);
         entity.add(oneal);
 
@@ -94,6 +93,16 @@ public class BombermanGame extends Application {
         timer.start();
 
         createMap();
+
+//        Entity bomberman = new Bomber(1, 1, Sprite.player_right.getFxImage());
+//        entities.add(bomberman);
+
+        Entity balloomleft1 = new Balloom(1, 10, Sprite.balloom_left1.getFxImage());
+        entities.add(balloomleft1);
+        Entity balloomleft2 = new Balloom(1, 5, Sprite.balloom_left2.getFxImage());
+        entities.add(balloomleft2);
+        Entity balloom = new Balloom(1, 10, Sprite.balloom_left1.getFxImage());
+        entities.add(balloom);
     }
 
     public void createMap() {
@@ -112,9 +121,6 @@ public class BombermanGame extends Application {
                 String line = map.get(i);
                 for (int j = 0; j < line.length(); j++) {
                     int codeID = Integer.parseInt(String.valueOf(line.charAt(j))) ;
-
-                    checkWall[j][i] = codeID;
-                    System.out.print(checkWall[j][i]);
                     Entity entity = null;
                     switch (codeID) {
                         case Sprite.CODE_ID_WALL: {
@@ -139,10 +145,8 @@ public class BombermanGame extends Application {
                         stillObjects.add(grass);
                         entities.add(entity);
                     }
-                    else
-                   stillObjects.add(entity);
+                    else stillObjects.add(entity);
                 }
-                System.out.println();
             }
         }
     }
@@ -158,13 +162,11 @@ public class BombermanGame extends Application {
             ett.update();
         }
 
-        //update items truoc
-        speedItem.update();
+
         //update bomber
         bomber.update();
         balloom.update();
         oneal.update();
-
 
         bomber.setCountToRun(bomber.getCountToRun() + 1);
         if (bomber.getCountToRun() == 4) {
@@ -184,6 +186,7 @@ public class BombermanGame extends Application {
     }
 
 
+
     public void render() {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         stillObjects.forEach(g -> g.render(gc));
@@ -191,10 +194,9 @@ public class BombermanGame extends Application {
         block.forEach(g -> g.render(gc));
         entity.forEach(g -> g.render(gc));
 
+        bomber.render(gc);
         balloom.render(gc);
         oneal.render(gc);
-        speedItem.render(gc);
-        //render bomber cuoi cung
-        bomber.render(gc);
     }
+
 }
