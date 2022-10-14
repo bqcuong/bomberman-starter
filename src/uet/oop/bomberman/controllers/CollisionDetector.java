@@ -18,31 +18,6 @@ public class CollisionDetector {
         this.gameMap = gameMap;
     }
 
-    public boolean checkCollision(int x, int y, CheckCollisionObject checkCollisionObject) {
-        Rectangle rectBomber = new Rectangle(x, y, Bomber.REAL_WIDTH, Bomber.REAL_HEIGHT);
-        switch (checkCollisionObject) {
-            case OBSTACLE:
-                return checkCollisionWithMap(x, y);
-//                for (List<Entity> List : map.getMap()) {
-//                    for (Entity entity : List) {
-//                        if (entity instanceof IObstacle) {
-//                            if (rectBomber.intersects(entity.getX(), entity.getY(), Sprite.SCALED_SIZE, Sprite.SCALED_SIZE)) {
-//                                return true;
-//                            }
-//                        }
-//                    }
-//                }
-            case ITEM_SPEED:
-                for (Entity at : gameMap.getItems()) {
-                    if (rectBomber.intersects(at.getX(), at.getY(), Sprite.SCALED_SIZE, Sprite.SCALED_SIZE)) {
-                        return true;
-                    }
-                }
-                break;
-        }
-        return false;
-    }
-
     public boolean checkCollisionWithBombWhenMove(int x, int y, List<Entity> bombList) {
         Rectangle rectBomber = new Rectangle(x, y, Bomber.REAL_WIDTH, Bomber.REAL_HEIGHT);
         for (Entity element : bombList) {

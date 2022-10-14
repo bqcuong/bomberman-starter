@@ -13,7 +13,7 @@ import java.util.TimerTask;
 public class Bomb extends Entity implements IObstacle {
 
     public enum WentOffPhraseStatus {
-        OPENNING, CLOSING
+        OPENING, CLOSING
     }
 
     GameMap gameMap;
@@ -22,25 +22,21 @@ public class Bomb extends Entity implements IObstacle {
     private int indexBombSprite = 0;
 
     private int bombLevel = 0;
+    //Up flame
+    private List<Entity> upFlameList = new ArrayList<>();
+    private BombFlameInfo upFlameInfo = new BombFlameInfo();
 
-    private List<Entity> flameUp = new ArrayList<>();
-    private List<Entity> flameDown = new ArrayList<>();
+    //Down flame
+    private List<Entity> downFlameList = new ArrayList<>();
+    private BombFlameInfo downFlameInfo = new BombFlameInfo();
 
     //Left flame
-    private List<Entity> flameLeft = new ArrayList<>();
-    private boolean brickLeftcheck = false;
-    private boolean wallLeftCheck = false;
-    private boolean itemLeftCheck = false;
-    private int flameLeftLength = 0;
-    private Entity brickLeftExplosion = null;
+    private List<Entity> leftFlameList = new ArrayList<>();
+    private BombFlameInfo leftFlameInfo = new BombFlameInfo();
 
     //Right flame
-    private List<Entity> flameRight = new ArrayList<>();
-    private boolean brickRightcheck = false;
-    private boolean wallRightCheck = false;
-    private boolean itemRightCheck = false;
-    private int flameRightLength = 0;
-    private Entity brickRightExplosion = null;
+    private List<Entity> rightFlameList = new ArrayList<>();
+    private BombFlameInfo rightFlameInfo = new BombFlameInfo();
 
     private WentOffPhraseStatus wentOffPhrase;
     private BombStatus bombStatus = BombStatus.WAIT;
@@ -56,7 +52,7 @@ public class Bomb extends Entity implements IObstacle {
                 bombStatus = BombStatus.WAIT;
             } else {
                 bombStatus = BombStatus.WENTOFF;
-                wentOffPhrase = WentOffPhraseStatus.OPENNING;
+                wentOffPhrase = WentOffPhraseStatus.OPENING;
                 timer.cancel();
                 indexBombSprite = 0;
             }
@@ -70,75 +66,151 @@ public class Bomb extends Entity implements IObstacle {
         timer.schedule(timerTask, 0, 1000);
 
         //Right check
-        flameRightLength = bombLevel;
+        rightFlameInfo.setFlameLength(bombLevel);
         for (int i = xUnit + 1; i != xUnit + bombLevel + 1; i++) {
             if (gameMap.getBrickAtPosition(i * Sprite.SCALED_SIZE,
                     yUnit * Sprite.SCALED_SIZE) instanceof Brick) {
-                brickRightcheck = true;
-                flameRightLength = i - xUnit - 1;
-                brickRightExplosion = gameMap.getBrickAtPosition(i * Sprite.SCALED_SIZE,
-                        yUnit * Sprite.SCALED_SIZE);
+                rightFlameInfo.setBrickCheck(true);
+                rightFlameInfo.setFlameLength(i - xUnit - 1);
+                rightFlameInfo.setBrickExplosion(gameMap.getBrickAtPosition(i * Sprite.SCALED_SIZE,
+                        yUnit * Sprite.SCALED_SIZE));
                 break;
             }
             if (gameMap.getWallsAndGrassAtPosition(i * Sprite.SCALED_SIZE,
                     yUnit * Sprite.SCALED_SIZE) instanceof Wall) {
-                wallRightCheck = true;
-                flameRightLength = i - xUnit - 1;
+                rightFlameInfo.setWallCheck(true);
+                rightFlameInfo.setFlameLength(i - xUnit - 1);
                 break;
             }
             if (gameMap.getItemAtPosition(i * Sprite.SCALED_SIZE,
                     yUnit * Sprite.SCALED_SIZE) instanceof IItem) {
-                itemRightCheck = true;
-                flameRightLength = i - xUnit - 1;
+                rightFlameInfo.setItemCheck(true);
+                rightFlameInfo.setFlameLength(i - xUnit - 1);
                 break;
             }
         }
-        if (wallRightCheck || itemRightCheck || brickRightcheck) {
-            for (int i = 1; i <= flameRightLength; i++) {
-                flameRight.add(new ItemFlames(xUnit + i,
+        //Make right flame list
+        if (rightFlameInfo.isBrickCheck() || rightFlameInfo.isWallCheck() || rightFlameInfo.isItemCheck()) {
+            for (int i = 1; i <= rightFlameInfo.getFlameLength(); i++) {
+                rightFlameList.add(new ItemFlames(xUnit + i,
                         yUnit, Sprite.explosion_horizontal.getImage()));
             }
         } else {
             for (int i = 1; i < bombLevel; i++) {
-                flameRight.add(new ItemFlames(xUnit + i, yUnit, Sprite.explosion_horizontal.getImage()));
+                rightFlameList.add(new ItemFlames(xUnit + i, yUnit, Sprite.explosion_horizontal.getImage()));
             }
-            flameRight.add(new ItemFlames(xUnit + bombLevel, yUnit, Sprite.explosion_horizontal_right_last.getImage()));
+            rightFlameList.add(new ItemFlames(xUnit + bombLevel, yUnit, Sprite.explosion_horizontal_right_last.getImage()));
         }
 
         //Left
-        flameLeftLength = bombLevel;
+        leftFlameInfo.setFlameLength(bombLevel);
         for (int i = xUnit - 1; i != xUnit - bombLevel - 1; i--) {
             if (gameMap.getBrickAtPosition(i * Sprite.SCALED_SIZE,
                     yUnit * Sprite.SCALED_SIZE) instanceof Brick) {
-                brickLeftcheck = true;
-                flameLeftLength = xUnit - i - 1;
-                brickLeftExplosion = gameMap.getBrickAtPosition(i * Sprite.SCALED_SIZE,
-                        yUnit * Sprite.SCALED_SIZE);
+                leftFlameInfo.setBrickCheck(true);
+                leftFlameInfo.setFlameLength(xUnit - i - 1);
+                leftFlameInfo.setBrickExplosion(gameMap.getBrickAtPosition(i * Sprite.SCALED_SIZE,
+                        yUnit * Sprite.SCALED_SIZE));
                 break;
             }
             if (gameMap.getWallsAndGrassAtPosition(i * Sprite.SCALED_SIZE,
                     yUnit * Sprite.SCALED_SIZE) instanceof Wall) {
-                brickLeftcheck = true;
-                flameLeftLength = xUnit - i - 1;
+                leftFlameInfo.setWallCheck(true);
+                leftFlameInfo.setFlameLength(xUnit - i - 1);
                 break;
             }
             if (gameMap.getItemAtPosition(i * Sprite.SCALED_SIZE,
                     yUnit * Sprite.SCALED_SIZE) instanceof IItem) {
-                brickLeftcheck = true;
-                flameLeftLength = xUnit - i - 1;
+                leftFlameInfo.setItemCheck(true);
+                leftFlameInfo.setFlameLength(xUnit - i - 1);
                 break;
             }
         }
-        if (wallLeftCheck || itemLeftCheck || brickLeftcheck) {
-            for (int i = 1; i <= flameLeftLength; i++) {
-                flameLeft.add(new ItemFlames(xUnit - i,
+        //Make left flame list
+        if (leftFlameInfo.isBrickCheck() || leftFlameInfo.isWallCheck() || leftFlameInfo.isItemCheck()) {
+            for (int i = 1; i <= leftFlameInfo.getFlameLength(); i++) {
+                leftFlameList.add(new ItemFlames(xUnit - i,
                         yUnit, Sprite.explosion_horizontal.getImage()));
             }
         } else {
             for (int i = 1; i < bombLevel; i++) {
-                flameLeft.add(new ItemFlames(xUnit - i, yUnit, Sprite.explosion_horizontal.getImage()));
+                leftFlameList.add(new ItemFlames(xUnit - i, yUnit, Sprite.explosion_horizontal.getImage()));
             }
-            flameLeft.add(new ItemFlames(xUnit - bombLevel, yUnit, Sprite.explosion_horizontal_left_last.getImage()));
+            leftFlameList.add(new ItemFlames(xUnit - bombLevel, yUnit, Sprite.explosion_horizontal_left_last.getImage()));
+        }
+
+        //Down check
+        downFlameInfo.setFlameLength(bombLevel);
+        for (int i = yUnit + 1; i != yUnit + bombLevel + 1; i++) {
+            if (gameMap.getBrickAtPosition(xUnit * Sprite.SCALED_SIZE,
+                    i * Sprite.SCALED_SIZE) instanceof Brick) {
+                downFlameInfo.setBrickCheck(true);
+                downFlameInfo.setFlameLength(i - yUnit - 1);
+                downFlameInfo.setBrickExplosion(gameMap.getBrickAtPosition(xUnit * Sprite.SCALED_SIZE,
+                        i * Sprite.SCALED_SIZE));
+                break;
+            }
+            if (gameMap.getWallsAndGrassAtPosition(xUnit * Sprite.SCALED_SIZE,
+                    i * Sprite.SCALED_SIZE) instanceof Wall) {
+                downFlameInfo.setWallCheck(true);
+                downFlameInfo.setFlameLength(i - yUnit - 1);
+                break;
+            }
+            if (gameMap.getItemAtPosition(xUnit * Sprite.SCALED_SIZE,
+                    i * Sprite.SCALED_SIZE) instanceof IItem) {
+                downFlameInfo.setItemCheck(true);
+                downFlameInfo.setFlameLength(i - yUnit - 1);
+                break;
+            }
+        }
+        //Make Down flame list
+        if (downFlameInfo.isBrickCheck() || downFlameInfo.isWallCheck() || downFlameInfo.isItemCheck()) {
+            for (int i = 1; i <= downFlameInfo.getFlameLength(); i++) {
+                downFlameList.add(new ItemFlames(xUnit,
+                        yUnit + i, Sprite.explosion_vertical.getImage()));
+            }
+        } else {
+            for (int i = 1; i < bombLevel; i++) {
+                downFlameList.add(new ItemFlames(xUnit, yUnit + i, Sprite.explosion_vertical.getImage()));
+            }
+            downFlameList.add(new ItemFlames(xUnit, yUnit + bombLevel, Sprite.explosion_vertical_down_last.getImage()));
+        }
+
+        //Up check
+        upFlameInfo.setFlameLength(bombLevel);
+        for (int i = yUnit - 1; i != yUnit - bombLevel - 1; i--) {
+            if (gameMap.getBrickAtPosition(xUnit * Sprite.SCALED_SIZE,
+                    i * Sprite.SCALED_SIZE) instanceof Brick) {
+                upFlameInfo.setBrickCheck(true);
+                upFlameInfo.setFlameLength(yUnit - i - 1);
+                upFlameInfo.setBrickExplosion(gameMap.getBrickAtPosition(xUnit * Sprite.SCALED_SIZE,
+                        i * Sprite.SCALED_SIZE));
+                break;
+            }
+            if (gameMap.getWallsAndGrassAtPosition(xUnit * Sprite.SCALED_SIZE,
+                    i * Sprite.SCALED_SIZE) instanceof Wall) {
+                upFlameInfo.setWallCheck(true);
+                upFlameInfo.setFlameLength(yUnit - i - 1);
+                break;
+            }
+            if (gameMap.getItemAtPosition(xUnit * Sprite.SCALED_SIZE,
+                    i * Sprite.SCALED_SIZE) instanceof IItem) {
+                upFlameInfo.setItemCheck(true);
+                upFlameInfo.setFlameLength(yUnit - i - 1);
+                break;
+            }
+        }
+        //Make Up flame list
+        if (upFlameInfo.isBrickCheck() || upFlameInfo.isWallCheck() || upFlameInfo.isItemCheck()) {
+            for (int i = 1; i <= upFlameInfo.getFlameLength(); i++) {
+                downFlameList.add(new ItemFlames(xUnit,
+                        yUnit - i, Sprite.explosion_vertical.getImage()));
+            }
+        } else {
+            for (int i = 1; i < bombLevel; i++) {
+                upFlameList.add(new ItemFlames(xUnit, yUnit - i, Sprite.explosion_vertical.getImage()));
+            }
+            upFlameList.add(new ItemFlames(xUnit, yUnit - bombLevel, Sprite.explosion_vertical_top_last.getImage()));
         }
     }
 
@@ -154,46 +226,82 @@ public class Bomb extends Entity implements IObstacle {
                 setImg(Sprite.movingSprite(Sprite.bomb, Sprite.bomb_1, Sprite.bomb_2, indexBombSprite, 60).getImage());
                 break;
             case WENTOFF:
-                if (wentOffPhrase == WentOffPhraseStatus.OPENNING) {
+                if (wentOffPhrase == WentOffPhraseStatus.OPENING) {
                     ++indexBombSprite;
                     this.setImg(Sprite.movingSprite(Sprite.bomb_exploded,
                             Sprite.bomb_exploded1, Sprite.bomb_exploded2,
                             indexBombSprite, 10).getImage());
 
-                    //Right flame opening
-                    if (wallRightCheck || itemRightCheck || brickRightcheck) {
-                        for (Entity element : flameRight) {
+                    //Right flame opening animation update
+                    if (rightFlameInfo.isBrickCheck() || rightFlameInfo.isWallCheck() || rightFlameInfo.isItemCheck()) {
+                        for (Entity element : rightFlameList) {
                             element.setImg(Sprite.movingSprite(Sprite.explosion_horizontal,
                                     Sprite.explosion_horizontal1, Sprite.explosion_horizontal2,
                                     indexBombSprite, 10).getImage());
                         }
                     } else {
-                        for (int i = 0; i < flameRight.size() - 1; i++) {
-                            flameRight.get(i).setImg(Sprite.movingSprite(Sprite.explosion_horizontal,
+                        for (int i = 0; i < rightFlameList.size() - 1; i++) {
+                            rightFlameList.get(i).setImg(Sprite.movingSprite(Sprite.explosion_horizontal,
                                     Sprite.explosion_horizontal1, Sprite.explosion_horizontal2,
                                     indexBombSprite, 10).getImage());
                         }
-                        flameRight.get(flameRight.size() - 1).setImg(Sprite.movingSprite(Sprite.explosion_horizontal_right_last,
+                        rightFlameList.get(rightFlameList.size() - 1).setImg(Sprite.movingSprite(Sprite.explosion_horizontal_right_last,
                                 Sprite.explosion_horizontal_right_last1,
                                 Sprite.explosion_horizontal_right_last2, indexBombSprite, 10).getImage());
                     }
 
-                    //Left flame opening
-                    if (wallLeftCheck || itemLeftCheck || brickLeftcheck) {
-                        for (Entity element : flameLeft) {
+                    //Left flame opening animation update
+                    if (leftFlameInfo.isBrickCheck() || leftFlameInfo.isWallCheck() || leftFlameInfo.isItemCheck()) {
+                        for (Entity element : leftFlameList) {
                             element.setImg(Sprite.movingSprite(Sprite.explosion_horizontal,
                                     Sprite.explosion_horizontal1, Sprite.explosion_horizontal2,
                                     indexBombSprite, 10).getImage());
                         }
                     } else {
-                        for (int i = 0; i < flameLeft.size() - 1; i++) {
-                            flameLeft.get(i).setImg(Sprite.movingSprite(Sprite.explosion_horizontal,
+                        for (int i = 0; i < leftFlameList.size() - 1; i++) {
+                            leftFlameList.get(i).setImg(Sprite.movingSprite(Sprite.explosion_horizontal,
                                     Sprite.explosion_horizontal1, Sprite.explosion_horizontal2,
                                     indexBombSprite, 10).getImage());
                         }
-                        flameLeft.get(flameLeft.size() - 1).setImg(Sprite.movingSprite(Sprite.explosion_horizontal_left_last,
+                        leftFlameList.get(leftFlameList.size() - 1).setImg(Sprite.movingSprite(Sprite.explosion_horizontal_left_last,
                                 Sprite.explosion_horizontal_left_last1,
                                 Sprite.explosion_horizontal_left_last2, indexBombSprite, 10).getImage());
+                    }
+
+                    //Down flame opening animation update
+                    if (downFlameInfo.isBrickCheck() || downFlameInfo.isWallCheck() || downFlameInfo.isItemCheck()) {
+                        for (Entity element : downFlameList) {
+                            element.setImg(Sprite.movingSprite(Sprite.explosion_vertical,
+                                    Sprite.explosion_vertical1, Sprite.explosion_vertical2,
+                                    indexBombSprite, 10).getImage());
+                        }
+                    } else {
+                        for (int i = 0; i < downFlameList.size() - 1; i++) {
+                            downFlameList.get(i).setImg(Sprite.movingSprite(Sprite.explosion_vertical,
+                                    Sprite.explosion_vertical1, Sprite.explosion_vertical2,
+                                    indexBombSprite, 10).getImage());
+                        }
+                        downFlameList.get(downFlameList.size() - 1).setImg(Sprite.movingSprite(Sprite.explosion_vertical_down_last,
+                                Sprite.explosion_vertical_down_last1,
+                                Sprite.explosion_vertical_down_last2, indexBombSprite, 10).getImage());
+                    }
+
+                    //Up flame opening animation update
+                    if (upFlameInfo.isBrickCheck() || upFlameInfo.isWallCheck() || upFlameInfo.isItemCheck()) {
+                        for (Entity element : upFlameList) {
+                            element.setImg(Sprite.movingSprite(Sprite.explosion_vertical,
+                                    Sprite.explosion_vertical1, Sprite.explosion_vertical2,
+                                    indexBombSprite, 10).getImage());
+                        }
+                    } else {
+                        for (int i = 0; i < upFlameList.size() - 1; i++) {
+                            upFlameList.get(i).setImg(Sprite.movingSprite(Sprite.explosion_vertical,
+                                    Sprite.explosion_vertical1, Sprite.explosion_vertical2,
+                                    indexBombSprite, 10).getImage());
+                        }
+                        upFlameList.get(upFlameList.size() - 1).setImg(Sprite.movingSprite(Sprite.explosion_vertical_top_last,
+                                Sprite.explosion_vertical_top_last1,
+                                Sprite.explosion_vertical_top_last2, indexBombSprite, 10).getImage());
                     }
 
                     if (indexBombSprite == 10) {
@@ -201,59 +309,106 @@ public class Bomb extends Entity implements IObstacle {
                         indexBombSprite = 0;
                     }
                 }
+
                 if (wentOffPhrase == WentOffPhraseStatus.CLOSING) {
                     ++indexBombSprite;
                     this.setImg(Sprite.movingSprite(Sprite.bomb_exploded2, Sprite.bomb_exploded1,
                             Sprite.bomb_exploded, indexBombSprite, 10).getImage());
 
-                    //Right flame closing
-                    if (wallRightCheck || itemRightCheck || brickRightcheck) {
-                        for (Entity element : flameRight) {
+                    //Right flame closing animation update
+                    if (rightFlameInfo.isBrickCheck() || rightFlameInfo.isWallCheck() || rightFlameInfo.isItemCheck()) {
+                        for (Entity element : rightFlameList) {
                             element.setImg(Sprite.movingSprite(Sprite.explosion_horizontal2,
                                     Sprite.explosion_horizontal1, Sprite.explosion_horizontal,
                                     indexBombSprite, 10).getImage());
                         }
-                        if (brickRightcheck) {
-                            brickRightExplosion.setImg(Sprite.movingSprite(Sprite.brick_exploded,
+                        if (rightFlameInfo.isBrickCheck()) {
+                            rightFlameInfo.getBrickExplosion().setImg(Sprite.movingSprite(Sprite.brick_exploded,
                                     Sprite.brick_exploded1, Sprite.brick_exploded2, indexBombSprite, 10).getImage());
                         }
                     } else {
-                        for (int i = 0; i < flameRight.size() - 1; i++) {
-                            flameRight.get(i).setImg(Sprite.movingSprite(Sprite.explosion_horizontal2,
+                        for (int i = 0; i < rightFlameList.size() - 1; i++) {
+                            rightFlameList.get(i).setImg(Sprite.movingSprite(Sprite.explosion_horizontal2,
                                     Sprite.explosion_horizontal1, Sprite.explosion_horizontal,
                                     indexBombSprite, 10).getImage());
                         }
-                        flameRight.get(flameRight.size() - 1).setImg(Sprite.movingSprite(Sprite.explosion_horizontal_right_last2,
+                        rightFlameList.get(rightFlameList.size() - 1).setImg(Sprite.movingSprite(Sprite.explosion_horizontal_right_last2,
                                 Sprite.explosion_horizontal_right_last1,
                                 Sprite.explosion_horizontal_right_last, indexBombSprite, 10).getImage());
                     }
 
-                    //Left flame closing
-                    if (wallLeftCheck || itemLeftCheck || brickLeftcheck) {
-                        for (Entity element : flameLeft) {
+                    //Left flame closing animation update
+                    if (leftFlameInfo.isBrickCheck() || leftFlameInfo.isWallCheck() || leftFlameInfo.isItemCheck()) {
+                        for (Entity element : leftFlameList) {
                             element.setImg(Sprite.movingSprite(Sprite.explosion_horizontal2,
                                     Sprite.explosion_horizontal1, Sprite.explosion_horizontal,
                                     indexBombSprite, 10).getImage());
                         }
-                        if (brickLeftcheck) {
-                            brickLeftExplosion.setImg(Sprite.movingSprite(Sprite.brick_exploded,
+                        if (leftFlameInfo.isBrickCheck()) {
+                            leftFlameInfo.getBrickExplosion().setImg(Sprite.movingSprite(Sprite.brick_exploded,
                                     Sprite.brick_exploded1, Sprite.brick_exploded2, indexBombSprite, 10).getImage());
                         }
                     } else {
-                        for (int i = 0; i < flameLeft.size() - 1; i++) {
-                            flameLeft.get(i).setImg(Sprite.movingSprite(Sprite.explosion_horizontal2,
+                        for (int i = 0; i < leftFlameList.size() - 1; i++) {
+                            leftFlameList.get(i).setImg(Sprite.movingSprite(Sprite.explosion_horizontal2,
                                     Sprite.explosion_horizontal1, Sprite.explosion_horizontal,
                                     indexBombSprite, 10).getImage());
                         }
-                        flameLeft.get(flameLeft.size() - 1).setImg(Sprite.movingSprite(Sprite.explosion_horizontal_left_last2,
+                        leftFlameList.get(leftFlameList.size() - 1).setImg(Sprite.movingSprite(Sprite.explosion_horizontal_left_last2,
                                 Sprite.explosion_horizontal_left_last1,
                                 Sprite.explosion_horizontal_left_last, indexBombSprite, 10).getImage());
                     }
 
+                    //Down flame closing animation update
+                    if (downFlameInfo.isBrickCheck() || downFlameInfo.isWallCheck() || downFlameInfo.isItemCheck()) {
+                        for (Entity element : downFlameList) {
+                            element.setImg(Sprite.movingSprite(Sprite.explosion_vertical2,
+                                    Sprite.explosion_vertical1, Sprite.explosion_vertical,
+                                    indexBombSprite, 10).getImage());
+                        }
+                        if (downFlameInfo.isBrickCheck()) {
+                            downFlameInfo.getBrickExplosion().setImg(Sprite.movingSprite(Sprite.brick_exploded,
+                                    Sprite.brick_exploded1, Sprite.brick_exploded2, indexBombSprite, 10).getImage());
+                        }
+                    } else {
+                        for (int i = 0; i < downFlameList.size() - 1; i++) {
+                            downFlameList.get(i).setImg(Sprite.movingSprite(Sprite.explosion_vertical2,
+                                    Sprite.explosion_vertical1, Sprite.explosion_vertical,
+                                    indexBombSprite, 10).getImage());
+                        }
+                        downFlameList.get(downFlameList.size() - 1).setImg(Sprite.movingSprite(Sprite.explosion_vertical_down_last2,
+                                Sprite.explosion_vertical_down_last1,
+                                Sprite.explosion_vertical_down_last, indexBombSprite, 10).getImage());
+                    }
+
+                    //Down flame closing animation update
+                    if (upFlameInfo.isBrickCheck() || upFlameInfo.isWallCheck() || upFlameInfo.isItemCheck()) {
+                        for (Entity element : upFlameList) {
+                            element.setImg(Sprite.movingSprite(Sprite.explosion_vertical2,
+                                    Sprite.explosion_vertical1, Sprite.explosion_vertical,
+                                    indexBombSprite, 10).getImage());
+                        }
+                        if (upFlameInfo.isBrickCheck()) {
+                            upFlameInfo.getBrickExplosion().setImg(Sprite.movingSprite(Sprite.brick_exploded,
+                                    Sprite.brick_exploded1, Sprite.brick_exploded2, indexBombSprite, 10).getImage());
+                        }
+                    } else {
+                        for (int i = 0; i < upFlameList.size() - 1; i++) {
+                            upFlameList.get(i).setImg(Sprite.movingSprite(Sprite.explosion_vertical2,
+                                    Sprite.explosion_vertical1, Sprite.explosion_vertical,
+                                    indexBombSprite, 10).getImage());
+                        }
+                        upFlameList.get(upFlameList.size() - 1).setImg(Sprite.movingSprite(Sprite.explosion_vertical_top_last2,
+                                Sprite.explosion_vertical_top_last1,
+                                Sprite.explosion_vertical_top_last, indexBombSprite, 10).getImage());
+                    }
+
                     if (indexBombSprite == 10) {
                         bombStatus = BombStatus.DISAPEAR;
-                        gameMap.getBricks().remove(brickRightExplosion);
-                        gameMap.getBricks().remove(brickLeftExplosion);
+                        gameMap.getBricks().remove(rightFlameInfo.getBrickExplosion());
+                        gameMap.getBricks().remove(leftFlameInfo.getBrickExplosion());
+                        gameMap.getBricks().remove(downFlameInfo.getBrickExplosion());
+                        gameMap.getBricks().remove(upFlameInfo.getBrickExplosion());
                     }
                 }
                 break;
@@ -268,12 +423,10 @@ public class Bomb extends Entity implements IObstacle {
                 break;
             case WENTOFF:
                 super.render(gc);
-                for (Entity element : flameRight) {
-                    element.render(gc);
-                }
-                for (Entity element : flameLeft) {
-                    element.render(gc);
-                }
+                rightFlameList.forEach(g -> g.render(gc));
+                leftFlameList.forEach(g -> g.render(gc));
+                upFlameList.forEach(g -> g.render(gc));
+                downFlameList.forEach(g -> g.render(gc));
                 break;
         }
     }

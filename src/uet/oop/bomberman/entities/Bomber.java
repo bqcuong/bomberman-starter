@@ -58,7 +58,7 @@ public class Bomber extends MovingEntity {
         collisionDetector.checkCollisionWithItem(this.x, this.y, this);
         if (keyboardEvent.isPressed(KeyCode.W)) {
             isPressed = true;
-            if (collisionDetector.checkCollision(this.x, this.y - speedRun, CheckCollisionObject.OBSTACLE)
+            if (collisionDetector.checkCollisionWithMap(this.x, this.y - speedRun)
                     || collisionDetector.checkCollisionWithBombWhenMove(this.x, this.y - speedRun, bombList)) {
                 super.updateDirection(directionStatus.UP, false, speedRun);
                 indexBomberSprite = 0;
@@ -71,7 +71,7 @@ public class Bomber extends MovingEntity {
         }
         if (keyboardEvent.isPressed(KeyCode.A)) {
             isPressed = true;
-            if (collisionDetector.checkCollision(this.x - speedRun, this.y, CheckCollisionObject.OBSTACLE)
+            if (collisionDetector.checkCollisionWithMap(this.x - speedRun, this.y)
                     || collisionDetector.checkCollisionWithBombWhenMove(this.x - speedRun, this.y, bombList)) {
                 super.updateDirection(directionStatus.LEFT, false, speedRun);
                 indexBomberSprite = 0;
@@ -85,7 +85,7 @@ public class Bomber extends MovingEntity {
         }
         if (keyboardEvent.isPressed(KeyCode.S)) {
             isPressed = true;
-            if (collisionDetector.checkCollision(this.x, this.y + speedRun, CheckCollisionObject.OBSTACLE)
+            if (collisionDetector.checkCollisionWithMap(this.x, this.y + speedRun)
                     || collisionDetector.checkCollisionWithBombWhenMove(this.x, this.y + speedRun, bombList)) {
                 super.updateDirection(directionStatus.DOWN, false, speedRun);
                 indexBomberSprite = 0;
@@ -98,7 +98,7 @@ public class Bomber extends MovingEntity {
         }
         if (keyboardEvent.isPressed(KeyCode.D)) {
             isPressed = true;
-            if (collisionDetector.checkCollision(this.x + speedRun, this.y, CheckCollisionObject.OBSTACLE)
+            if (collisionDetector.checkCollisionWithMap(this.x + speedRun, this.y)
                     || collisionDetector.checkCollisionWithBombWhenMove(this.x + speedRun, this.y, bombList)) {
                 super.updateDirection(directionStatus.RIGHT, false, speedRun);
                 indexBomberSprite = 0;
