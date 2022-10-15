@@ -81,7 +81,7 @@ public class Upgrade {
         grid.setVgap(10);
         grid.setPadding(new Insets(20,150,10,10));
 
-        grid.add(new Label("Di chuyển nhân vật: các phím mũi tên.\n" +
+        /*grid.add(new Label("Di chuyển nhân vật: các phím mũi tên.\n" +
                 "Đặt bomb: SPACE.\n" +
                 "Item: sau khi phá hủy tường sẽ xuất hiện ngẫu nhiên item. Sử dụng Item để được nâng cấp.\n" +
                 "Nếu nhân vật chạm phải địch hoặc bị bom nổ sẽ chết.\n" +
@@ -89,8 +89,7 @@ public class Upgrade {
         dialog.setResultConverter(button -> {
             timer.start();
             return 1;
-        });
+        });*/
         dialog.showAndWait();
     }
 
-}

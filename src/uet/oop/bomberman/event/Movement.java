@@ -15,23 +15,19 @@ public class Movement {
         int tempX = entity.getX()%Sprite.SCALED_SIZE;
         int tempY = entity.getY()%Sprite.SCALED_SIZE;
         if(entity.getState().equals("right")){
-
-            //làm tròn Y để dễ di chuyển
             if(tempY<=10 && entity.collidesWith(stillObjects.get(realX * HEIGHT + realY + HEIGHT ))) entity.setY(realY * Sprite.SCALED_SIZE);
             if(tempY>=22 && entity.collidesWith(stillObjects.get(realX * HEIGHT + realY + HEIGHT + 1))) entity.setY((realY + 1) * Sprite.SCALED_SIZE);
 
             //kiểm tra va chạm để di chuyển
             if(tempY == 0) {
                 if (entity.collidesWith(stillObjects.get(realX * HEIGHT + realY + HEIGHT))
-                        && entity.collidesWithBomb(bomb)) {
+                && entity.collidesWithBomb(bomb)) {
                     entity.setX(entity.getX() + dx);
-//                    System.out.println(entity.getX() + "   " + entity.getY());
                 }
             }
         }
         if(entity.getState().equals("up")){
 
-            //làm tròn X để dễ di chuyển
             if(tempX<=10 && entity.collidesWith(stillObjects.get(realX * HEIGHT + realY - 1))) entity.setX(realX * Sprite.SCALED_SIZE);
             if(tempX>=22 && entity.collidesWith(stillObjects.get(realX * HEIGHT + realY + HEIGHT - 1))) entity.setX((realX + 1) * Sprite.SCALED_SIZE);
 
@@ -55,7 +51,6 @@ public class Movement {
         }
         if(entity.getState().equals("left")){
 
-            //làm tròn Y để dễ di chuyển
             if(tempY<=10 && entity.collidesWith(stillObjects.get(realX * HEIGHT + realY - HEIGHT ))) entity.setY(realY * Sprite.SCALED_SIZE);
             if(tempY>=22 && entity.collidesWith(stillObjects.get(realX * HEIGHT + realY - HEIGHT + 1))) entity.setY((realY + 1) * Sprite.SCALED_SIZE);
 
@@ -79,7 +74,6 @@ public class Movement {
         }
         if(entity.getState().equals("down")){
 
-            //làm tròn X để dễ di chuyển
             if (tempX <= 10 && entity.collidesWith(stillObjects.get(realX * HEIGHT + realY + 1 ))) entity.setX(realX * Sprite.SCALED_SIZE);
             if (tempX >= 22 && entity.collidesWith(stillObjects.get(realX * HEIGHT + realY + HEIGHT + 1))) entity.setX((realX + 1) * Sprite.SCALED_SIZE);
 
@@ -93,4 +87,3 @@ public class Movement {
             }
         }
     }
-}
