@@ -59,23 +59,20 @@ public class CollisionDetector {
         return false;
     }
 
-    public boolean checkCollisionWithBrick(int x, int y) {
-        Rectangle rectBomber = new Rectangle(x, y, Bomber.REAL_WIDTH, Bomber.REAL_HEIGHT);
-        for (Entity element : gameMap.getBricks()) {
-            if (rectBomber.intersects(element.getX(),
-                    element.getY(), Sprite.SCALED_SIZE, Sprite.SCALED_SIZE)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public boolean checkCollisionWithMap(int x, int y) {
-        Entity topLeft = gameMap.getWallsAndGrassAtPosition(x, y);
-        Entity topRight = gameMap.getWallsAndGrassAtPosition(x + Bomber.REAL_WIDTH, y);
-        Entity downLeft = gameMap.getWallsAndGrassAtPosition(x, y + Bomber.REAL_HEIGHT);
-        Entity downRight = gameMap.getWallsAndGrassAtPosition(x + Bomber.REAL_WIDTH, y + Bomber.REAL_HEIGHT);
-        return checkCollisionWithBrick(x, y) || topLeft instanceof IObstacle || topRight instanceof IObstacle
-                || downLeft instanceof IObstacle || downRight instanceof IObstacle;
+        //Wall and grass entity
+        Entity topLeftWallAndGrass = gameMap.getWallsAndGrassAtPosition(x, y);
+        Entity topRightWallAndGrass = gameMap.getWallsAndGrassAtPosition(x + Bomber.REAL_WIDTH, y);
+        Entity downLeftWallAndGrass = gameMap.getWallsAndGrassAtPosition(x, y + Bomber.REAL_HEIGHT);
+        Entity downRightWallAndGrass = gameMap.getWallsAndGrassAtPosition(x + Bomber.REAL_WIDTH,
+                y + Bomber.REAL_HEIGHT);
+        Entity topLeftBrick = gameMap.getBrickAtPosition(x, y);
+        Entity topRightBrick = gameMap.getBrickAtPosition(x + Bomber.REAL_WIDTH, y);
+        Entity downLeftBrick = gameMap.getBrickAtPosition(x, y + Bomber.REAL_HEIGHT);
+        Entity downRightBrick = gameMap.getBrickAtPosition(x + Bomber.REAL_WIDTH,
+                y + Bomber.REAL_HEIGHT);
+        return topLeftWallAndGrass instanceof Wall || topRightWallAndGrass instanceof Wall
+                || downLeftWallAndGrass instanceof Wall || downRightWallAndGrass instanceof Wall
+                || topLeftBrick != null || topRightBrick != null || downLeftBrick != null || downRightBrick != null;
     }
 }
