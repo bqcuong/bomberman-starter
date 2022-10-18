@@ -6,26 +6,28 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import uet.oop.bomberman.entities.Bomber;
-import uet.oop.bomberman.entities.Entity;
-import uet.oop.bomberman.entities.Grass;
-import uet.oop.bomberman.entities.Wall;
+
+import sun.audio.AudioPlayer;
 import uet.oop.bomberman.graphics.Sprite;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+
 
 public class BombermanGame extends Application {
-    
+
     public static final int WIDTH = 20;
     public static final int HEIGHT = 15;
-    
-    private GraphicsContext gc;
-    private Canvas canvas;
-    private List<Entity> entities = new ArrayList<>();
-    private List<Entity> stillObjects = new ArrayList<>();
+    public static GraphicsContext gc;
+    public static Canvas canvas;
 
+    public static Scene scene;
+    public static AnimationTimer timer;
 
     public static void main(String[] args) {
         Application.launch(BombermanGame.class);
@@ -33,58 +35,69 @@ public class BombermanGame extends Application {
 
     @Override
     public void start(Stage stage) {
-        // Tao Canvas
+        stage.setTitle("Bomberman Game");
+        Image icon = new Image("file:res/game.png");
+        stage.getIcons().add(icon);
+        stage.setResizable(false);
+
+
         canvas = new Canvas(Sprite.SCALED_SIZE * WIDTH, Sprite.SCALED_SIZE * HEIGHT);
         gc = canvas.getGraphicsContext2D();
 
-        // Tao root container
+        Menu menuGame = new Menu();
+        StageSetting stageSetting = new StageSetting();
+        Sound.upSound();
+        Sound.lobby.play();
+        stage.setScene(menuGame.menu);
+        menuGame.setting.setOnAction(event -> {
+            stageSetting.settingStage.setX(stage.getX() + 704);
+            stageSetting.settingStage.setY(stage.getY() + 64);
+            stageSetting.settingStage.show();
+        });
+        menuGame.play.setOnAction(event -> {
+            stageSetting.settingStage.close();
+            stage.setScene(scene);
+            timer.start();
+        });
+        menuGame.exit.setOnAction(event -> {
+            stageSetting.settingStage.close();
+            stage.close();
+        });
+
         Group root = new Group();
-        root.getChildren().add(canvas);
-
-        // Tao scene
-        Scene scene = new Scene(root);
-
-        // Them scene vao stage
-        stage.setScene(scene);
+        root.getChildren().addAll(canvas);
+        scene = new Scene(root);
+        scene.setFill(Color.rgb(194, 214, 214));
         stage.show();
 
-        AnimationTimer timer = new AnimationTimer() {
+        Game game = new Game();
+        root.getChildren().addAll(game.lever, game.items, game.exit, game.setting);
+        game.setting.setOnAction(event -> {
+            stageSetting.settingStage.setX(stage.getX() + 704);
+            stageSetting.settingStage.setY(stage.getY() + 64);
+            stageSetting.settingStage.show();
+        });
+        game.exit.setOnAction(event -> {
+            try {
+                File file = new File("res/datagame.txt");
+                FileReader input = new FileReader(file);
+                BufferedReader bufferedReader = new BufferedReader(input);
+                String one = bufferedReader.readLine();
+                String[] oneOne = one.split(" ");
+                System.out.println(oneOne[0]);
+            } catch (IOException i) {
+                i.printStackTrace();
+            }
+            stageSetting.settingStage.close();
+            game.downDataGame();
+            stage.close();
+            return;
+        });
+        timer = new AnimationTimer() {
             @Override
             public void handle(long l) {
-                render();
-                update();
+                game.runGame();
             }
         };
-        timer.start();
-
-        createMap();
-
-        Entity bomberman = new Bomber(1, 1, Sprite.player_right.getFxImage());
-        entities.add(bomberman);
-    }
-
-    public void createMap() {
-        for (int i = 0; i < WIDTH; i++) {
-            for (int j = 0; j < HEIGHT; j++) {
-                Entity object;
-                if (j == 0 || j == HEIGHT - 1 || i == 0 || i == WIDTH - 1) {
-                    object = new Wall(i, j, Sprite.wall.getFxImage());
-                }
-                else {
-                    object = new Grass(i, j, Sprite.grass.getFxImage());
-                }
-                stillObjects.add(object);
-            }
-        }
-    }
-
-    public void update() {
-        entities.forEach(Entity::update);
-    }
-
-    public void render() {
-        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        stillObjects.forEach(g -> g.render(gc));
-        entities.forEach(g -> g.render(gc));
     }
 }
