@@ -58,40 +58,40 @@ public class GameMap {
             /// Display Map
             for (int i = 0; i < mapHeight; i++) {
                 String tempLine = sc.nextLine();
-                List<Entity> tmpMapList = new ArrayList<>();
+                List<Entity> tmpWallAndGrass = new ArrayList<>();
                 for (int j = 0; j < mapWidth; j++) {
                     switch (tempLine.charAt(j)) {
                         case '#':
-                            tmpMapList.add(new Wall(j, i, Sprite.wall.getImage()));
+                            tmpWallAndGrass.add(new Wall(j, i, Sprite.wall.getImage()));
                             break;
                         case '*':
                             bricks.add(new Brick(j, i, Sprite.brick.getImage()));
-                            tmpMapList.add(new Grass(j, i, Sprite.grass.getImage()));
+                            tmpWallAndGrass.add(new Grass(j, i, Sprite.grass.getImage()));
                             break;
                         case 'p':
                             /// Display Bomber
                             player = new Bomber(j, i, Sprite.player_right.getImage(), keyboardEvent, new CollisionDetector(this), this);
-                            tmpMapList.add(new Grass(j, i, Sprite.grass.getImage()));
+                            tmpWallAndGrass.add(new Grass(j, i, Sprite.grass.getImage()));
                             break;
                         case 'b':
                             items.add(new ItemBombs(j, i, Sprite.powerup_bombs.getImage()));
-                            tmpMapList.add(new Grass(j, i, Sprite.grass.getImage()));
+                            tmpWallAndGrass.add(new Grass(j, i, Sprite.grass.getImage()));
                             break;
                         case 'f':
                             bricks.add(new Brick(j, i, Sprite.brick.getImage()));
                             items.add(new ItemFlames(j, i, Sprite.powerup_flames.getImage()));
-                            tmpMapList.add(new Grass(j, i, Sprite.grass.getImage()));
+                            tmpWallAndGrass.add(new Grass(j, i, Sprite.grass.getImage()));
                             break;
                         case 's':
                             items.add(new ItemSpeed(j, i, Sprite.powerup_speed.getImage()));
-                            tmpMapList.add(new Brick(j, i, Sprite.grass.getImage()));
+                            tmpWallAndGrass.add(new Brick(j, i, Sprite.grass.getImage()));
                             break;
                         default:
-                            tmpMapList.add(new Grass(j, i, Sprite.grass.getImage()));
+                            tmpWallAndGrass.add(new Grass(j, i, Sprite.grass.getImage()));
                             break;
                     }
                 }
-                wallAndGrass.add(tmpMapList);
+                wallAndGrass.add(tmpWallAndGrass);
             }
             sc.close();
         } catch (FileNotFoundException e) {
