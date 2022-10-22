@@ -53,8 +53,8 @@ public class Bomb extends Entity implements IObstacle {
             } else {
                 bombStatus = BombStatus.WENTOFF;
                 wentOffPhrase = WentOffPhraseStatus.OPENING;
-                timer.cancel();
                 indexBombSprite = 0;
+                timer.cancel();
             }
         }
     };
@@ -65,117 +65,64 @@ public class Bomb extends Entity implements IObstacle {
         this.bombLevel = bombLevel;
         timer.schedule(timerTask, 0, 1000);
 
-        //Right check
-        rightFlameInfo.setFlameLength(bombLevel);
-        for (int i = xUnit + 1; i != xUnit + bombLevel + 1; i++) {
-            if (gameMap.getBrickAtPosition(i * Sprite.SCALED_SIZE,
-                    yUnit * Sprite.SCALED_SIZE) instanceof Brick) {
-                rightFlameInfo.setBrickCheck(true);
-                rightFlameInfo.setFlameLength(i - xUnit - 1);
-                rightFlameInfo.setBrickExplosion(gameMap.getBrickAtPosition(i * Sprite.SCALED_SIZE,
-                        yUnit * Sprite.SCALED_SIZE));
-                break;
-            }
-            if (gameMap.getWallsAndGrassAtPosition(i * Sprite.SCALED_SIZE,
-                    yUnit * Sprite.SCALED_SIZE) instanceof Wall) {
-                rightFlameInfo.setWallCheck(true);
-                rightFlameInfo.setFlameLength(i - xUnit - 1);
-                break;
-            }
-            if (gameMap.getItemAtPosition(i * Sprite.SCALED_SIZE,
-                    yUnit * Sprite.SCALED_SIZE) instanceof IItem) {
-                rightFlameInfo.setItemCheck(true);
-                rightFlameInfo.setFlameLength(i - xUnit - 1);
-                break;
+        //make left flame
+        checkLeftFlame(xUnit, yUnit);
+        makeLeftFlame(xUnit, yUnit);
+
+        //make right flame
+        checkRightFlame(xUnit, yUnit);
+        makeRightFlame(xUnit, yUnit);
+
+        //make down flame
+        checkDownFlame(xUnit, yUnit);
+        makeDownFlame(xUnit, yUnit);
+
+        //make up flame
+        checkUpflame(xUnit, yUnit);
+        makeUpFlame(xUnit, yUnit);
+    }
+
+    public void updateIntersectionLength() {
+        int xUnit = x / Sprite.SCALED_SIZE;
+        int yUnit = y / Sprite.SCALED_SIZE;
+        //Up
+        for (int i = yUnit - 1; i != yUnit - bombLevel - 1; i--) {
+            if (gameMap.getPlayer().getBombAtPosition(xUnit * Sprite.SCALED_SIZE,
+                    i * Sprite.SCALED_SIZE) != null) {
+                upFlameInfo.setBombCheck(true);
+                upFlameInfo.setIntersectionLength(bombLevel - (yUnit - i - 1));
             }
         }
-        //Make right flame list
-        if (rightFlameInfo.isBrickCheck() || rightFlameInfo.isWallCheck() || rightFlameInfo.isItemCheck()) {
-            for (int i = 1; i <= rightFlameInfo.getFlameLength(); i++) {
-                rightFlameList.add(new ItemFlames(xUnit + i,
-                        yUnit, Sprite.explosion_horizontal.getImage()));
+
+        //Down
+        for (int i = yUnit + 1; i != yUnit + bombLevel + 1; i++) {
+            if (gameMap.getPlayer().getBombAtPosition(xUnit * Sprite.SCALED_SIZE,
+                    i * Sprite.SCALED_SIZE) != null) {
+                downFlameInfo.setBombCheck(true);
+                downFlameInfo.setIntersectionLength(bombLevel - (i - yUnit - 1));
             }
-        } else {
-            for (int i = 1; i < bombLevel; i++) {
-                rightFlameList.add(new ItemFlames(xUnit + i, yUnit, Sprite.explosion_horizontal.getImage()));
-            }
-            rightFlameList.add(new ItemFlames(xUnit + bombLevel, yUnit, Sprite.explosion_horizontal_right_last.getImage()));
         }
 
         //Left
-        leftFlameInfo.setFlameLength(bombLevel);
         for (int i = xUnit - 1; i != xUnit - bombLevel - 1; i--) {
-            if (gameMap.getBrickAtPosition(i * Sprite.SCALED_SIZE,
-                    yUnit * Sprite.SCALED_SIZE) instanceof Brick) {
-                leftFlameInfo.setBrickCheck(true);
-                leftFlameInfo.setFlameLength(xUnit - i - 1);
-                leftFlameInfo.setBrickExplosion(gameMap.getBrickAtPosition(i * Sprite.SCALED_SIZE,
-                        yUnit * Sprite.SCALED_SIZE));
-                break;
+            if (gameMap.getPlayer().getBombAtPosition(i * Sprite.SCALED_SIZE,
+                    yUnit * Sprite.SCALED_SIZE) != null) {
+                leftFlameInfo.setBombCheck(true);
+                leftFlameInfo.setIntersectionLength(bombLevel - (xUnit - i - 1));
             }
-            if (gameMap.getWallsAndGrassAtPosition(i * Sprite.SCALED_SIZE,
-                    yUnit * Sprite.SCALED_SIZE) instanceof Wall) {
-                leftFlameInfo.setWallCheck(true);
-                leftFlameInfo.setFlameLength(xUnit - i - 1);
-                break;
-            }
-            if (gameMap.getItemAtPosition(i * Sprite.SCALED_SIZE,
-                    yUnit * Sprite.SCALED_SIZE) instanceof IItem) {
-                leftFlameInfo.setItemCheck(true);
-                leftFlameInfo.setFlameLength(xUnit - i - 1);
-                break;
-            }
-        }
-        //Make left flame list
-        if (leftFlameInfo.isBrickCheck() || leftFlameInfo.isWallCheck() || leftFlameInfo.isItemCheck()) {
-            for (int i = 1; i <= leftFlameInfo.getFlameLength(); i++) {
-                leftFlameList.add(new ItemFlames(xUnit - i,
-                        yUnit, Sprite.explosion_horizontal.getImage()));
-            }
-        } else {
-            for (int i = 1; i < bombLevel; i++) {
-                leftFlameList.add(new ItemFlames(xUnit - i, yUnit, Sprite.explosion_horizontal.getImage()));
-            }
-            leftFlameList.add(new ItemFlames(xUnit - bombLevel, yUnit, Sprite.explosion_horizontal_left_last.getImage()));
         }
 
-        //Down check
-        downFlameInfo.setFlameLength(bombLevel);
-        for (int i = yUnit + 1; i != yUnit + bombLevel + 1; i++) {
-            if (gameMap.getBrickAtPosition(xUnit * Sprite.SCALED_SIZE,
-                    i * Sprite.SCALED_SIZE) instanceof Brick) {
-                downFlameInfo.setBrickCheck(true);
-                downFlameInfo.setFlameLength(i - yUnit - 1);
-                downFlameInfo.setBrickExplosion(gameMap.getBrickAtPosition(xUnit * Sprite.SCALED_SIZE,
-                        i * Sprite.SCALED_SIZE));
-                break;
-            }
-            if (gameMap.getWallsAndGrassAtPosition(xUnit * Sprite.SCALED_SIZE,
-                    i * Sprite.SCALED_SIZE) instanceof Wall) {
-                downFlameInfo.setWallCheck(true);
-                downFlameInfo.setFlameLength(i - yUnit - 1);
-                break;
-            }
-            if (gameMap.getItemAtPosition(xUnit * Sprite.SCALED_SIZE,
-                    i * Sprite.SCALED_SIZE) instanceof IItem) {
-                downFlameInfo.setItemCheck(true);
-                downFlameInfo.setFlameLength(i - yUnit - 1);
-                break;
+        //Right
+        for (int i = xUnit + 1; i != xUnit + bombLevel + 1; i++) {
+            if (gameMap.getPlayer().getBombAtPosition(i * Sprite.SCALED_SIZE,
+                    yUnit * Sprite.SCALED_SIZE) != null) {
+                rightFlameInfo.setBombCheck(true);
+                rightFlameInfo.setIntersectionLength(bombLevel - (i - xUnit - 1));
             }
         }
-        //Make Down flame list
-        if (downFlameInfo.isBrickCheck() || downFlameInfo.isWallCheck() || downFlameInfo.isItemCheck()) {
-            for (int i = 1; i <= downFlameInfo.getFlameLength(); i++) {
-                downFlameList.add(new ItemFlames(xUnit,
-                        yUnit + i, Sprite.explosion_vertical.getImage()));
-            }
-        } else {
-            for (int i = 1; i < bombLevel; i++) {
-                downFlameList.add(new ItemFlames(xUnit, yUnit + i, Sprite.explosion_vertical.getImage()));
-            }
-            downFlameList.add(new ItemFlames(xUnit, yUnit + bombLevel, Sprite.explosion_vertical_down_last.getImage()));
-        }
+    }
 
+    public void checkUpflame(int xUnit, int yUnit) {
         //Up check
         upFlameInfo.setFlameLength(bombLevel);
         for (int i = yUnit - 1; i != yUnit - bombLevel - 1; i--) {
@@ -200,10 +147,15 @@ public class Bomb extends Entity implements IObstacle {
                 break;
             }
         }
+    }
+
+    public void makeUpFlame(int xUnit, int yUnit) {
+
         //Make Up flame list
-        if (upFlameInfo.isBrickCheck() || upFlameInfo.isWallCheck() || upFlameInfo.isItemCheck()) {
+        if (upFlameInfo.isBrickCheck() || upFlameInfo.isWallCheck()
+                || upFlameInfo.isItemCheck()) {
             for (int i = 1; i <= upFlameInfo.getFlameLength(); i++) {
-                downFlameList.add(new ItemFlames(xUnit,
+                upFlameList.add(new ItemFlames(xUnit,
                         yUnit - i, Sprite.explosion_vertical.getImage()));
             }
         } else {
@@ -214,12 +166,139 @@ public class Bomb extends Entity implements IObstacle {
         }
     }
 
+    public void checkDownFlame(int xUnit, int yUnit) {
+        //Down check
+        downFlameInfo.setFlameLength(bombLevel);
+        for (int i = yUnit + 1; i != yUnit + bombLevel + 1; i++) {
+            if (gameMap.getBrickAtPosition(xUnit * Sprite.SCALED_SIZE,
+                    i * Sprite.SCALED_SIZE) instanceof Brick) {
+                downFlameInfo.setBrickCheck(true);
+                downFlameInfo.setFlameLength(yUnit - i - 1);
+                downFlameInfo.setBrickExplosion(gameMap.getBrickAtPosition(xUnit * Sprite.SCALED_SIZE,
+                        i * Sprite.SCALED_SIZE));
+                break;
+            }
+            if (gameMap.getWallsAndGrassAtPosition(xUnit * Sprite.SCALED_SIZE,
+                    i * Sprite.SCALED_SIZE) instanceof Wall) {
+                downFlameInfo.setWallCheck(true);
+                downFlameInfo.setFlameLength(i - yUnit - 1);
+                break;
+            }
+            if (gameMap.getItemAtPosition(xUnit * Sprite.SCALED_SIZE,
+                    i * Sprite.SCALED_SIZE) instanceof IItem) {
+                downFlameInfo.setItemCheck(true);
+                downFlameInfo.setFlameLength(i - yUnit - 1);
+                break;
+            }
+        }
+    }
+
+    public void makeDownFlame(int xUnit, int yUnit) {
+        //Make Down flame list
+        if (downFlameInfo.isBrickCheck() || downFlameInfo.isWallCheck() || downFlameInfo.isItemCheck()) {
+            for (int i = 1; i <= downFlameInfo.getFlameLength(); i++) {
+                downFlameList.add(new ItemFlames(xUnit,
+                        yUnit + i, Sprite.explosion_vertical.getImage()));
+            }
+        } else {
+            for (int i = 1; i < bombLevel; i++) {
+                downFlameList.add(new ItemFlames(xUnit, yUnit + i, Sprite.explosion_vertical.getImage()));
+            }
+            downFlameList.add(new ItemFlames(xUnit, yUnit + bombLevel, Sprite.explosion_vertical_down_last.getImage()));
+        }
+    }
+
+    public void checkLeftFlame(int xUnit, int yUnit) {
+        //Left
+        leftFlameInfo.setFlameLength(bombLevel);
+        for (int i = xUnit - 1; i != xUnit - bombLevel - 1; i--) {
+            if (gameMap.getBrickAtPosition(i * Sprite.SCALED_SIZE,
+                    yUnit * Sprite.SCALED_SIZE) instanceof Brick) {
+                leftFlameInfo.setBrickCheck(true);
+                leftFlameInfo.setFlameLength(xUnit - i - 1);
+                leftFlameInfo.setBrickExplosion(gameMap.getBrickAtPosition(i * Sprite.SCALED_SIZE,
+                        yUnit * Sprite.SCALED_SIZE));
+                break;
+            }
+            if (gameMap.getWallsAndGrassAtPosition(i * Sprite.SCALED_SIZE,
+                    yUnit * Sprite.SCALED_SIZE) instanceof Wall) {
+                leftFlameInfo.setWallCheck(true);
+                leftFlameInfo.setFlameLength(xUnit - i - 1);
+                break;
+            }
+            if (gameMap.getItemAtPosition(i * Sprite.SCALED_SIZE,
+                    yUnit * Sprite.SCALED_SIZE) instanceof IItem) {
+                leftFlameInfo.setItemCheck(true);
+                leftFlameInfo.setFlameLength(xUnit - i - 1);
+                break;
+            }
+        }
+    }
+
+    public void makeLeftFlame(int xUnit, int yUnit) {
+        //Make left flame list
+        if (leftFlameInfo.isBrickCheck() || leftFlameInfo.isWallCheck() || leftFlameInfo.isItemCheck()) {
+            for (int i = 1; i <= leftFlameInfo.getFlameLength(); i++) {
+                leftFlameList.add(new ItemFlames(xUnit - i,
+                        yUnit, Sprite.explosion_horizontal.getImage()));
+            }
+        } else {
+            for (int i = 1; i < bombLevel; i++) {
+                leftFlameList.add(new ItemFlames(xUnit - i, yUnit, Sprite.explosion_horizontal.getImage()));
+            }
+            leftFlameList.add(new ItemFlames(xUnit - bombLevel, yUnit, Sprite.explosion_horizontal_left_last.getImage()));
+        }
+    }
+
+    public void checkRightFlame(int xUnit, int yUnit) {
+        //Right check
+        rightFlameInfo.setFlameLength(bombLevel);
+        for (int i = xUnit + 1; i != xUnit + bombLevel + 1; i++) {
+            if (gameMap.getBrickAtPosition(i * Sprite.SCALED_SIZE,
+                    yUnit * Sprite.SCALED_SIZE) instanceof Brick) {
+                rightFlameInfo.setBrickCheck(true);
+                rightFlameInfo.setFlameLength(i - xUnit - 1);
+                rightFlameInfo.setBrickExplosion(gameMap.getBrickAtPosition(i * Sprite.SCALED_SIZE,
+                        yUnit * Sprite.SCALED_SIZE));
+                break;
+            }
+            if (gameMap.getWallsAndGrassAtPosition(i * Sprite.SCALED_SIZE,
+                    yUnit * Sprite.SCALED_SIZE) instanceof Wall) {
+                rightFlameInfo.setWallCheck(true);
+                rightFlameInfo.setFlameLength(i - xUnit - 1);
+                break;
+            }
+            if (gameMap.getItemAtPosition(i * Sprite.SCALED_SIZE,
+                    yUnit * Sprite.SCALED_SIZE) instanceof IItem) {
+                rightFlameInfo.setItemCheck(true);
+                rightFlameInfo.setFlameLength(i - xUnit - 1);
+                break;
+            }
+        }
+    }
+
+    public void makeRightFlame(int xUnit, int yUnit) {
+        //Make right flame list
+        if (rightFlameInfo.isBrickCheck() || rightFlameInfo.isWallCheck() || rightFlameInfo.isItemCheck()) {
+            for (int i = 1; i <= rightFlameInfo.getFlameLength(); i++) {
+                rightFlameList.add(new ItemFlames(xUnit + i,
+                        yUnit, Sprite.explosion_horizontal.getImage()));
+            }
+        } else {
+            for (int i = 1; i < bombLevel; i++) {
+                rightFlameList.add(new ItemFlames(xUnit + i, yUnit, Sprite.explosion_horizontal.getImage()));
+            }
+            rightFlameList.add(new ItemFlames(xUnit + bombLevel, yUnit, Sprite.explosion_horizontal_right_last.getImage()));
+        }
+    }
+
     public BombStatus getBombStatus() {
         return bombStatus;
     }
 
     @Override
     public void update() {
+        updateIntersectionLength();
         switch (bombStatus) {
             case WAIT:
                 ++indexBombSprite;
@@ -233,9 +312,10 @@ public class Bomb extends Entity implements IObstacle {
                             indexBombSprite, 10).getImage());
 
                     //Right flame opening animation update
-                    if (rightFlameInfo.isBrickCheck() || rightFlameInfo.isWallCheck() || rightFlameInfo.isItemCheck()) {
-                        for (Entity element : rightFlameList) {
-                            element.setImg(Sprite.movingSprite(Sprite.explosion_horizontal,
+                    if (rightFlameInfo.isBrickCheck() || rightFlameInfo.isWallCheck()
+                            || rightFlameInfo.isItemCheck() || rightFlameInfo.isBombCheck()) {
+                        for (int i = 0; i < rightFlameList.size() - rightFlameInfo.getIntersectionLength(); i++) {
+                            rightFlameList.get(i).setImg(Sprite.movingSprite(Sprite.explosion_horizontal,
                                     Sprite.explosion_horizontal1, Sprite.explosion_horizontal2,
                                     indexBombSprite, 10).getImage());
                         }
@@ -251,9 +331,10 @@ public class Bomb extends Entity implements IObstacle {
                     }
 
                     //Left flame opening animation update
-                    if (leftFlameInfo.isBrickCheck() || leftFlameInfo.isWallCheck() || leftFlameInfo.isItemCheck()) {
-                        for (Entity element : leftFlameList) {
-                            element.setImg(Sprite.movingSprite(Sprite.explosion_horizontal,
+                    if (leftFlameInfo.isBrickCheck() || leftFlameInfo.isWallCheck()
+                            || leftFlameInfo.isItemCheck() || leftFlameInfo.isBombCheck()) {
+                        for (int i = 0; i < leftFlameList.size() - leftFlameInfo.getIntersectionLength(); i++) {
+                            leftFlameList.get(i).setImg(Sprite.movingSprite(Sprite.explosion_horizontal,
                                     Sprite.explosion_horizontal1, Sprite.explosion_horizontal2,
                                     indexBombSprite, 10).getImage());
                         }
@@ -269,9 +350,10 @@ public class Bomb extends Entity implements IObstacle {
                     }
 
                     //Down flame opening animation update
-                    if (downFlameInfo.isBrickCheck() || downFlameInfo.isWallCheck() || downFlameInfo.isItemCheck()) {
-                        for (Entity element : downFlameList) {
-                            element.setImg(Sprite.movingSprite(Sprite.explosion_vertical,
+                    if (downFlameInfo.isBrickCheck() || downFlameInfo.isWallCheck()
+                            || downFlameInfo.isItemCheck() || downFlameInfo.isBombCheck()) {
+                        for (int i = 0; i < downFlameList.size() - downFlameInfo.getIntersectionLength(); i++) {
+                            downFlameList.get(i).setImg(Sprite.movingSprite(Sprite.explosion_vertical,
                                     Sprite.explosion_vertical1, Sprite.explosion_vertical2,
                                     indexBombSprite, 10).getImage());
                         }
@@ -287,9 +369,10 @@ public class Bomb extends Entity implements IObstacle {
                     }
 
                     //Up flame opening animation update
-                    if (upFlameInfo.isBrickCheck() || upFlameInfo.isWallCheck() || upFlameInfo.isItemCheck()) {
-                        for (Entity element : upFlameList) {
-                            element.setImg(Sprite.movingSprite(Sprite.explosion_vertical,
+                    if (upFlameInfo.isBrickCheck() || upFlameInfo.isWallCheck()
+                            || upFlameInfo.isItemCheck() || upFlameInfo.isBombCheck()) {
+                        for (int i = 0; i < upFlameList.size() - upFlameInfo.getIntersectionLength(); i++) {
+                            upFlameList.get(i).setImg(Sprite.movingSprite(Sprite.explosion_vertical,
                                     Sprite.explosion_vertical1, Sprite.explosion_vertical2,
                                     indexBombSprite, 10).getImage());
                         }
@@ -316,9 +399,10 @@ public class Bomb extends Entity implements IObstacle {
                             Sprite.bomb_exploded, indexBombSprite, 10).getImage());
 
                     //Right flame closing animation update
-                    if (rightFlameInfo.isBrickCheck() || rightFlameInfo.isWallCheck() || rightFlameInfo.isItemCheck()) {
-                        for (Entity element : rightFlameList) {
-                            element.setImg(Sprite.movingSprite(Sprite.explosion_horizontal2,
+                    if (rightFlameInfo.isBrickCheck() || rightFlameInfo.isWallCheck() ||
+                            rightFlameInfo.isItemCheck() || rightFlameInfo.isBombCheck()) {
+                        for (int i = 0; i < rightFlameList.size() - rightFlameInfo.getIntersectionLength(); i++) {
+                            rightFlameList.get(i).setImg(Sprite.movingSprite(Sprite.explosion_horizontal2,
                                     Sprite.explosion_horizontal1, Sprite.explosion_horizontal,
                                     indexBombSprite, 10).getImage());
                         }
@@ -338,9 +422,10 @@ public class Bomb extends Entity implements IObstacle {
                     }
 
                     //Left flame closing animation update
-                    if (leftFlameInfo.isBrickCheck() || leftFlameInfo.isWallCheck() || leftFlameInfo.isItemCheck()) {
-                        for (Entity element : leftFlameList) {
-                            element.setImg(Sprite.movingSprite(Sprite.explosion_horizontal2,
+                    if (leftFlameInfo.isBrickCheck() || leftFlameInfo.isWallCheck()
+                            || leftFlameInfo.isItemCheck() || leftFlameInfo.isBombCheck()) {
+                        for (int i = 0; i < leftFlameList.size() - leftFlameInfo.getIntersectionLength(); i++) {
+                            leftFlameList.get(i).setImg(Sprite.movingSprite(Sprite.explosion_horizontal2,
                                     Sprite.explosion_horizontal1, Sprite.explosion_horizontal,
                                     indexBombSprite, 10).getImage());
                         }
@@ -360,9 +445,10 @@ public class Bomb extends Entity implements IObstacle {
                     }
 
                     //Down flame closing animation update
-                    if (downFlameInfo.isBrickCheck() || downFlameInfo.isWallCheck() || downFlameInfo.isItemCheck()) {
-                        for (Entity element : downFlameList) {
-                            element.setImg(Sprite.movingSprite(Sprite.explosion_vertical2,
+                    if (downFlameInfo.isBrickCheck() || downFlameInfo.isWallCheck()
+                            || downFlameInfo.isItemCheck() || downFlameInfo.isBombCheck()) {
+                        for (int i = 0; i < downFlameList.size() - downFlameInfo.getIntersectionLength(); i++) {
+                            downFlameList.get(i).setImg(Sprite.movingSprite(Sprite.explosion_vertical2,
                                     Sprite.explosion_vertical1, Sprite.explosion_vertical,
                                     indexBombSprite, 10).getImage());
                         }
@@ -381,10 +467,11 @@ public class Bomb extends Entity implements IObstacle {
                                 Sprite.explosion_vertical_down_last, indexBombSprite, 10).getImage());
                     }
 
-                    //Down flame closing animation update
-                    if (upFlameInfo.isBrickCheck() || upFlameInfo.isWallCheck() || upFlameInfo.isItemCheck()) {
-                        for (Entity element : upFlameList) {
-                            element.setImg(Sprite.movingSprite(Sprite.explosion_vertical2,
+                    //Up flame closing animation update
+                    if (upFlameInfo.isBrickCheck() || upFlameInfo.isWallCheck()
+                            || upFlameInfo.isItemCheck() || upFlameInfo.isBombCheck()) {
+                        for (int i = 0; i < upFlameList.size() - upFlameInfo.getIntersectionLength(); i++) {
+                            upFlameList.get(i).setImg(Sprite.movingSprite(Sprite.explosion_vertical2,
                                     Sprite.explosion_vertical1, Sprite.explosion_vertical,
                                     indexBombSprite, 10).getImage());
                         }
@@ -423,10 +510,18 @@ public class Bomb extends Entity implements IObstacle {
                 break;
             case WENTOFF:
                 super.render(gc);
-                rightFlameList.forEach(g -> g.render(gc));
-                leftFlameList.forEach(g -> g.render(gc));
-                upFlameList.forEach(g -> g.render(gc));
-                downFlameList.forEach(g -> g.render(gc));
+                for (int i = 0; i < rightFlameList.size() - rightFlameInfo.getIntersectionLength(); i++)
+                    rightFlameList.get(i).render(gc);
+
+                for (int i = 0; i < leftFlameList.size() - leftFlameInfo.getIntersectionLength(); i++)
+                    leftFlameList.get(i).render(gc);
+
+                for (int i = 0; i < upFlameList.size() - upFlameInfo.getIntersectionLength(); i++)
+                    upFlameList.get(i).render(gc);
+
+                for (int i = 0; i < downFlameList.size() - downFlameInfo.getIntersectionLength(); i++)
+                    downFlameList.get(i).render(gc);
+
                 break;
         }
     }
@@ -445,5 +540,13 @@ public class Bomb extends Entity implements IObstacle {
 
     public void setBombLevel(int bombLevel) {
         this.bombLevel = bombLevel;
+    }
+
+    public void setBombStatus(BombStatus bombStatus) {
+        this.bombStatus = bombStatus;
+    }
+
+    public void cancelTimer() {
+        timer.cancel();
     }
 }

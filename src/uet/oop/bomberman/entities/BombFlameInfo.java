@@ -4,12 +4,16 @@ public class BombFlameInfo {
     private boolean brickCheck;
     private boolean itemCheck;
     private boolean wallCheck;
+    private boolean bombCheck;
     private int flameLength = 0;
+
+    private int intersectionLength = 0;
     private Entity brickExplosion;
 
     public BombFlameInfo() {
         brickCheck = itemCheck = wallCheck = false;
         flameLength = 0;
+        intersectionLength = 0;
         brickExplosion = null;
     }
 
@@ -51,5 +55,20 @@ public class BombFlameInfo {
 
     public void setBrickExplosion(Entity brickExplosion) {
         this.brickExplosion = brickExplosion;
+    }
+
+    public boolean isBombCheck() {
+        return bombCheck;
+    }
+
+    public void setBombCheck(boolean bombCheck) {
+        this.bombCheck = bombCheck;
+    }
+
+    public void setIntersectionLength(int intersectionLength) {
+        this.intersectionLength = intersectionLength;
+    }
+    public int getIntersectionLength() {
+        return intersectionLength;
     }
 }

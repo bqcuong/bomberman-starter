@@ -23,11 +23,7 @@ public class CollisionDetector {
         for (Entity element : bombList) {
             Bomb bomb = (Bomb) element;
             if (rectBomber.intersects(element.getX(), element.getY(), Sprite.SCALED_SIZE, Sprite.SCALED_SIZE)) {
-                if (bomb.isAllowedToGoThrough()) {
-                    return false;
-                } else {
-                    return true;
-                }
+                return !bomb.isAllowedToGoThrough();
             } else {
                 bomb.setAllowedToGoThrough(false);
             }
@@ -40,7 +36,8 @@ public class CollisionDetector {
         int delPos = -1;
         for (int i = 0; i < gameMap.getItems().size(); i++) {
             if (rectBomber.intersects(gameMap.getItems().get(i).getX(),
-                    gameMap.getItems().get(i).getY(), Sprite.SCALED_SIZE, Sprite.SCALED_SIZE)) {
+                    gameMap.getItems().get(i).getY(), Sprite.SCALED_SIZE, Sprite.SCALED_SIZE)
+                    && gameMap.getBrickAtPosition(gameMap.getItems().get(i).getX(), gameMap.getItems().get(i).getY()) == null) {
                 delPos = i;
                 if (gameMap.getItems().get(i) instanceof ItemSpeed) {
                     bomber.setSpeedRun(bomber.getSpeedRun() + 1);

@@ -37,7 +37,7 @@ public class GraphicsMGR {
     }
 
     public void renderBomber(GameMap gameMap) {
-        gameMap.getEntities().forEach(g -> g.render(gc));
+        gameMap.getPlayer().render(gc);
     }
 
     public void renderBricks(GameMap gameMap) {

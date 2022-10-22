@@ -1,5 +1,6 @@
 package uet.oop.bomberman;
 
+//import com.sun.javafx.perf.PerformanceTracker;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Group;
@@ -16,6 +17,8 @@ public class BombermanGame extends Application {
     private GameMap gameMap;
     private GraphicsMGR graphics;
     private Canvas canvas;
+
+    //private static PerformanceTracker tracker;
 
     public static void main(String[] args) {
         Application.launch(BombermanGame.class);
@@ -55,6 +58,18 @@ public class BombermanGame extends Application {
             }
         };
         timer.start();
+
+        //tracker = PerformanceTracker.getSceneTracker(scene);
+
+        //getFPS
+//        AnimationTimer frameRateMeter = new AnimationTimer() {
+//
+//            @Override
+//            public void handle(long now) {
+//                System.out.println(String.format("%.0f", getFPS()));
+//            }
+//        };
+//        frameRateMeter.start();
     }
 
     public void render() {
@@ -62,6 +77,12 @@ public class BombermanGame extends Application {
         //Render map, entities
         graphics.render(gameMap);
     }
+
+//    private float getFPS() {
+//        float fps = tracker.getAverageFPS();
+//        tracker.resetAverageFPS();
+//        return fps;
+//    }
 
     public void update() {
         gameMap.update();

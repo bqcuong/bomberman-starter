@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class GameMap {
-    private List<Entity> entities = new ArrayList<>();
+    private Bomber player;
     private List<List<Entity>> wallAndGrass = new ArrayList<>();
     private List<Entity> bricks = new ArrayList<>();
     private List<Entity> items = new ArrayList<>();
@@ -70,8 +70,7 @@ public class GameMap {
                             break;
                         case 'p':
                             /// Display Bomber
-                            Entity bomber = new Bomber(j, i, Sprite.player_right.getImage(), keyboardEvent, new CollisionDetector(this), this);
-                            entities.add(bomber);
+                            player = new Bomber(j, i, Sprite.player_right.getImage(), keyboardEvent, new CollisionDetector(this), this);
                             tmpMapList.add(new Grass(j, i, Sprite.grass.getImage()));
                             break;
                         case 'b':
@@ -103,7 +102,7 @@ public class GameMap {
     public void update() {
         items.forEach(Entity::update);
         bricks.forEach(Entity::update);
-        entities.forEach(Entity::update);
+        player.update();
     }
 
 
@@ -129,16 +128,9 @@ public class GameMap {
         return null;
     }
 
-    public List<Entity> getEntities() {
-        return entities;
-    }
 
     public List<Entity> getItems() {
         return items;
-    }
-
-    public void setEntities(List<Entity> entities) {
-        this.entities = entities;
     }
 
     public void setWallAndGrass(List<List<Entity>> wallAndGrass) {
@@ -167,5 +159,9 @@ public class GameMap {
             }
         }
         return null;
+    }
+
+    public Bomber getPlayer() {
+        return player;
     }
 }

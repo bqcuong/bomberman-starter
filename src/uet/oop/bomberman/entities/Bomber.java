@@ -3,7 +3,6 @@ package uet.oop.bomberman.entities;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
-import uet.oop.bomberman.controllers.CheckCollisionObject;
 import uet.oop.bomberman.controllers.CollisionDetector;
 import uet.oop.bomberman.events.DirectionStatus;
 import uet.oop.bomberman.events.KeyboardEvent;
@@ -20,17 +19,16 @@ public class Bomber extends MovingEntity {
     private GameMap gameMap;
 
     //Real Width of bomber
-    public static int REAL_WIDTH = 20;
+    public static int REAL_WIDTH = 30;
 
     //Real Height of bomber
-    public static int REAL_HEIGHT = 29;
+    public static int REAL_HEIGHT = 44;
 
     private static int MAX_SPEED = 4;
     private CollisionDetector collisionDetector;
 
     //Bomb list
     private List<Entity> bombList = new ArrayList<>();
-    private List<Integer> bombListTest = new ArrayList<>();
 
     //Max number of bomb can set at the same time
     private int bombListMaxSize = 1;
@@ -55,7 +53,6 @@ public class Bomber extends MovingEntity {
 
     private void updateKeyHandle() {
         boolean isPressed = false;
-
         //unit coordinates of x and y
         int xUnit = this.x / Sprite.SCALED_SIZE;
         int yUnit = this.y / Sprite.SCALED_SIZE;
@@ -79,7 +76,7 @@ public class Bomber extends MovingEntity {
             isPressed = true;
             if (collisionDetector.checkCollisionWithMap(this.x, this.y - speedRun)
                     || collisionDetector.checkCollisionWithBombWhenMove(this.x, this.y - speedRun, bombList)) {
-                if (verticalMovingSupport1 >= 10
+                if (verticalMovingSupport1 >= 15
                         && gameMap.getWallsAndGrassAtPosition(xUnit * Sprite.SCALED_SIZE,
                         (yUnit - 1) * Sprite.SCALED_SIZE) instanceof Grass
                         && gameMap.getBrickAtPosition(xUnit * Sprite.SCALED_SIZE,
@@ -87,7 +84,7 @@ public class Bomber extends MovingEntity {
                     super.updateDirection(directionStatus.LEFT, true, speedRun);
                 }
 
-                if (verticalMovingSupport2 >= 10
+                if (verticalMovingSupport2 >= 15
                         && (gameMap.getWallsAndGrassAtPosition(xUnit * Sprite.SCALED_SIZE,
                         (yUnit - 1) * Sprite.SCALED_SIZE) instanceof Wall
                         || gameMap.getBrickAtPosition(xUnit * Sprite.SCALED_SIZE,
@@ -98,9 +95,10 @@ public class Bomber extends MovingEntity {
                         && gameMap.getBrickAtPosition((xUnit + 1) * Sprite.SCALED_SIZE,
                         (yUnit - 1) * Sprite.SCALED_SIZE) == null) {
                     super.updateDirection(directionStatus.RIGHT, true, speedRun);
-                    indexBomberSprite = 0;
+
                 }
                 super.updateDirection(directionStatus.UP, false, speedRun);
+                indexBomberSprite = 0;
             } else {
                 super.updateDirection(directionStatus.UP, true, speedRun);
             }
@@ -114,7 +112,7 @@ public class Bomber extends MovingEntity {
             if (collisionDetector.checkCollisionWithMap(this.x, this.y + speedRun)
                     || collisionDetector.checkCollisionWithBombWhenMove(this.x, this.y + speedRun, bombList)) {
 
-                if (verticalMovingSupport1 >= 10
+                if (verticalMovingSupport1 >= 15
                         && gameMap.getWallsAndGrassAtPosition(xUnit * Sprite.SCALED_SIZE,
                         (yUnit + 1) * Sprite.SCALED_SIZE) instanceof Grass
                         && gameMap.getBrickAtPosition(xUnit * Sprite.SCALED_SIZE,
@@ -122,7 +120,7 @@ public class Bomber extends MovingEntity {
                     super.updateDirection(directionStatus.LEFT, true, speedRun);
                 }
 
-                if (verticalMovingSupport2 >= 10
+                if (verticalMovingSupport2 >= 15
                         && (gameMap.getWallsAndGrassAtPosition(xUnit * Sprite.SCALED_SIZE,
                         (yUnit + 1) * Sprite.SCALED_SIZE) instanceof Wall
                         || gameMap.getBrickAtPosition(xUnit * Sprite.SCALED_SIZE,
@@ -133,9 +131,8 @@ public class Bomber extends MovingEntity {
                         && gameMap.getBrickAtPosition((xUnit + 1) * Sprite.SCALED_SIZE,
                         (yUnit + 1) * Sprite.SCALED_SIZE) == null) {
                     super.updateDirection(directionStatus.RIGHT, true, speedRun);
-                    indexBomberSprite = 0;
                 }
-
+                indexBomberSprite = 0;
                 super.updateDirection(directionStatus.DOWN, false, speedRun);
             } else {
                 super.updateDirection(directionStatus.DOWN, true, speedRun);
@@ -149,14 +146,14 @@ public class Bomber extends MovingEntity {
             isPressed = true;
             if (collisionDetector.checkCollisionWithMap(this.x - speedRun, this.y)
                     || collisionDetector.checkCollisionWithBombWhenMove(this.x - speedRun, this.y, bombList)) {
-                if (horizontalMovingSupport1 >= 12
+                if (horizontalMovingSupport1 >= 18
                         && gameMap.getWallsAndGrassAtPosition((xUnit - 1) * Sprite.SCALED_SIZE,
                         yUnit * Sprite.SCALED_SIZE) instanceof Grass
                         && gameMap.getBrickAtPosition((xUnit - 1) * Sprite.SCALED_SIZE,
                         yUnit * Sprite.SCALED_SIZE) == null) {
                     super.updateDirection(directionStatus.UP, true, speedRun);
                 }
-                if (horizontalMovingSupport2 >= 12
+                if (horizontalMovingSupport2 >= 18
                         && (gameMap.getWallsAndGrassAtPosition((xUnit - 1) * Sprite.SCALED_SIZE,
                         yUnit * Sprite.SCALED_SIZE) instanceof Wall
                         || gameMap.getBrickAtPosition((xUnit - 1) * Sprite.SCALED_SIZE,
@@ -183,14 +180,14 @@ public class Bomber extends MovingEntity {
             isPressed = true;
             if (collisionDetector.checkCollisionWithMap(this.x + speedRun, this.y)
                     || collisionDetector.checkCollisionWithBombWhenMove(this.x + speedRun, this.y, bombList)) {
-                if (horizontalMovingSupport1 >= 12
+                if (horizontalMovingSupport1 >= 18
                         && gameMap.getWallsAndGrassAtPosition((xUnit + 1) * Sprite.SCALED_SIZE,
                         yUnit * Sprite.SCALED_SIZE) instanceof Grass
                         && gameMap.getBrickAtPosition((xUnit + 1) * Sprite.SCALED_SIZE,
                         yUnit * Sprite.SCALED_SIZE) == null) {
                     super.updateDirection(directionStatus.UP, true, speedRun);
                 }
-                if (horizontalMovingSupport2 >= 12
+                if (horizontalMovingSupport2 >= 18
                         && (gameMap.getWallsAndGrassAtPosition((xUnit + 1) * Sprite.SCALED_SIZE,
                         yUnit * Sprite.SCALED_SIZE) instanceof Wall
                         || gameMap.getBrickAtPosition((xUnit + 1) * Sprite.SCALED_SIZE,
@@ -242,8 +239,8 @@ public class Bomber extends MovingEntity {
     }
 
     public void updatePlantBomb() {
-        int xUnit = (getX() + Sprite.DEFAULT_SIZE) / Sprite.SCALED_SIZE;
-        int yUnit = (getY() + Sprite.DEFAULT_SIZE) / Sprite.SCALED_SIZE;
+        int xUnit = (getX() + Sprite.SCALED_SIZE / 2) / Sprite.SCALED_SIZE;
+        int yUnit = (getY() + Sprite.SCALED_SIZE / 2) / Sprite.SCALED_SIZE;
 
         if (bombList.size() < bombListMaxSize) {
             if (!bombList.isEmpty() && isPlantBomb) {
@@ -317,5 +314,20 @@ public class Bomber extends MovingEntity {
 
     public int getBombLevel() {
         return bombLevel;
+    }
+    public Entity getBombAtPosition(int x, int y){
+        int xUnit = x / Sprite.SCALED_SIZE;
+        int yUnit = y / Sprite.SCALED_SIZE;
+        for (int i = 0; i < bombList.size(); i++) {
+            if ((bombList.get(i).getX() / Sprite.SCALED_SIZE) == xUnit
+                    && (bombList.get(i).getY() / Sprite.SCALED_SIZE) == yUnit) {
+                return bombList.get(i);
+            }
+        }
+        return null;
+    }
+
+    public List<Entity> getBombList() {
+        return bombList;
     }
 }
