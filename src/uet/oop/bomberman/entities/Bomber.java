@@ -23,6 +23,8 @@ public class Bomber extends MovingEntity {
     //Main game map
     private GameMap gameMap;
 
+    private int left = 2;
+
     //Real Width of bomber
     public static int REAL_WIDTH = 30;
 
@@ -250,8 +252,17 @@ public class Bomber extends MovingEntity {
             if (indexBomberSprite < 40) {
                 ++indexBomberSprite;
             } else {
-                setImg(null);
-                //TO DO:
+                if (left > 0) {
+                    --left;
+                    lifeStatus = LifeStatus.ALIVE;
+                    setX(Sprite.SCALED_SIZE);
+                    setY(Sprite.SCALED_SIZE);
+                    setImg(Sprite.player_right.getImage());
+                } else {
+                    setImg(null);
+                    //TO DO:
+                    //set stage start menu
+                }
             }
         }
     }
