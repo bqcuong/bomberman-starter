@@ -1,4 +1,6 @@
-package uet.oop.bomberman.entities;
+package uet.oop.bomberman.controllers;
+
+import uet.oop.bomberman.entities.Entity;
 
 public class BombFlameInfo {
     private boolean brickCheck;

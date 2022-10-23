@@ -1,7 +1,14 @@
-package uet.oop.bomberman.entities;
+package uet.oop.bomberman.entities.bomb;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import uet.oop.bomberman.controllers.BombFlameInfo;
+import uet.oop.bomberman.entities.objects.Brick;
+import uet.oop.bomberman.entities.Entity;
+import uet.oop.bomberman.entities.objects.IObstacle;
+import uet.oop.bomberman.entities.objects.Wall;
+import uet.oop.bomberman.entities.items.IItem;
+import uet.oop.bomberman.entities.items.ItemFlames;
 import uet.oop.bomberman.graphics.GameMap;
 import uet.oop.bomberman.graphics.Sprite;
 
@@ -15,13 +22,17 @@ public class Bomb extends Entity implements IObstacle {
     public enum WentOffPhraseStatus {
         OPENING, CLOSING
     }
+    public enum BombStatus {
+        WAIT, WENTOFF, DISAPEAR
+    }
+
 
     GameMap gameMap;
 
     private boolean isAllowedToGoThrough = true;
     private int indexBombSprite = 0;
 
-    private int bombLevel = 0;
+    private int bombLevel;
     //Up flame
     private List<Entity> upFlameList = new ArrayList<>();
     private BombFlameInfo upFlameInfo = new BombFlameInfo();
@@ -78,19 +89,31 @@ public class Bomb extends Entity implements IObstacle {
         makeDownFlame(xUnit, yUnit);
 
         //make up flame
-        checkUpflame(xUnit, yUnit);
+        checkUpFlame(xUnit, yUnit);
         makeUpFlame(xUnit, yUnit);
     }
 
-    public void updateIntersectionLength() {
+    public void updateNearbyBombActivation() {
         int xUnit = x / Sprite.SCALED_SIZE;
         int yUnit = y / Sprite.SCALED_SIZE;
+        Bomb bomb;
         //Up
         for (int i = yUnit - 1; i != yUnit - bombLevel - 1; i--) {
+
             if (gameMap.getPlayer().getBombAtPosition(xUnit * Sprite.SCALED_SIZE,
                     i * Sprite.SCALED_SIZE) != null) {
                 upFlameInfo.setBombCheck(true);
                 upFlameInfo.setIntersectionLength(bombLevel - (yUnit - i - 1));
+                bomb = (Bomb) gameMap.getPlayer().getBombAtPosition(xUnit * Sprite.SCALED_SIZE,
+                        i * Sprite.SCALED_SIZE);
+                if (this.getBombStatus().equals(BombStatus.WENTOFF)
+                        && this.getIndexBombSprite() == 3
+                        && bomb.getBombStatus().equals(BombStatus.WAIT)) {
+                    bomb.setBombStatus(BombStatus.WENTOFF);
+                    bomb.setWentOffPhrase(WentOffPhraseStatus.OPENING);
+                    bomb.setIndexBombSprite(0);
+                    bomb.timer.cancel();
+                }
             }
         }
 
@@ -100,6 +123,16 @@ public class Bomb extends Entity implements IObstacle {
                     i * Sprite.SCALED_SIZE) != null) {
                 downFlameInfo.setBombCheck(true);
                 downFlameInfo.setIntersectionLength(bombLevel - (i - yUnit - 1));
+                bomb = (Bomb) gameMap.getPlayer().getBombAtPosition(xUnit * Sprite.SCALED_SIZE,
+                        i * Sprite.SCALED_SIZE);
+                if (this.getBombStatus().equals(BombStatus.WENTOFF)
+                        && this.getIndexBombSprite() == 3
+                        && bomb.getBombStatus().equals(BombStatus.WAIT)) {
+                    bomb.setBombStatus(BombStatus.WENTOFF);
+                    bomb.setWentOffPhrase(WentOffPhraseStatus.OPENING);
+                    bomb.setIndexBombSprite(0);
+                    bomb.timer.cancel();
+                }
             }
         }
 
@@ -109,6 +142,16 @@ public class Bomb extends Entity implements IObstacle {
                     yUnit * Sprite.SCALED_SIZE) != null) {
                 leftFlameInfo.setBombCheck(true);
                 leftFlameInfo.setIntersectionLength(bombLevel - (xUnit - i - 1));
+                bomb = (Bomb) gameMap.getPlayer().getBombAtPosition(i * Sprite.SCALED_SIZE,
+                        yUnit * Sprite.SCALED_SIZE);
+                if (this.getBombStatus().equals(BombStatus.WENTOFF)
+                        && this.getIndexBombSprite() == 3
+                        && bomb.getBombStatus().equals(BombStatus.WAIT)) {
+                    bomb.setBombStatus(BombStatus.WENTOFF);
+                    bomb.setWentOffPhrase(WentOffPhraseStatus.OPENING);
+                    bomb.setIndexBombSprite(0);
+                    bomb.timer.cancel();
+                }
             }
         }
 
@@ -118,11 +161,21 @@ public class Bomb extends Entity implements IObstacle {
                     yUnit * Sprite.SCALED_SIZE) != null) {
                 rightFlameInfo.setBombCheck(true);
                 rightFlameInfo.setIntersectionLength(bombLevel - (i - xUnit - 1));
+                bomb = (Bomb) gameMap.getPlayer().getBombAtPosition(i * Sprite.SCALED_SIZE,
+                        yUnit * Sprite.SCALED_SIZE);
+                if (this.getBombStatus().equals(BombStatus.WENTOFF)
+                        && this.getIndexBombSprite() == 3
+                        && bomb.getBombStatus().equals(BombStatus.WAIT)) {
+                    bomb.setBombStatus(BombStatus.WENTOFF);
+                    bomb.setWentOffPhrase(WentOffPhraseStatus.OPENING);
+                    bomb.setIndexBombSprite(0);
+                    bomb.timer.cancel();
+                }
             }
         }
     }
 
-    public void checkUpflame(int xUnit, int yUnit) {
+    public void checkUpFlame(int xUnit, int yUnit) {
         //Up check
         upFlameInfo.setFlameLength(bombLevel);
         for (int i = yUnit - 1; i != yUnit - bombLevel - 1; i--) {
@@ -298,7 +351,7 @@ public class Bomb extends Entity implements IObstacle {
 
     @Override
     public void update() {
-        updateIntersectionLength();
+        updateNearbyBombActivation();
         switch (bombStatus) {
             case WAIT:
                 ++indexBombSprite;
@@ -548,5 +601,37 @@ public class Bomb extends Entity implements IObstacle {
 
     public void cancelTimer() {
         timer.cancel();
+    }
+
+    public void setWentOffPhrase(WentOffPhraseStatus wentOffPhrase) {
+        this.wentOffPhrase = wentOffPhrase;
+    }
+
+    public WentOffPhraseStatus getWentOffPhrase() {
+        return wentOffPhrase;
+    }
+
+    public void setIndexBombSprite(int indexBombSprite) {
+        this.indexBombSprite = indexBombSprite;
+    }
+
+    public int getIndexBombSprite() {
+        return indexBombSprite;
+    }
+
+    public List<Entity> getDownFlameList() {
+        return downFlameList;
+    }
+
+    public List<Entity> getLeftFlameList() {
+        return leftFlameList;
+    }
+
+    public List<Entity> getUpFlameList() {
+        return upFlameList;
+    }
+
+    public List<Entity> getRightFlameList() {
+        return rightFlameList;
     }
 }

@@ -40,12 +40,17 @@ public class GraphicsMGR {
         gameMap.getPlayer().render(gc);
     }
 
+    public void renderEnemies(GameMap gameMap) {
+        gameMap.getEnemies().forEach(g -> g.render(gc));
+    }
+
     public void renderBricks(GameMap gameMap) {
         gameMap.getBricks().forEach(g -> g.render(gc));
     }
 
     public void render(GameMap gameMap) {
         renderWallAndGrass(gameMap);
+        renderEnemies(gameMap);
         renderItems(gameMap);
         renderBricks(gameMap);
         renderBomber(gameMap);

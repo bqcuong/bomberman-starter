@@ -2,6 +2,11 @@ package uet.oop.bomberman.controllers;
 
 import javafx.scene.shape.Rectangle;
 import uet.oop.bomberman.entities.*;
+import uet.oop.bomberman.entities.bomb.Bomb;
+import uet.oop.bomberman.entities.items.ItemBombs;
+import uet.oop.bomberman.entities.items.ItemFlames;
+import uet.oop.bomberman.entities.items.ItemSpeed;
+import uet.oop.bomberman.entities.objects.Wall;
 import uet.oop.bomberman.graphics.GameMap;
 import uet.oop.bomberman.graphics.Sprite;
 
@@ -26,6 +31,40 @@ public class CollisionDetector {
                 return !bomb.isAllowedToGoThrough();
             } else {
                 bomb.setAllowedToGoThrough(false);
+            }
+        }
+        return false;
+    }
+
+    public boolean checkCollisionWithEnemyAndFlame(int x, int y, List<Entity> bombList) {
+        Rectangle rectBomber = new Rectangle(x, y, Bomber.REAL_WIDTH, Bomber.REAL_HEIGHT);
+        for (Entity element : bombList) {
+            Bomb bomb = (Bomb) element;
+            if (bomb.getBombStatus().equals(Bomb.BombStatus.WENTOFF)) {
+                if (rectBomber.intersects(bomb.getX(), bomb.getY(), Sprite.SCALED_SIZE, Sprite.SCALED_SIZE)) {
+                    return true;
+                }
+                for (Entity flame : bomb.getUpFlameList()) {
+                    if (rectBomber.intersects(flame.getX(), flame.getY(), Sprite.SCALED_SIZE, Sprite.SCALED_SIZE)) {
+                        return true;
+                    }
+                }
+                for (Entity flame : bomb.getDownFlameList()) {
+                    if (rectBomber.intersects(flame.getX(), flame.getY(), Sprite.SCALED_SIZE, Sprite.SCALED_SIZE)) {
+                        return true;
+                    }
+                }
+                for (Entity flame : bomb.getLeftFlameList()) {
+                    if (rectBomber.intersects(flame.getX(), flame.getY(), Sprite.SCALED_SIZE, Sprite.SCALED_SIZE)) {
+                        return true;
+                    }
+                }
+                for (Entity flame : bomb.getRightFlameList()) {
+                    if (rectBomber.intersects(flame.getX(), flame.getY(), Sprite.SCALED_SIZE, Sprite.SCALED_SIZE)) {
+                        return true;
+                    }
+                }
+
             }
         }
         return false;

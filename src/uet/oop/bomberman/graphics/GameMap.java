@@ -1,7 +1,15 @@
 package uet.oop.bomberman.graphics;
 
+import sun.security.provider.ConfigFile;
 import uet.oop.bomberman.controllers.CollisionDetector;
 import uet.oop.bomberman.entities.*;
+import uet.oop.bomberman.entities.enemies.Ballom;
+import uet.oop.bomberman.entities.items.ItemBombs;
+import uet.oop.bomberman.entities.items.ItemFlames;
+import uet.oop.bomberman.entities.items.ItemSpeed;
+import uet.oop.bomberman.entities.objects.Brick;
+import uet.oop.bomberman.entities.objects.Grass;
+import uet.oop.bomberman.entities.objects.Wall;
 import uet.oop.bomberman.events.KeyboardEvent;
 
 import java.io.BufferedReader;
@@ -16,6 +24,8 @@ public class GameMap {
     private List<List<Entity>> wallAndGrass = new ArrayList<>();
     private List<Entity> bricks = new ArrayList<>();
     private List<Entity> items = new ArrayList<>();
+
+    private List<Entity> enemies = new ArrayList<>();
 
 
     private int mapHeight;
@@ -74,6 +84,7 @@ public class GameMap {
                             tmpWallAndGrass.add(new Grass(j, i, Sprite.grass.getImage()));
                             break;
                         case 'b':
+                            bricks.add(new Brick(j, i, Sprite.brick.getImage()));
                             items.add(new ItemBombs(j, i, Sprite.powerup_bombs.getImage()));
                             tmpWallAndGrass.add(new Grass(j, i, Sprite.grass.getImage()));
                             break;
@@ -83,8 +94,13 @@ public class GameMap {
                             tmpWallAndGrass.add(new Grass(j, i, Sprite.grass.getImage()));
                             break;
                         case 's':
+                            bricks.add(new Brick(j, i, Sprite.brick.getImage()));
                             items.add(new ItemSpeed(j, i, Sprite.powerup_speed.getImage()));
-                            tmpWallAndGrass.add(new Brick(j, i, Sprite.grass.getImage()));
+                            tmpWallAndGrass.add(new Grass(j, i, Sprite.grass.getImage()));
+                            break;
+                        case '1':
+                            enemies.add(new Ballom(j, i, Sprite.balloom_right1.getImage()));
+                            tmpWallAndGrass.add(new Grass(j, i, Sprite.grass.getImage()));
                             break;
                         default:
                             tmpWallAndGrass.add(new Grass(j, i, Sprite.grass.getImage()));
@@ -102,6 +118,7 @@ public class GameMap {
     public void update() {
         items.forEach(Entity::update);
         bricks.forEach(Entity::update);
+        enemies.forEach(Entity::update);
         player.update();
     }
 
@@ -131,6 +148,10 @@ public class GameMap {
 
     public List<Entity> getItems() {
         return items;
+    }
+
+    public List<Entity> getEnemies() {
+        return enemies;
     }
 
     public void setWallAndGrass(List<List<Entity>> wallAndGrass) {
