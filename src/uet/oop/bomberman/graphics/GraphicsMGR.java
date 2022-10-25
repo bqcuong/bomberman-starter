@@ -1,5 +1,6 @@
 package uet.oop.bomberman.graphics;
 
+import com.sun.org.apache.bcel.internal.generic.PUSH;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import uet.oop.bomberman.entities.Entity;
@@ -48,11 +49,18 @@ public class GraphicsMGR {
         gameMap.getBricks().forEach(g -> g.render(gc));
     }
 
+    public void renderBombList(GameMap gameMap) {
+        for (Entity element : gameMap.getBombList()) {
+            element.render(gc);
+        }
+    }
+
     public void render(GameMap gameMap) {
         renderWallAndGrass(gameMap);
-        renderEnemies(gameMap);
         renderItems(gameMap);
         renderBricks(gameMap);
+        renderBombList(gameMap);
+        renderEnemies(gameMap);
         renderBomber(gameMap);
     }
 }

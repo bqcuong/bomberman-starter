@@ -4,6 +4,7 @@ import sun.security.provider.ConfigFile;
 import uet.oop.bomberman.controllers.CollisionDetector;
 import uet.oop.bomberman.entities.*;
 import uet.oop.bomberman.entities.enemies.Ballom;
+import uet.oop.bomberman.entities.enemies.Enemy;
 import uet.oop.bomberman.entities.items.ItemBombs;
 import uet.oop.bomberman.entities.items.ItemFlames;
 import uet.oop.bomberman.entities.items.ItemSpeed;
@@ -27,6 +28,7 @@ public class GameMap {
 
     private List<Entity> enemies = new ArrayList<>();
 
+    private List<Entity> bombList = new ArrayList<>();
 
     private int mapHeight;
     private int mapWidth;
@@ -182,6 +184,10 @@ public class GameMap {
             }
         }
         return null;
+    }
+
+    public List<Entity> getBombList() {
+        return bombList;
     }
 
     public Bomber getPlayer() {

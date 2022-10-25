@@ -38,7 +38,7 @@ public class CollisionDetector {
     }
 
     public boolean checkCollisionWithBomb(int x, int y, List<Entity> bombList, int REAL_WIDTH, int REAL_HEIGHT) {
-        final int FIX_POSITION = 14;
+        final int FIX_POSITION = 12;
         Rectangle rectEnemy = new Rectangle(x, y, REAL_WIDTH, REAL_HEIGHT);
         for (Entity element : bombList) {
             Bomb bomb = (Bomb) element;
@@ -52,31 +52,41 @@ public class CollisionDetector {
         return false;
     }
 
-    public boolean checkCollisionWithFlame(int x, int y, List<Entity> bombList) {
-        Rectangle rectBomber = new Rectangle(x, y, Bomber.REAL_WIDTH, Bomber.REAL_HEIGHT);
-        for (Entity element : bombList) {
+    public boolean checkCollisionWithFlame(int x, int y, int REAL_WIDTH, int REAL_HEIGHT) {
+        final int FIX_POSITION = 6;
+        Rectangle rectBlock = new Rectangle(x, y, REAL_WIDTH, REAL_HEIGHT);
+        for (Entity element : gameMap.getBombList()) {
             Bomb bomb = (Bomb) element;
             if (bomb.getBombStatus().equals(Bomb.BombStatus.WENTOFF)) {
-                if (rectBomber.intersects(bomb.getX(), bomb.getY(), Sprite.SCALED_SIZE, Sprite.SCALED_SIZE)) {
+                if (rectBlock.intersects(bomb.getX(), bomb.getY(),
+                        Sprite.SCALED_SIZE, Sprite.SCALED_SIZE)) {
                     return true;
                 }
                 for (Entity flame : bomb.getUpFlameList()) {
-                    if (rectBomber.intersects(flame.getX(), flame.getY(), Sprite.SCALED_SIZE, Sprite.SCALED_SIZE)) {
+                    if (rectBlock.intersects(flame.getX() + FIX_POSITION, flame.getY() + FIX_POSITION,
+                            Sprite.SCALED_SIZE - 2 * FIX_POSITION,
+                            Sprite.SCALED_SIZE - 2 * FIX_POSITION)) {
                         return true;
                     }
                 }
                 for (Entity flame : bomb.getDownFlameList()) {
-                    if (rectBomber.intersects(flame.getX(), flame.getY(), Sprite.SCALED_SIZE, Sprite.SCALED_SIZE)) {
+                    if (rectBlock.intersects(flame.getX() + FIX_POSITION, flame.getY() + FIX_POSITION,
+                            Sprite.SCALED_SIZE - 2 * FIX_POSITION,
+                            Sprite.SCALED_SIZE - 2 * FIX_POSITION)) {
                         return true;
                     }
                 }
                 for (Entity flame : bomb.getLeftFlameList()) {
-                    if (rectBomber.intersects(flame.getX(), flame.getY(), Sprite.SCALED_SIZE, Sprite.SCALED_SIZE)) {
+                    if (rectBlock.intersects(flame.getX() + FIX_POSITION, flame.getY() + FIX_POSITION,
+                            Sprite.SCALED_SIZE - 2 * FIX_POSITION,
+                            Sprite.SCALED_SIZE - 2 * FIX_POSITION)) {
                         return true;
                     }
                 }
                 for (Entity flame : bomb.getRightFlameList()) {
-                    if (rectBomber.intersects(flame.getX(), flame.getY(), Sprite.SCALED_SIZE, Sprite.SCALED_SIZE)) {
+                    if (rectBlock.intersects(flame.getX() + FIX_POSITION, flame.getY() + FIX_POSITION,
+                            Sprite.SCALED_SIZE - 2 * FIX_POSITION,
+                            Sprite.SCALED_SIZE - 2 * FIX_POSITION)) {
                         return true;
                     }
                 }
@@ -91,10 +101,13 @@ public class CollisionDetector {
         Rectangle rectEnemy = new Rectangle(x, y, REAL_WIDTH, REAL_HEIGHT);
         for (Entity element : enemyList) {
             Enemy enemy = (Enemy) element;
-            if (rectEnemy.intersects(element.getX() + FIX_POSITION, element.getY() + FIX_POSITION,
-                    Sprite.SCALED_SIZE - FIX_POSITION * 2, Sprite.SCALED_SIZE - FIX_POSITION * 2)) {
-                return true;
+            if (enemy.getLifeStatus().equals(LifeStatus.ALIVE)){
+                if (rectEnemy.intersects(element.getX() + FIX_POSITION, element.getY() + FIX_POSITION,
+                        Sprite.SCALED_SIZE - FIX_POSITION * 2, Sprite.SCALED_SIZE - FIX_POSITION * 2)) {
+                    return true;
+                }
             }
+
         }
         return false;
     }

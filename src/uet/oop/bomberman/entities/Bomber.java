@@ -32,7 +32,7 @@ public class Bomber extends MovingEntity {
     //Real Height of bomber
     public static int REAL_HEIGHT = 44;
 
-    private static int MAX_SPEED = 4;
+    private static final int MAX_SPEED = 4;
     private CollisionDetector collisionDetector;
 
     //Bomb list
@@ -52,11 +52,13 @@ public class Bomber extends MovingEntity {
         super(x, y, img);
     }
 
-    public Bomber(int x, int y, Image img, KeyboardEvent keyboardEvent, CollisionDetector collisionDetector, GameMap gameMap) {
+    public Bomber(int x, int y, Image img, KeyboardEvent keyboardEvent,
+                  CollisionDetector collisionDetector, GameMap gameMap) {
         super(x, y, img);
         this.keyboardEvent = keyboardEvent;
         this.collisionDetector = collisionDetector;
         this.gameMap = gameMap;
+        bombList = this.gameMap.getBombList();
     }
 
     private void updateKeyHandle() {
@@ -80,7 +82,7 @@ public class Bomber extends MovingEntity {
             collisionDetector.checkCollisionWithItem(this.x, this.y, this);
 
             //collision check with flame and enemy
-            if (collisionDetector.checkCollisionWithFlame(this.x, this.y, bombList)
+            if (collisionDetector.checkCollisionWithFlame(this.x, this.y, REAL_WIDTH, REAL_HEIGHT)
                     || collisionDetector.checkCollisionWithEnemy(this.x, this.y, gameMap.getEnemies(),
                     Bomber.REAL_WIDTH, Bomber.REAL_HEIGHT)) {
                 lifeStatus = LifeStatus.DEAD;
@@ -275,13 +277,11 @@ public class Bomber extends MovingEntity {
         updateKeyHandle();
         updatePlantBomb();
         updateBombList();
+        updateEnemyList();
     }
 
     @Override
     public void render(GraphicsContext gc) {
-        for (Entity element : bombList) {
-            element.render(gc);
-        }
         super.render(gc);
     }
 
@@ -292,14 +292,20 @@ public class Bomber extends MovingEntity {
         if (bombList.size() < bombListMaxSize) {
             if (!bombList.isEmpty() && isPlantBomb) {
                 //check duplicate bomb has already in the list or not
-                boolean isDuplicateBomb = false;
+                boolean isNotAllowed = false;
                 for (Entity element : bombList) {
                     if ((element.getX() / Sprite.SCALED_SIZE == xUnit
                             && element.getY() / Sprite.SCALED_SIZE == yUnit)) {
-                        isDuplicateBomb = true;
+                        isNotAllowed = true;
                     }
                 }
-                if (!isDuplicateBomb) {
+                for (Entity element : gameMap.getEnemies()) {
+                    if ((element.getX() / Sprite.SCALED_SIZE == xUnit
+                            && element.getY() / Sprite.SCALED_SIZE == yUnit)) {
+                        isNotAllowed = true;
+                    }
+                }
+                if (!isNotAllowed) {
                     bombList.add(new Bomb(xUnit, yUnit, Sprite.bomb.getImage(), bombLevel, gameMap));
                 }
 
@@ -377,5 +383,18 @@ public class Bomber extends MovingEntity {
 
     public List<Entity> getBombList() {
         return bombList;
+    }
+
+    public void updateEnemyList() {
+        List<Entity> list = gameMap.getEnemies();
+        for (int i = 0; i < list.size(); i++) {
+            Enemy enemy = (Enemy) list.get(i);
+            if (enemy.getLifeStatus().equals(LifeStatus.DEAD)) {
+                if (enemy.getDeadPhaseStatus().equals(Enemy.DeadPhaseStatus.PHASE_DISAPPEAR)){
+                    list.remove(i);
+                    i--;
+                }
+            }
+        }
     }
 }
