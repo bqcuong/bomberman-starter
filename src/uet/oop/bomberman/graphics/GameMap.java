@@ -80,7 +80,8 @@ public class GameMap {
                             break;
                         case 'p':
                             /// Display Bomber
-                            player = new Bomber(j, i, Sprite.player_right.getImage(), keyboardEvent, new CollisionDetector(this), this);
+                            player = new Bomber(j, i, Sprite.player_right.getImage(), keyboardEvent,
+                                    new CollisionDetector(this), this);
                             tmpWallAndGrass.add(new Grass(j, i, Sprite.grass.getImage()));
                             break;
                         case 'b':
@@ -99,7 +100,8 @@ public class GameMap {
                             tmpWallAndGrass.add(new Grass(j, i, Sprite.grass.getImage()));
                             break;
                         case '1':
-                            enemies.add(new Ballom(j, i, Sprite.balloom_right1.getImage()));
+                            enemies.add(new Ballom(j, i, Sprite.balloom_right1.getImage(), this,
+                                    new CollisionDetector(this)));
                             tmpWallAndGrass.add(new Grass(j, i, Sprite.grass.getImage()));
                             break;
                         default:

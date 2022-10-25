@@ -1,11 +1,16 @@
 package uet.oop.bomberman;
 
 //import com.sun.javafx.perf.PerformanceTracker;
+
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.control.Button;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import uet.oop.bomberman.events.KeyboardEvent;
 import uet.oop.bomberman.graphics.GraphicsMGR;
@@ -18,10 +23,24 @@ public class BombermanGame extends Application {
     private GraphicsMGR graphics;
     private Canvas canvas;
 
+    private Stage window;
+
     //private static PerformanceTracker tracker;
 
     @Override
     public void start(Stage stage) {
+        window = stage;
+//        // Test start menu
+//        Button buttonStart = new Button("START");
+//        buttonStart.setScaleX(2);
+//        buttonStart.setScaleY(2);
+//        buttonStart.setLayoutX((Sprite.SCALED_SIZE * GraphicsMGR.WIDTH - buttonStart.getWidth()) / 2);
+//        buttonStart.setLayoutY((Sprite.SCALED_SIZE * GraphicsMGR.HEIGHT - buttonStart.getHeight()) / 2);
+//        Group buttons = new Group(buttonStart);
+//        Scene startMenu = new Scene(buttons,
+//                Sprite.SCALED_SIZE * GraphicsMGR.WIDTH, Sprite.SCALED_SIZE * GraphicsMGR.HEIGHT);
+
+
         // Tao Canvas.
         canvas = new Canvas(Sprite.SCALED_SIZE * GraphicsMGR.WIDTH, Sprite.SCALED_SIZE * GraphicsMGR.HEIGHT);
         graphics = new GraphicsMGR(canvas);
@@ -31,20 +50,28 @@ public class BombermanGame extends Application {
         root.getChildren().add(canvas);
 
         // Tao scene
-        Scene scene = new Scene(root);
+        Scene sceneInGame = new Scene(root);
+
 
         // Tao keyboard event
-        KeyboardEvent keyboardEvent = new KeyboardEvent(scene);
+        KeyboardEvent keyboardEvent = new KeyboardEvent(sceneInGame);
+
+//        buttonStart.setOnMouseClicked(new EventHandler<MouseEvent>() {
+//            @Override
+//            public void handle(MouseEvent event) {
+//                window.setScene(sceneInGame);
+//            }
+//        });
 
         // Tao map
         gameMap = new GameMap();
         gameMap.createMap(1, keyboardEvent);
 
         // Them scene vao stage
-        stage.setScene(scene);
-        stage.setResizable(false);
-        stage.setTitle("Bomberman OOP");
-        stage.show();
+        window.setScene(sceneInGame);
+        window.setResizable(false);
+        window.setTitle("Bomberman OOP");
+        window.show();
 
         AnimationTimer timer = new AnimationTimer() {
             @Override

@@ -3,6 +3,7 @@ package uet.oop.bomberman.controllers;
 import javafx.scene.shape.Rectangle;
 import uet.oop.bomberman.entities.*;
 import uet.oop.bomberman.entities.bomb.Bomb;
+import uet.oop.bomberman.entities.enemies.Enemy;
 import uet.oop.bomberman.entities.items.ItemBombs;
 import uet.oop.bomberman.entities.items.ItemFlames;
 import uet.oop.bomberman.entities.items.ItemSpeed;
@@ -36,7 +37,22 @@ public class CollisionDetector {
         return false;
     }
 
-    public boolean checkCollisionWithEnemyAndFlame(int x, int y, List<Entity> bombList) {
+    public boolean checkCollisionWithBomb(int x, int y, List<Entity> bombList, int REAL_WIDTH, int REAL_HEIGHT) {
+        final int FIX_POSITION = 14;
+        Rectangle rectEnemy = new Rectangle(x, y, REAL_WIDTH, REAL_HEIGHT);
+        for (Entity element : bombList) {
+            Bomb bomb = (Bomb) element;
+            if (rectEnemy.intersects(element.getX() + FIX_POSITION,
+                    element.getY() + FIX_POSITION,
+                    Sprite.SCALED_SIZE - FIX_POSITION * 2,
+                    Sprite.SCALED_SIZE - FIX_POSITION * 2)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean checkCollisionWithFlame(int x, int y, List<Entity> bombList) {
         Rectangle rectBomber = new Rectangle(x, y, Bomber.REAL_WIDTH, Bomber.REAL_HEIGHT);
         for (Entity element : bombList) {
             Bomb bomb = (Bomb) element;
@@ -70,7 +86,20 @@ public class CollisionDetector {
         return false;
     }
 
-    public boolean checkCollisionWithItem(int x, int y, Bomber bomber) {
+    public boolean checkCollisionWithEnemy(int x, int y, List<Entity> enemyList, int REAL_WIDTH, int REAL_HEIGHT) {
+        final int FIX_POSITION = 6;
+        Rectangle rectEnemy = new Rectangle(x, y, REAL_WIDTH, REAL_HEIGHT);
+        for (Entity element : enemyList) {
+            Enemy enemy = (Enemy) element;
+            if (rectEnemy.intersects(element.getX() + FIX_POSITION, element.getY() + FIX_POSITION,
+                    Sprite.SCALED_SIZE - FIX_POSITION * 2, Sprite.SCALED_SIZE - FIX_POSITION * 2)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void checkCollisionWithItem(int x, int y, Bomber bomber) {
         Rectangle rectBomber = new Rectangle(x, y, Bomber.REAL_WIDTH, Bomber.REAL_HEIGHT);
         int delPos = -1;
         for (int i = 0; i < gameMap.getItems().size(); i++) {
@@ -92,21 +121,20 @@ public class CollisionDetector {
         if (delPos != -1) {
             gameMap.getItems().remove(delPos);
         }
-        return false;
     }
 
-    public boolean checkCollisionWithMap(int x, int y) {
+    public boolean checkCollisionWithMap(int x, int y, int REAL_WIDTH, int REAL_HEIGHT) {
         //Wall and grass entity
         Entity topLeftWallAndGrass = gameMap.getWallsAndGrassAtPosition(x, y);
-        Entity topRightWallAndGrass = gameMap.getWallsAndGrassAtPosition(x + Bomber.REAL_WIDTH, y);
-        Entity downLeftWallAndGrass = gameMap.getWallsAndGrassAtPosition(x, y + Bomber.REAL_HEIGHT);
-        Entity downRightWallAndGrass = gameMap.getWallsAndGrassAtPosition(x + Bomber.REAL_WIDTH,
-                y + Bomber.REAL_HEIGHT);
+        Entity topRightWallAndGrass = gameMap.getWallsAndGrassAtPosition(x + REAL_WIDTH, y);
+        Entity downLeftWallAndGrass = gameMap.getWallsAndGrassAtPosition(x, y + REAL_HEIGHT);
+        Entity downRightWallAndGrass = gameMap.getWallsAndGrassAtPosition(x + REAL_WIDTH,
+                y + REAL_HEIGHT);
         Entity topLeftBrick = gameMap.getBrickAtPosition(x, y);
-        Entity topRightBrick = gameMap.getBrickAtPosition(x + Bomber.REAL_WIDTH, y);
-        Entity downLeftBrick = gameMap.getBrickAtPosition(x, y + Bomber.REAL_HEIGHT);
-        Entity downRightBrick = gameMap.getBrickAtPosition(x + Bomber.REAL_WIDTH,
-                y + Bomber.REAL_HEIGHT);
+        Entity topRightBrick = gameMap.getBrickAtPosition(x + REAL_WIDTH, y);
+        Entity downLeftBrick = gameMap.getBrickAtPosition(x, y + REAL_HEIGHT);
+        Entity downRightBrick = gameMap.getBrickAtPosition(x + REAL_WIDTH,
+                y + REAL_HEIGHT);
         return topLeftWallAndGrass instanceof Wall || topRightWallAndGrass instanceof Wall
                 || downLeftWallAndGrass instanceof Wall || downRightWallAndGrass instanceof Wall
                 || topLeftBrick != null || topRightBrick != null || downLeftBrick != null || downRightBrick != null;
