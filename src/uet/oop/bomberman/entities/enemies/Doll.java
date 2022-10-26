@@ -11,29 +11,19 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-public class Ballom extends Enemy {
-
-    //step left before change direction
-    private int stepLeft;
-    private int prevX;
-    private int prevY;
-
-    public Ballom(int xUnit, int yUnit, Image img) {
+public class Doll extends Enemy {
+    public Doll(int xUnit, int yUnit, Image img) {
         super(xUnit, yUnit, img);
     }
 
-    public Ballom(int xUnit, int yUnit, Image img, GameMap gameMap, CollisionDetector collisionDetector) {
+    public Doll(int xUnit, int yUnit, Image img, GameMap gameMap, CollisionDetector collisionDetector) {
         super(xUnit, yUnit, img);
         this.gameMap = gameMap;
         directionStatus = getRandomDirectionStatus();
         this.collisionDetector = collisionDetector;
-        stepLeft = getRandomStepLeft();
-        prevX = x / Sprite.SCALED_SIZE;
-        prevY = y / Sprite.SCALED_SIZE;
         setLifeStatus(LifeStatus.ALIVE);
         setSpeedRun(1);
     }
-
 
     @Override
     public void update() {
@@ -45,7 +35,7 @@ public class Ballom extends Enemy {
             if (collisionDetector.checkCollisionWithFlame(x, y, REAL_WIDTH, REAL_HEIGHT)) {
                 setLifeStatus(LifeStatus.DEAD);
                 setDeadPhaseStatus(DeadPhaseStatus.PHASE_FIRST);
-                indexEnemySprite=0;
+                indexEnemySprite = 0;
             }
             if (directionStatus.equals(DirectionStatus.RIGHT)) {
                 boolean rightMapCheck = collisionDetector.checkCollisionWithMap(this.x + speedRun, this.y,
@@ -58,10 +48,6 @@ public class Ballom extends Enemy {
                     indexEnemySprite = 0;
                 } else {
                     updateDirection(directionStatus, true, speedRun);
-                    if (prevX != this.x / Sprite.SCALED_SIZE && stepLeft > 0) {
-                        stepLeft--;
-                        prevX = this.x / Sprite.SCALED_SIZE;
-                    }
                 }
             }
             if (directionStatus.equals(DirectionStatus.LEFT)) {
@@ -75,10 +61,6 @@ public class Ballom extends Enemy {
                     indexEnemySprite = 0;
                 } else {
                     updateDirection(directionStatus, true, speedRun);
-                    if (prevX != this.x / Sprite.SCALED_SIZE && stepLeft > 0) {
-                        stepLeft--;
-                        prevX = this.x / Sprite.SCALED_SIZE;
-                    }
                 }
             }
             if (directionStatus.equals(DirectionStatus.UP)) {
@@ -92,10 +74,6 @@ public class Ballom extends Enemy {
                     indexEnemySprite = 0;
                 } else {
                     updateDirection(directionStatus, true, speedRun);
-                    if (prevY != this.y / Sprite.SCALED_SIZE && stepLeft > 0) {
-                        stepLeft--;
-                        prevY = this.y / Sprite.SCALED_SIZE;
-                    }
                 }
             }
             if (directionStatus.equals(DirectionStatus.DOWN)) {
@@ -109,15 +87,7 @@ public class Ballom extends Enemy {
                     indexEnemySprite = 0;
                 } else {
                     updateDirection(directionStatus, true, speedRun);
-                    if (prevY != this.y / Sprite.SCALED_SIZE && stepLeft > 0) {
-                        stepLeft--;
-                        prevY = this.y / Sprite.SCALED_SIZE;
-                    }
                 }
-            }
-            if (stepLeft == 0) {
-                directionStatus = getRandomDirectionStatus();
-                stepLeft = getRandomStepLeft();
             }
         }
 
@@ -129,12 +99,4 @@ public class Ballom extends Enemy {
         Random rand = new Random();
         return list.get(rand.nextInt(list.size()));
     }
-
-    public int getRandomStepLeft() {
-        List<Integer> list
-                = Arrays.asList(2, 3, 4, 4, 2, 3, 4, 2, 3, 2, 3, 4, 4, 2, 3, 4, 2, 3, 9, 10);
-        Random rand = new Random();
-        return list.get(rand.nextInt(list.size()));
-    }
-
 }

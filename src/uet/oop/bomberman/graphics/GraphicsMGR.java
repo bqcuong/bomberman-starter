@@ -10,7 +10,7 @@ import java.util.List;
 
 public class GraphicsMGR {
     public static final int WIDTH = 31;
-    public static final int HEIGHT = 13;
+    public static final int HEIGHT = 15;
 
     public GraphicsContext gc;
 

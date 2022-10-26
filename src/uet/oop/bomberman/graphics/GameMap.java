@@ -3,13 +3,14 @@ package uet.oop.bomberman.graphics;
 import uet.oop.bomberman.controllers.CollisionDetector;
 import uet.oop.bomberman.entities.*;
 import uet.oop.bomberman.entities.enemies.Ballom;
+import uet.oop.bomberman.entities.enemies.Doll;
+import uet.oop.bomberman.entities.enemies.Minvo;
 import uet.oop.bomberman.entities.enemies.Oneal;
 import uet.oop.bomberman.entities.items.ItemBombs;
 import uet.oop.bomberman.entities.items.ItemFlames;
 import uet.oop.bomberman.entities.items.ItemSpeed;
-import uet.oop.bomberman.entities.objects.Brick;
-import uet.oop.bomberman.entities.objects.Grass;
-import uet.oop.bomberman.entities.objects.Wall;
+import uet.oop.bomberman.entities.items.Portal;
+import uet.oop.bomberman.entities.objects.*;
 import uet.oop.bomberman.events.KeyboardEvent;
 
 import java.io.BufferedReader;
@@ -31,6 +32,9 @@ public class GameMap {
 
     private int mapHeight;
     private int mapWidth;
+
+    private int xUnitBomberInit;
+    private int yUnitBomberInit;
 
     private int level = 1;
 
@@ -72,6 +76,9 @@ public class GameMap {
                 List<Entity> tmpWallAndGrass = new ArrayList<>();
                 for (int j = 0; j < mapWidth; j++) {
                     switch (tempLine.charAt(j)) {
+                        case '$':
+                            tmpWallAndGrass.add(new TitleBackground(j, i, Sprite.title_background.getImage()));
+                            break;
                         case '#':
                             tmpWallAndGrass.add(new Wall(j, i, Sprite.wall.getImage()));
                             break;
@@ -83,6 +90,8 @@ public class GameMap {
                             /// Display Bomber
                             player = new Bomber(j, i, Sprite.player_right.getImage(), keyboardEvent,
                                     new CollisionDetector(this), this);
+                            setxUnitBomberInit(j);
+                            setyUnitBomberInit(i);
                             tmpWallAndGrass.add(new Grass(j, i, Sprite.grass.getImage()));
                             break;
                         case 'b':
@@ -100,6 +109,11 @@ public class GameMap {
                             items.add(new ItemSpeed(j, i, Sprite.powerup_speed.getImage()));
                             tmpWallAndGrass.add(new Grass(j, i, Sprite.grass.getImage()));
                             break;
+                        case 'x':
+                            bricks.add(new Brick(j, i, Sprite.brick.getImage()));
+                            items.add(new Portal(j, i, Sprite.portal.getImage()));
+                            tmpWallAndGrass.add(new Grass(j, i, Sprite.grass.getImage()));
+                            break;
                         case '1':
                             enemies.add(new Ballom(j, i, Sprite.balloom_right1.getImage(), this,
                                     new CollisionDetector(this)));
@@ -107,6 +121,16 @@ public class GameMap {
                             break;
                         case '2':
                             enemies.add(new Oneal(j, i, Sprite.oneal_right1.getImage(), this,
+                                    new CollisionDetector(this)));
+                            tmpWallAndGrass.add(new Grass(j, i, Sprite.grass.getImage()));
+                            break;
+                        case '3':
+                            enemies.add(new Doll(j, i, Sprite.doll_right1.getImage(), this,
+                                    new CollisionDetector(this)));
+                            tmpWallAndGrass.add(new Grass(j, i, Sprite.grass.getImage()));
+                            break;
+                        case '4':
+                            enemies.add(new Minvo(j, i, Sprite.minvo_right1.getImage(), this,
                                     new CollisionDetector(this)));
                             tmpWallAndGrass.add(new Grass(j, i, Sprite.grass.getImage()));
                             break;
@@ -196,5 +220,21 @@ public class GameMap {
 
     public Bomber getPlayer() {
         return player;
+    }
+
+    public int getxUnitBomberInit() {
+        return xUnitBomberInit;
+    }
+
+    public void setxUnitBomberInit(int xUnitBomberInit) {
+        this.xUnitBomberInit = xUnitBomberInit;
+    }
+
+    public int getyUnitBomberInit() {
+        return yUnitBomberInit;
+    }
+
+    public void setyUnitBomberInit(int yUnitBomberInit) {
+        this.yUnitBomberInit = yUnitBomberInit;
     }
 }

@@ -7,6 +7,7 @@ import uet.oop.bomberman.entities.enemies.Enemy;
 import uet.oop.bomberman.entities.items.ItemBombs;
 import uet.oop.bomberman.entities.items.ItemFlames;
 import uet.oop.bomberman.entities.items.ItemSpeed;
+import uet.oop.bomberman.entities.items.Portal;
 import uet.oop.bomberman.entities.objects.Wall;
 import uet.oop.bomberman.graphics.GameMap;
 import uet.oop.bomberman.graphics.Sprite;
@@ -101,7 +102,7 @@ public class CollisionDetector {
         Rectangle rectEnemy = new Rectangle(x, y, REAL_WIDTH, REAL_HEIGHT);
         for (Entity element : enemyList) {
             Enemy enemy = (Enemy) element;
-            if (enemy.getLifeStatus().equals(LifeStatus.ALIVE)){
+            if (enemy.getLifeStatus().equals(LifeStatus.ALIVE)) {
                 if (rectEnemy.intersects(element.getX() + FIX_POSITION, element.getY() + FIX_POSITION,
                         Sprite.SCALED_SIZE - FIX_POSITION * 2, Sprite.SCALED_SIZE - FIX_POSITION * 2)) {
                     return true;
@@ -118,7 +119,8 @@ public class CollisionDetector {
         for (int i = 0; i < gameMap.getItems().size(); i++) {
             if (rectBomber.intersects(gameMap.getItems().get(i).getX(),
                     gameMap.getItems().get(i).getY(), Sprite.SCALED_SIZE, Sprite.SCALED_SIZE)
-                    && gameMap.getBrickAtPosition(gameMap.getItems().get(i).getX(), gameMap.getItems().get(i).getY()) == null) {
+                    && gameMap.getBrickAtPosition(gameMap.getItems().get(i).getX(), gameMap.getItems().get(i).getY()) == null
+                    && !(gameMap.getItems().get(i) instanceof Portal)) {
                 delPos = i;
                 if (gameMap.getItems().get(i) instanceof ItemSpeed) {
                     bomber.setSpeedRun(bomber.getSpeedRun() + 1);

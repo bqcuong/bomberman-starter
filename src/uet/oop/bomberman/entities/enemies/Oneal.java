@@ -11,18 +11,18 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-public class Ballom extends Enemy {
+public class Oneal extends Enemy {
 
     //step left before change direction
     private int stepLeft;
     private int prevX;
     private int prevY;
 
-    public Ballom(int xUnit, int yUnit, Image img) {
+    public Oneal(int xUnit, int yUnit, Image img) {
         super(xUnit, yUnit, img);
     }
 
-    public Ballom(int xUnit, int yUnit, Image img, GameMap gameMap, CollisionDetector collisionDetector) {
+    public Oneal(int xUnit, int yUnit, Image img, GameMap gameMap, CollisionDetector collisionDetector) {
         super(xUnit, yUnit, img);
         this.gameMap = gameMap;
         directionStatus = getRandomDirectionStatus();
@@ -31,9 +31,8 @@ public class Ballom extends Enemy {
         prevX = x / Sprite.SCALED_SIZE;
         prevY = y / Sprite.SCALED_SIZE;
         setLifeStatus(LifeStatus.ALIVE);
-        setSpeedRun(1);
+        setSpeedRun(getRandomSpeed());
     }
-
 
     @Override
     public void update() {
@@ -45,8 +44,9 @@ public class Ballom extends Enemy {
             if (collisionDetector.checkCollisionWithFlame(x, y, REAL_WIDTH, REAL_HEIGHT)) {
                 setLifeStatus(LifeStatus.DEAD);
                 setDeadPhaseStatus(DeadPhaseStatus.PHASE_FIRST);
-                indexEnemySprite=0;
+                indexEnemySprite = 0;
             }
+
             if (directionStatus.equals(DirectionStatus.RIGHT)) {
                 boolean rightMapCheck = collisionDetector.checkCollisionWithMap(this.x + speedRun, this.y,
                         REAL_WIDTH, REAL_HEIGHT);
@@ -136,5 +136,13 @@ public class Ballom extends Enemy {
         Random rand = new Random();
         return list.get(rand.nextInt(list.size()));
     }
+
+    public int getRandomSpeed() {
+        List<Integer> list
+                = Arrays.asList(1, 2);
+        Random rand = new Random();
+        return list.get(rand.nextInt(list.size()));
+    }
+
 
 }

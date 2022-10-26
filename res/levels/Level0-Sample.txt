@@ -22,6 +22,7 @@ C - số cột của bản đồ
 
 2/ R dòng tiếp theo, mỗi dòng có C kí tự. Mỗi kí tự đại diện cho một đối tượng trên bản đồ:
 Tiles:
+$ - Title Background
 # - Wall
 * - Brick
 x - Portal
@@ -30,6 +31,8 @@ Character:
 p - Bomber
 1 - Balloon
 2 - Oneal
+3 - Doll
+4 - Minvo
 
 Items:
 b - Bomb Item

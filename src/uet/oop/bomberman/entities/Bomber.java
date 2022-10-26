@@ -260,8 +260,8 @@ public class Bomber extends MovingEntity {
                 if (left > 0) {
                     --left;
                     lifeStatus = LifeStatus.ALIVE;
-                    setX(Sprite.SCALED_SIZE);
-                    setY(Sprite.SCALED_SIZE);
+                    setX(Sprite.SCALED_SIZE * gameMap.getxUnitBomberInit());
+                    setY(Sprite.SCALED_SIZE * gameMap.getyUnitBomberInit());
                     setImg(Sprite.player_right.getImage());
                 } else {
                     setImg(null);
@@ -390,7 +390,7 @@ public class Bomber extends MovingEntity {
         for (int i = 0; i < list.size(); i++) {
             Enemy enemy = (Enemy) list.get(i);
             if (enemy.getLifeStatus().equals(LifeStatus.DEAD)) {
-                if (enemy.getDeadPhaseStatus().equals(Enemy.DeadPhaseStatus.PHASE_DISAPPEAR)){
+                if (enemy.getDeadPhaseStatus().equals(Enemy.DeadPhaseStatus.PHASE_DISAPPEAR)) {
                     list.remove(i);
                     i--;
                 }

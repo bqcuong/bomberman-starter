@@ -11,18 +11,18 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-public class Ballom extends Enemy {
+public class Minvo extends Enemy {
 
     //step left before change direction
     private int stepLeft;
     private int prevX;
     private int prevY;
 
-    public Ballom(int xUnit, int yUnit, Image img) {
+    public Minvo(int xUnit, int yUnit, Image img) {
         super(xUnit, yUnit, img);
     }
 
-    public Ballom(int xUnit, int yUnit, Image img, GameMap gameMap, CollisionDetector collisionDetector) {
+    public Minvo(int xUnit, int yUnit, Image img, GameMap gameMap, CollisionDetector collisionDetector) {
         super(xUnit, yUnit, img);
         this.gameMap = gameMap;
         directionStatus = getRandomDirectionStatus();
@@ -31,9 +31,8 @@ public class Ballom extends Enemy {
         prevX = x / Sprite.SCALED_SIZE;
         prevY = y / Sprite.SCALED_SIZE;
         setLifeStatus(LifeStatus.ALIVE);
-        setSpeedRun(1);
+        setSpeedRun(3);
     }
-
 
     @Override
     public void update() {
