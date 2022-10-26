@@ -7,6 +7,7 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 public class StageSetting {
 
@@ -31,9 +32,10 @@ public class StageSetting {
 
         settingStage.getIcons().add(image);
         settingStage.setWidth(200);
-        settingStage.setHeight(300);
+        settingStage.setHeight(250);
         settingStage.setResizable(false);
         settingStage.setScene(setting);
+        settingStage.initStyle(StageStyle.UNDECORATED);
 
         music.setOnAction(event -> {
             if (Sound.lobby.isPlaying()) {
@@ -42,9 +44,7 @@ public class StageSetting {
                 Sound.lobby.play();
             }
         });
-        exit.setOnAction(event -> {
-            settingStage.close();
-        });
+        exit.setOnAction(event -> settingStage.close());
     }
 
     public void setButton(Button button) {

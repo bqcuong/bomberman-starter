@@ -7,16 +7,18 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.media.AudioClip;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-import sun.audio.AudioPlayer;
+import javafx.stage.StageStyle;
 import uet.oop.bomberman.graphics.Sprite;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 
 public class BombermanGame extends Application {
@@ -39,6 +41,7 @@ public class BombermanGame extends Application {
         Image icon = new Image("file:res/game.png");
         stage.getIcons().add(icon);
         stage.setResizable(false);
+        stage.initStyle(StageStyle.UNDECORATED);
 
 
         canvas = new Canvas(Sprite.SCALED_SIZE * WIDTH, Sprite.SCALED_SIZE * HEIGHT);
@@ -56,6 +59,10 @@ public class BombermanGame extends Application {
         });
         menuGame.play.setOnAction(event -> {
             stageSetting.settingStage.close();
+            Sound.music.stop();
+            Sound.music = Sound.bgGame;
+            Sound.music.setCycleCount(AudioClip.INDEFINITE);
+            Sound.music.play();
             stage.setScene(scene);
             timer.start();
         });
@@ -71,6 +78,7 @@ public class BombermanGame extends Application {
         stage.show();
 
         Game game = new Game();
+        game.setGame();
         root.getChildren().addAll(game.lever, game.items, game.exit, game.setting);
         game.setting.setOnAction(event -> {
             stageSetting.settingStage.setX(stage.getX() + 704);
@@ -79,25 +87,48 @@ public class BombermanGame extends Application {
         });
         game.exit.setOnAction(event -> {
             try {
-                File file = new File("res/datagame.txt");
+                File file = new File("res/data_game.txt");
                 FileReader input = new FileReader(file);
                 BufferedReader bufferedReader = new BufferedReader(input);
                 String one = bufferedReader.readLine();
                 String[] oneOne = one.split(" ");
-                System.out.println(oneOne[0]);
+                //System.out.println(oneOne[0]);
             } catch (IOException i) {
                 i.printStackTrace();
             }
             stageSetting.settingStage.close();
             game.downDataGame();
             stage.close();
-            return;
         });
         timer = new AnimationTimer() {
             @Override
             public void handle(long l) {
-                game.runGame();
+                game.update();
+                game.render();
+                if (!game.live()) {
+                    Sound.dead.play();
+                    game.getBomber().setImg(Sprite.player_dead1.getFxImage());
+                    game.render();
+                    delay();
+                    game.getBomber().setImg(Sprite.player_dead2.getFxImage());
+                    game.render();
+                    delay();
+                    game.getBomber().setImg(Sprite.player_dead3.getFxImage());
+                    game.render();
+                    delay();
+                    timer.stop();
+                    stage.setScene(menuGame.menu);
+                    game.resetGame();
+                }
             }
         };
+    }
+
+    public void delay() {
+        try {
+            TimeUnit.SECONDS.sleep(1);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
     }
 }

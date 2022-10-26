@@ -7,7 +7,6 @@ import java.util.Random;
 
 public class Balloom extends Entity {
     private final int balloomSpeed = 2;
-    public int num = 100;
 
     public Balloom(int x, int y, Image img) {
         super(x, y, img);
