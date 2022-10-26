@@ -1,10 +1,9 @@
 package uet.oop.bomberman.graphics;
 
-import sun.security.provider.ConfigFile;
 import uet.oop.bomberman.controllers.CollisionDetector;
 import uet.oop.bomberman.entities.*;
 import uet.oop.bomberman.entities.enemies.Ballom;
-import uet.oop.bomberman.entities.enemies.Enemy;
+import uet.oop.bomberman.entities.enemies.Oneal;
 import uet.oop.bomberman.entities.items.ItemBombs;
 import uet.oop.bomberman.entities.items.ItemFlames;
 import uet.oop.bomberman.entities.items.ItemSpeed;
@@ -103,6 +102,11 @@ public class GameMap {
                             break;
                         case '1':
                             enemies.add(new Ballom(j, i, Sprite.balloom_right1.getImage(), this,
+                                    new CollisionDetector(this)));
+                            tmpWallAndGrass.add(new Grass(j, i, Sprite.grass.getImage()));
+                            break;
+                        case '2':
+                            enemies.add(new Oneal(j, i, Sprite.oneal_right1.getImage(), this,
                                     new CollisionDetector(this)));
                             tmpWallAndGrass.add(new Grass(j, i, Sprite.grass.getImage()));
                             break;
