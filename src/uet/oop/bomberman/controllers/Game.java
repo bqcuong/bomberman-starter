@@ -13,20 +13,28 @@ import uet.oop.bomberman.graphics.GameMap;
 import uet.oop.bomberman.graphics.GraphicsMGR;
 import uet.oop.bomberman.graphics.Sprite;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Game {
-    // Tao Canvas.
-    public GameMap gameMap;
+    private int currentLevel = 1;
+    public final static int MAX_LEVEL = 3;
     // Tao root container
-    Group root = new Group();
+    private Group root = new Group();
 
+    private ItemInfo itemInfo;
+
+    private int bomberLeft;
+    private int bomberScore;
+
+    private List<GameMap> gameMapList;
     // Tao scene
-    Scene sceneInGame;
+    private Scene sceneInGame;
 
     // Tao keyboard event
     KeyboardEvent keyboardEvent;
     ScoreTitle scoreTitle;
+    // Tao Canvas.
     public Canvas canvas;
     public GraphicsContext gc;
     public Stage stage;
@@ -40,8 +48,16 @@ public class Game {
     private Game() {
     }
 
+    public ItemInfo getItemInfo() {
+        return itemInfo;
+    }
+
     public void createGame(Stage stage) {
         this.stage = stage;
+        bomberLeft = 2;
+        bomberScore = 0;
+        itemInfo = new ItemInfo();
+
         canvas = new Canvas(Sprite.SCALED_SIZE * GraphicsMGR.WIDTH, Sprite.SCALED_SIZE * GraphicsMGR.HEIGHT);
         gc = canvas.getGraphicsContext2D();
         root.getChildren().add(canvas);
@@ -50,10 +66,32 @@ public class Game {
         scoreTitle.createScoreTitle(root);
         sceneInGame = new Scene(root);
         keyboardEvent = new KeyboardEvent(sceneInGame);
+
         // Tao map
-        gameMap = new GameMap();
-        gameMap.createMap(1, keyboardEvent);
+        gameMapList = new ArrayList<>(MAX_LEVEL);
+        createMapList();
+
         stage.setScene(sceneInGame);
+    }
+
+    public void increaseBomberLeft() {
+        bomberLeft++;
+    }
+
+    public int getBomberLeft() {
+        return bomberLeft;
+    }
+
+    public void decreaseBomberLeft() {
+        bomberLeft--;
+    }
+
+    public int getBomberScore() {
+        return bomberScore;
+    }
+
+    public void setBomberScore(int bomberScore) {
+        this.bomberScore = bomberScore;
     }
 
     AnimationTimer timer = new AnimationTimer() {
@@ -64,16 +102,34 @@ public class Game {
         }
     };
 
+    public void createMapList() {
+        for (int i = 1; i <= MAX_LEVEL; i++) {
+            GameMap gameMap = new GameMap();
+            gameMap.createMap(i, keyboardEvent);
+            gameMapList.add(gameMap);
+        }
+    }
+
+    public void nextLevel() {
+        if (currentLevel + 1 <= MAX_LEVEL) {
+            currentLevel++;
+        }
+    }
+
     public void render() {
         clrscr(canvas);
         //Render map, entities
-        render(gameMap);
+        render(getCurrentGameMap());
     }
 
+    public GameMap getCurrentGameMap() {
+        return gameMapList.get(currentLevel - 1);
+    }
 
     public void update() {
-        gameMap.update();
-        scoreTitle.update(gameMap.getPlayer().getLeft(), gameMap.getPlayer().getScore(), sceneInGame);
+        getCurrentGameMap().update();
+        scoreTitle.update(getBomberLeft(),
+                getBomberScore(), sceneInGame);
     }
 
     public void renderWallAndGrass(GameMap gameMap) {

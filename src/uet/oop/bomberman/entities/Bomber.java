@@ -4,6 +4,8 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import uet.oop.bomberman.controllers.CollisionDetector;
+import uet.oop.bomberman.controllers.Game;
+import uet.oop.bomberman.controllers.ItemInfo;
 import uet.oop.bomberman.entities.bomb.Bomb;
 import uet.oop.bomberman.entities.enemies.Enemy;
 import uet.oop.bomberman.entities.objects.Brick;
@@ -23,10 +25,6 @@ public class Bomber extends MovingEntity {
 
     //Main game map
     private GameMap gameMap;
-
-    private int score = 0;
-
-    private int left = 2;
 
     //Real Width of bomber
     public static int REAL_WIDTH = 30;
@@ -61,6 +59,12 @@ public class Bomber extends MovingEntity {
         this.collisionDetector = collisionDetector;
         this.gameMap = gameMap;
         bombList = this.gameMap.getBombList();
+    }
+
+    public void initItemInfo(ItemInfo itemInfo){
+        setBombLevel(itemInfo.getItemFlamesCount());
+        setSpeedRun(itemInfo.getItemSpeedCount());
+        setBombListMaxSize(itemInfo.getItemBombsCount());
     }
 
     private void updateKeyHandle() {
@@ -259,8 +263,8 @@ public class Bomber extends MovingEntity {
             if (indexBomberSprite < 40) {
                 ++indexBomberSprite;
             } else {
-                if (left > 0) {
-                    --left;
+                if (Game.getInstance().getBomberLeft() > 0) {
+                    Game.getInstance().decreaseBomberLeft();
                     lifeStatus = LifeStatus.ALIVE;
                     setX(Sprite.SCALED_SIZE * gameMap.getxUnitBomberInit());
                     setY(Sprite.SCALED_SIZE * gameMap.getyUnitBomberInit());
@@ -279,7 +283,6 @@ public class Bomber extends MovingEntity {
         updateKeyHandle();
         updatePlantBomb();
         updateBombList();
-        updateEnemyList();
     }
 
     @Override
@@ -367,6 +370,10 @@ public class Bomber extends MovingEntity {
         ++bombLevel;
     }
 
+    public void setBombLevel(int bombLevel) {
+        this.bombLevel = bombLevel;
+    }
+
     public int getBombLevel() {
         return bombLevel;
     }
@@ -385,27 +392,5 @@ public class Bomber extends MovingEntity {
 
     public List<Entity> getBombList() {
         return bombList;
-    }
-
-    public void updateEnemyList() {
-        List<Entity> list = gameMap.getEnemies();
-        for (int i = 0; i < list.size(); i++) {
-            Enemy enemy = (Enemy) list.get(i);
-            if (enemy.getLifeStatus().equals(LifeStatus.DEAD)) {
-                if (enemy.getDeadPhaseStatus().equals(Enemy.DeadPhaseStatus.PHASE_DISAPPEAR)) {
-                    list.remove(i);
-                    score += enemy.getScore();
-                    i--;
-                }
-            }
-        }
-    }
-
-    public int getLeft() {
-        return left;
-    }
-
-    public int getScore() {
-        return score;
     }
 }

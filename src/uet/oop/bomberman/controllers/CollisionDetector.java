@@ -119,17 +119,28 @@ public class CollisionDetector {
         for (int i = 0; i < gameMap.getItems().size(); i++) {
             if (rectBomber.intersects(gameMap.getItems().get(i).getX(),
                     gameMap.getItems().get(i).getY(), Sprite.SCALED_SIZE, Sprite.SCALED_SIZE)
-                    && gameMap.getBrickAtPosition(gameMap.getItems().get(i).getX(), gameMap.getItems().get(i).getY()) == null
-                    && !(gameMap.getItems().get(i) instanceof Portal)) {
-                delPos = i;
+                    && gameMap.getBrickAtPosition(gameMap.getItems().get(i).getX(), gameMap.getItems().get(i).getY()) == null) {
+                Game gameInstance = Game.getInstance();
                 if (gameMap.getItems().get(i) instanceof ItemSpeed) {
                     bomber.setSpeedRun(bomber.getSpeedRun() + 1);
+                    gameInstance.getItemInfo().increaseItemSpeedCount();
+                    delPos = i;
                 }
                 if (gameMap.getItems().get(i) instanceof ItemBombs) {
                     bomber.increaseBombListMaxSize();
+                    gameInstance.getItemInfo().increaseItemBombsCount();
+                    delPos = i;
                 }
                 if (gameMap.getItems().get(i) instanceof ItemFlames) {
                     bomber.increaseBombLevel();
+                    gameInstance.getItemInfo().increaseItemFlamesCount();
+                    delPos = i;
+                }
+                if (gameMap.getItems().get(i) instanceof Portal
+                        && gameMap.getEnemies().size() == 0) {
+                    gameInstance.nextLevel();
+                    gameInstance.increaseBomberLeft();
+                    gameInstance.getCurrentGameMap().getPlayer().initItemInfo(gameInstance.getItemInfo());
                 }
             }
         }

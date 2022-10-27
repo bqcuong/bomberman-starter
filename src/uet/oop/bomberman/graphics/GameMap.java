@@ -1,11 +1,9 @@
 package uet.oop.bomberman.graphics;
 
 import uet.oop.bomberman.controllers.CollisionDetector;
+import uet.oop.bomberman.controllers.Game;
 import uet.oop.bomberman.entities.*;
-import uet.oop.bomberman.entities.enemies.Ballom;
-import uet.oop.bomberman.entities.enemies.Doll;
-import uet.oop.bomberman.entities.enemies.Minvo;
-import uet.oop.bomberman.entities.enemies.Oneal;
+import uet.oop.bomberman.entities.enemies.*;
 import uet.oop.bomberman.entities.items.ItemBombs;
 import uet.oop.bomberman.entities.items.ItemFlames;
 import uet.oop.bomberman.entities.items.ItemSpeed;
@@ -36,7 +34,7 @@ public class GameMap {
     private int xUnitBomberInit;
     private int yUnitBomberInit;
 
-    private int level = 1;
+    private int level;
 
     public int getLevel() {
         return level;
@@ -64,6 +62,7 @@ public class GameMap {
 
     public void createMap(int level, KeyboardEvent keyboardEvent) {
         try {
+            this.level = level;
             BufferedReader file = new BufferedReader(new FileReader("res/levels/Level" + level + ".txt"));
             Scanner sc = new Scanner(file);
             mapHeight = sc.nextInt();
@@ -152,6 +151,22 @@ public class GameMap {
         bricks.forEach(Entity::update);
         enemies.forEach(Entity::update);
         player.update();
+        updateEnemyList();
+    }
+
+
+    public void updateEnemyList() {
+        List<Entity> list = this.getEnemies();
+        for (int i = 0; i < list.size(); i++) {
+            Enemy enemy = (Enemy) list.get(i);
+            if (enemy.getLifeStatus().equals(LifeStatus.DEAD)) {
+                if (enemy.getDeadPhaseStatus().equals(Enemy.DeadPhaseStatus.PHASE_DISAPPEAR)) {
+                    list.remove(i);
+                    Game.getInstance().setBomberScore(Game.getInstance().getBomberScore() + enemy.getScore());
+                    i--;
+                }
+            }
+        }
     }
 
 
