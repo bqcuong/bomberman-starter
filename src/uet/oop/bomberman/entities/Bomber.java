@@ -24,6 +24,8 @@ public class Bomber extends MovingEntity {
     //Main game map
     private GameMap gameMap;
 
+    private int score = 0;
+
     private int left = 2;
 
     //Real Width of bomber
@@ -392,9 +394,18 @@ public class Bomber extends MovingEntity {
             if (enemy.getLifeStatus().equals(LifeStatus.DEAD)) {
                 if (enemy.getDeadPhaseStatus().equals(Enemy.DeadPhaseStatus.PHASE_DISAPPEAR)) {
                     list.remove(i);
+                    score += enemy.getScore();
                     i--;
                 }
             }
         }
+    }
+
+    public int getLeft() {
+        return left;
+    }
+
+    public int getScore() {
+        return score;
     }
 }

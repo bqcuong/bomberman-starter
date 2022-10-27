@@ -52,10 +52,12 @@ public abstract class Enemy extends MovingEntity implements IObstacle {
 
     public abstract void updatePosition();
 
+    public abstract int getScore();
+
     @Override
     public void update() {
         if (lifeStatus.equals(LifeStatus.ALIVE)) {
-            if (this instanceof Ballom){
+            if (this instanceof Ballom) {
                 if (directionStatus.equals(DirectionStatus.LEFT) || directionStatus.equals(DirectionStatus.DOWN)) {
                     setImg(Sprite.movingSprite(Sprite.balloom_left1,
                             Sprite.balloom_left2, Sprite.balloom_left3, indexEnemySprite, 30).getImage());
@@ -66,7 +68,7 @@ public abstract class Enemy extends MovingEntity implements IObstacle {
                     ++indexEnemySprite;
                 }
             }
-            if (this instanceof Oneal){
+            if (this instanceof Oneal) {
                 if (directionStatus.equals(DirectionStatus.LEFT) || directionStatus.equals(DirectionStatus.DOWN)) {
                     setImg(Sprite.movingSprite(Sprite.oneal_left1,
                             Sprite.oneal_left2, Sprite.oneal_left3, indexEnemySprite, 30).getImage());
@@ -77,7 +79,7 @@ public abstract class Enemy extends MovingEntity implements IObstacle {
                     ++indexEnemySprite;
                 }
             }
-            if (this instanceof Minvo){
+            if (this instanceof Minvo) {
                 if (directionStatus.equals(DirectionStatus.LEFT) || directionStatus.equals(DirectionStatus.DOWN)) {
                     setImg(Sprite.movingSprite(Sprite.minvo_left1,
                             Sprite.minvo_left2, Sprite.minvo_left3, indexEnemySprite, 30).getImage());
@@ -88,7 +90,7 @@ public abstract class Enemy extends MovingEntity implements IObstacle {
                     ++indexEnemySprite;
                 }
             }
-            if (this instanceof Doll){
+            if (this instanceof Doll) {
                 if (directionStatus.equals(DirectionStatus.LEFT) || directionStatus.equals(DirectionStatus.DOWN)) {
                     setImg(Sprite.movingSprite(Sprite.doll_left1,
                             Sprite.doll_left2, Sprite.doll_left3, indexEnemySprite, 30).getImage());
@@ -102,7 +104,7 @@ public abstract class Enemy extends MovingEntity implements IObstacle {
             updatePosition();
         }
         if (lifeStatus.equals(LifeStatus.DEAD)) {
-            if (this instanceof Ballom){
+            if (this instanceof Ballom) {
                 if (deadPhaseStatus.equals(DeadPhaseStatus.PHASE_FIRST)) {
                     setImg(Sprite.movingSprite(Sprite.balloom_dead, Sprite.balloom_dead, Sprite.balloom_dead,
                             indexEnemySprite, 30).getImage());
@@ -113,7 +115,7 @@ public abstract class Enemy extends MovingEntity implements IObstacle {
                     }
                 }
             }
-            if (this instanceof Oneal){
+            if (this instanceof Oneal) {
                 if (deadPhaseStatus.equals(DeadPhaseStatus.PHASE_FIRST)) {
                     setImg(Sprite.movingSprite(Sprite.oneal_dead, Sprite.oneal_dead, Sprite.oneal_dead,
                             indexEnemySprite, 30).getImage());
@@ -124,7 +126,7 @@ public abstract class Enemy extends MovingEntity implements IObstacle {
                     }
                 }
             }
-            if (this instanceof Minvo){
+            if (this instanceof Minvo) {
                 if (deadPhaseStatus.equals(DeadPhaseStatus.PHASE_FIRST)) {
                     setImg(Sprite.movingSprite(Sprite.minvo_dead, Sprite.minvo_dead, Sprite.minvo_dead,
                             indexEnemySprite, 30).getImage());
@@ -135,7 +137,7 @@ public abstract class Enemy extends MovingEntity implements IObstacle {
                     }
                 }
             }
-            if (this instanceof Doll){
+            if (this instanceof Doll) {
                 if (deadPhaseStatus.equals(DeadPhaseStatus.PHASE_FIRST)) {
                     setImg(Sprite.movingSprite(Sprite.doll_dead, Sprite.doll_dead, Sprite.doll_dead,
                             indexEnemySprite, 30).getImage());

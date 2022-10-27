@@ -1,6 +1,5 @@
 package uet.oop.bomberman.graphics;
 
-import com.sun.org.apache.bcel.internal.generic.PUSH;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import uet.oop.bomberman.entities.Entity;

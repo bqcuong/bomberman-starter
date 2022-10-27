@@ -17,6 +17,7 @@ public class Oneal extends Enemy {
     private int stepLeft;
     private int prevX;
     private int prevY;
+    private final int score = 200;
 
     public Oneal(int xUnit, int yUnit, Image img) {
         super(xUnit, yUnit, img);
@@ -144,5 +145,8 @@ public class Oneal extends Enemy {
         return list.get(rand.nextInt(list.size()));
     }
 
-
+    @Override
+    public int getScore() {
+        return score;
+    }
 }

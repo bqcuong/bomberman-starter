@@ -18,6 +18,8 @@ public class Ballom extends Enemy {
     private int prevX;
     private int prevY;
 
+    private final int score = 100;
+
     public Ballom(int xUnit, int yUnit, Image img) {
         super(xUnit, yUnit, img);
     }
@@ -45,7 +47,7 @@ public class Ballom extends Enemy {
             if (collisionDetector.checkCollisionWithFlame(x, y, REAL_WIDTH, REAL_HEIGHT)) {
                 setLifeStatus(LifeStatus.DEAD);
                 setDeadPhaseStatus(DeadPhaseStatus.PHASE_FIRST);
-                indexEnemySprite=0;
+                indexEnemySprite = 0;
             }
             if (directionStatus.equals(DirectionStatus.RIGHT)) {
                 boolean rightMapCheck = collisionDetector.checkCollisionWithMap(this.x + speedRun, this.y,
@@ -121,6 +123,11 @@ public class Ballom extends Enemy {
             }
         }
 
+    }
+
+    @Override
+    public int getScore() {
+        return score;
     }
 
     public DirectionStatus getRandomDirectionStatus() {

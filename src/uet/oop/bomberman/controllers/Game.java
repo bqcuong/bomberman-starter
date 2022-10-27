@@ -7,6 +7,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.stage.Stage;
 import uet.oop.bomberman.entities.Entity;
+import uet.oop.bomberman.entities.objects.ScoreTitle;
 import uet.oop.bomberman.events.KeyboardEvent;
 import uet.oop.bomberman.graphics.GameMap;
 import uet.oop.bomberman.graphics.GraphicsMGR;
@@ -25,8 +26,7 @@ public class Game {
 
     // Tao keyboard event
     KeyboardEvent keyboardEvent;
-
-
+    ScoreTitle scoreTitle;
     public Canvas canvas;
     public GraphicsContext gc;
     public Stage stage;
@@ -37,7 +37,7 @@ public class Game {
         return instance;
     }
 
-    private Game(){
+    private Game() {
     }
 
     public void createGame(Stage stage) {
@@ -45,6 +45,9 @@ public class Game {
         canvas = new Canvas(Sprite.SCALED_SIZE * GraphicsMGR.WIDTH, Sprite.SCALED_SIZE * GraphicsMGR.HEIGHT);
         gc = canvas.getGraphicsContext2D();
         root.getChildren().add(canvas);
+
+        scoreTitle = ScoreTitle.getInstance();
+        scoreTitle.createScoreTitle(root);
         sceneInGame = new Scene(root);
         keyboardEvent = new KeyboardEvent(sceneInGame);
         // Tao map
@@ -70,6 +73,7 @@ public class Game {
 
     public void update() {
         gameMap.update();
+        scoreTitle.update(gameMap.getPlayer().getLeft(), gameMap.getPlayer().getScore(), sceneInGame);
     }
 
     public void renderWallAndGrass(GameMap gameMap) {
@@ -109,7 +113,8 @@ public class Game {
         renderEnemies(gameMap);
         renderBomber(gameMap);
     }
-    public void start(){
+
+    public void start() {
         timer.start();
     }
 

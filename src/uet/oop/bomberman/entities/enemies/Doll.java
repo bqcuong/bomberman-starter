@@ -12,6 +12,9 @@ import java.util.List;
 import java.util.Random;
 
 public class Doll extends Enemy {
+
+    private final int score = 400;
+
     public Doll(int xUnit, int yUnit, Image img) {
         super(xUnit, yUnit, img);
     }
@@ -91,6 +94,11 @@ public class Doll extends Enemy {
             }
         }
 
+    }
+
+    @Override
+    public int getScore() {
+        return score;
     }
 
     public DirectionStatus getRandomDirectionStatus() {

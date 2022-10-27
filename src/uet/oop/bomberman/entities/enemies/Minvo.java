@@ -17,6 +17,7 @@ public class Minvo extends Enemy {
     private int stepLeft;
     private int prevX;
     private int prevY;
+    private final int score = 800;
 
     public Minvo(int xUnit, int yUnit, Image img) {
         super(xUnit, yUnit, img);
@@ -44,7 +45,7 @@ public class Minvo extends Enemy {
             if (collisionDetector.checkCollisionWithFlame(x, y, REAL_WIDTH, REAL_HEIGHT)) {
                 setLifeStatus(LifeStatus.DEAD);
                 setDeadPhaseStatus(DeadPhaseStatus.PHASE_FIRST);
-                indexEnemySprite=0;
+                indexEnemySprite = 0;
             }
             if (directionStatus.equals(DirectionStatus.RIGHT)) {
                 boolean rightMapCheck = collisionDetector.checkCollisionWithMap(this.x + speedRun, this.y,
@@ -136,4 +137,8 @@ public class Minvo extends Enemy {
         return list.get(rand.nextInt(list.size()));
     }
 
+    @Override
+    public int getScore() {
+        return score;
+    }
 }
