@@ -148,7 +148,7 @@ public class CollisionDetector {
         }
     }
 
-    public boolean checkCollisionWithMap(int x, int y, int REAL_WIDTH, int REAL_HEIGHT) {
+    public boolean checkCollisionWithMap(int x, int y, int REAL_WIDTH, int REAL_HEIGHT, boolean isWallPass) {
         //Wall and grass entity
         Entity topLeftWallAndGrass = gameMap.getWallsAndGrassAtPosition(x, y);
         Entity topRightWallAndGrass = gameMap.getWallsAndGrassAtPosition(x + REAL_WIDTH, y);
@@ -160,6 +160,10 @@ public class CollisionDetector {
         Entity downLeftBrick = gameMap.getBrickAtPosition(x, y + REAL_HEIGHT);
         Entity downRightBrick = gameMap.getBrickAtPosition(x + REAL_WIDTH,
                 y + REAL_HEIGHT);
+        if (isWallPass) {
+            return topLeftWallAndGrass instanceof Wall || topRightWallAndGrass instanceof Wall
+                    || downLeftWallAndGrass instanceof Wall || downRightWallAndGrass instanceof Wall;
+        }
         return topLeftWallAndGrass instanceof Wall || topRightWallAndGrass instanceof Wall
                 || downLeftWallAndGrass instanceof Wall || downRightWallAndGrass instanceof Wall
                 || topLeftBrick != null || topRightBrick != null || downLeftBrick != null || downRightBrick != null;

@@ -101,6 +101,17 @@ public abstract class Enemy extends MovingEntity implements IObstacle {
                     ++indexEnemySprite;
                 }
             }
+            if (this instanceof Kondoria) {
+                if (directionStatus.equals(DirectionStatus.LEFT) || directionStatus.equals(DirectionStatus.DOWN)) {
+                    setImg(Sprite.movingSprite(Sprite.kondoria_left1,
+                            Sprite.kondoria_left2, Sprite.kondoria_left3, indexEnemySprite, 30).getImage());
+                    ++indexEnemySprite;
+                } else if (directionStatus.equals(DirectionStatus.RIGHT) || directionStatus.equals(DirectionStatus.UP)) {
+                    setImg(Sprite.movingSprite(Sprite.kondoria_right1,
+                            Sprite.kondoria_right2, Sprite.kondoria_right2, indexEnemySprite, 30).getImage());
+                    ++indexEnemySprite;
+                }
+            }
             updatePosition();
         }
         if (lifeStatus.equals(LifeStatus.DEAD)) {
@@ -140,6 +151,17 @@ public abstract class Enemy extends MovingEntity implements IObstacle {
             if (this instanceof Doll) {
                 if (deadPhaseStatus.equals(DeadPhaseStatus.PHASE_FIRST)) {
                     setImg(Sprite.movingSprite(Sprite.doll_dead, Sprite.doll_dead, Sprite.doll_dead,
+                            indexEnemySprite, 30).getImage());
+                    ++indexEnemySprite;
+                    if (indexEnemySprite == 30) {
+                        setDeadPhaseStatus(DeadPhaseStatus.PHASE_SECOND);
+                        indexEnemySprite = 0;
+                    }
+                }
+            }
+            if (this instanceof Kondoria) {
+                if (deadPhaseStatus.equals(DeadPhaseStatus.PHASE_FIRST)) {
+                    setImg(Sprite.movingSprite(Sprite.kondoria_dead, Sprite.kondoria_dead, Sprite.kondoria_dead,
                             indexEnemySprite, 30).getImage());
                     ++indexEnemySprite;
                     if (indexEnemySprite == 30) {

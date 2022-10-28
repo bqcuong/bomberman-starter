@@ -105,7 +105,7 @@ public class Bomber extends MovingEntity {
             if (keyboardEvent.isPressed(KeyCode.W)) {
                 isPressed = true;
                 boolean upBombCheck = collisionDetector.checkCollisionWithBombWhenMove(this.x, this.y - speedRun, bombList);
-                boolean upMapCheck = collisionDetector.checkCollisionWithMap(this.x, this.y - speedRun, REAL_WIDTH, REAL_HEIGHT);
+                boolean upMapCheck = collisionDetector.checkCollisionWithMap(this.x, this.y - speedRun, REAL_WIDTH, REAL_HEIGHT, false);
                 if (upMapCheck || upBombCheck) {
                     if (!upBombCheck) {
                         if (verticalMovingSupport1 >= 15
@@ -143,7 +143,7 @@ public class Bomber extends MovingEntity {
             if (keyboardEvent.isPressed(KeyCode.S)) {
                 isPressed = true;
                 boolean downBombCheck = collisionDetector.checkCollisionWithBombWhenMove(this.x, this.y + speedRun, bombList);
-                boolean downMapCheck = collisionDetector.checkCollisionWithMap(this.x, this.y + speedRun, REAL_WIDTH, REAL_HEIGHT);
+                boolean downMapCheck = collisionDetector.checkCollisionWithMap(this.x, this.y + speedRun, REAL_WIDTH, REAL_HEIGHT, false);
                 if (downMapCheck || downBombCheck) {
                     if (!downBombCheck) {
                         if (verticalMovingSupport1 >= 15
@@ -180,7 +180,7 @@ public class Bomber extends MovingEntity {
             if (keyboardEvent.isPressed(KeyCode.A)) {
                 isPressed = true;
                 boolean leftBombCheck = collisionDetector.checkCollisionWithBombWhenMove(this.x - speedRun, this.y, bombList);
-                boolean leftMapCheck = collisionDetector.checkCollisionWithMap(this.x - speedRun, this.y, REAL_WIDTH, REAL_HEIGHT);
+                boolean leftMapCheck = collisionDetector.checkCollisionWithMap(this.x - speedRun, this.y, REAL_WIDTH, REAL_HEIGHT, false);
                 if (leftMapCheck || leftBombCheck) {
                     if (!leftBombCheck) {
                         if (horizontalMovingSupport1 >= 18
@@ -217,7 +217,7 @@ public class Bomber extends MovingEntity {
             if (keyboardEvent.isPressed(KeyCode.D)) {
                 isPressed = true;
                 boolean rightBombCheck = collisionDetector.checkCollisionWithBombWhenMove(this.x + speedRun, this.y, bombList);
-                boolean rightMapCheck = collisionDetector.checkCollisionWithMap(this.x + speedRun, this.y, REAL_WIDTH, REAL_HEIGHT);
+                boolean rightMapCheck = collisionDetector.checkCollisionWithMap(this.x + speedRun, this.y, REAL_WIDTH, REAL_HEIGHT, false);
                 if (rightMapCheck || rightBombCheck) {
                     if (!rightBombCheck) {
                         if (horizontalMovingSupport1 >= 18

@@ -133,6 +133,11 @@ public class GameMap {
                                     new CollisionDetector(this)));
                             tmpWallAndGrass.add(new Grass(j, i, Sprite.grass.getImage()));
                             break;
+                        case '5':
+                            enemies.add(new Kondoria(j, i, Sprite.kondoria_right1.getImage(), this,
+                                    new CollisionDetector(this)));
+                            tmpWallAndGrass.add(new Grass(j, i, Sprite.grass.getImage()));
+                            break;
                         default:
                             tmpWallAndGrass.add(new Grass(j, i, Sprite.grass.getImage()));
                             break;

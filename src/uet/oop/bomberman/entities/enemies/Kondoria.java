@@ -11,19 +11,20 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-public class Minvo extends Enemy {
+public class Kondoria extends Enemy {
 
     //step left before change direction
     private int stepLeft;
     private int prevX;
     private int prevY;
-    private final int score = 800;
 
-    public Minvo(int xUnit, int yUnit, Image img) {
+    private final int score = 1000;
+
+    public Kondoria(int xUnit, int yUnit, Image img) {
         super(xUnit, yUnit, img);
     }
 
-    public Minvo(int xUnit, int yUnit, Image img, GameMap gameMap, CollisionDetector collisionDetector) {
+    public Kondoria(int xUnit, int yUnit, Image img, GameMap gameMap, CollisionDetector collisionDetector) {
         super(xUnit, yUnit, img);
         this.gameMap = gameMap;
         directionStatus = getRandomDirectionStatus();
@@ -32,8 +33,9 @@ public class Minvo extends Enemy {
         prevX = x / Sprite.SCALED_SIZE;
         prevY = y / Sprite.SCALED_SIZE;
         setLifeStatus(LifeStatus.ALIVE);
-        setSpeedRun(3);
+        setSpeedRun(1);
     }
+
 
     @Override
     public void update() {
@@ -49,7 +51,7 @@ public class Minvo extends Enemy {
             }
             if (directionStatus.equals(DirectionStatus.RIGHT)) {
                 boolean rightMapCheck = collisionDetector.checkCollisionWithMap(this.x + speedRun, this.y,
-                        REAL_WIDTH, REAL_HEIGHT, false);
+                        REAL_WIDTH, REAL_HEIGHT, true);
                 boolean rightBombCheck = collisionDetector.checkCollisionWithBomb(this.x + speedRun, this.y,
                         gameMap.getPlayer().getBombList(), REAL_WIDTH, REAL_HEIGHT);
                 if (rightMapCheck || rightBombCheck) {
@@ -66,7 +68,7 @@ public class Minvo extends Enemy {
             }
             if (directionStatus.equals(DirectionStatus.LEFT)) {
                 boolean leftMapCheck = collisionDetector.checkCollisionWithMap(this.x - speedRun, this.y,
-                        REAL_WIDTH, REAL_HEIGHT, false);
+                        REAL_WIDTH, REAL_HEIGHT, true);
                 boolean leftBombCheck = collisionDetector.checkCollisionWithBomb(this.x - speedRun, this.y,
                         gameMap.getPlayer().getBombList(), REAL_WIDTH, REAL_HEIGHT);
                 if (leftMapCheck || leftBombCheck) {
@@ -83,7 +85,7 @@ public class Minvo extends Enemy {
             }
             if (directionStatus.equals(DirectionStatus.UP)) {
                 boolean upMapCheck = collisionDetector.checkCollisionWithMap(this.x, this.y - speedRun,
-                        REAL_WIDTH, REAL_HEIGHT, false);
+                        REAL_WIDTH, REAL_HEIGHT, true);
                 boolean upBombCheck = collisionDetector.checkCollisionWithBomb(this.x, this.y - speedRun,
                         gameMap.getPlayer().getBombList(), REAL_WIDTH, REAL_HEIGHT);
                 if (upMapCheck || upBombCheck) {
@@ -100,7 +102,7 @@ public class Minvo extends Enemy {
             }
             if (directionStatus.equals(DirectionStatus.DOWN)) {
                 boolean downMapCheck = collisionDetector.checkCollisionWithMap(this.x, this.y + speedRun,
-                        REAL_WIDTH, REAL_HEIGHT, false);
+                        REAL_WIDTH, REAL_HEIGHT, true);
                 boolean downBombCheck = collisionDetector.checkCollisionWithBomb(this.x, this.y + speedRun,
                         gameMap.getPlayer().getBombList(), REAL_WIDTH, REAL_HEIGHT);
                 if (downMapCheck || downBombCheck) {
@@ -123,6 +125,11 @@ public class Minvo extends Enemy {
 
     }
 
+    @Override
+    public int getScore() {
+        return score;
+    }
+
     public DirectionStatus getRandomDirectionStatus() {
         List<DirectionStatus> list = Arrays.asList(DirectionStatus.UP,
                 DirectionStatus.RIGHT, DirectionStatus.LEFT, DirectionStatus.DOWN);
@@ -137,8 +144,4 @@ public class Minvo extends Enemy {
         return list.get(rand.nextInt(list.size()));
     }
 
-    @Override
-    public int getScore() {
-        return score;
-    }
 }

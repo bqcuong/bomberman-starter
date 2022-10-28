@@ -42,7 +42,7 @@ public class Doll extends Enemy {
             }
             if (directionStatus.equals(DirectionStatus.RIGHT)) {
                 boolean rightMapCheck = collisionDetector.checkCollisionWithMap(this.x + speedRun, this.y,
-                        REAL_WIDTH, REAL_HEIGHT);
+                        REAL_WIDTH, REAL_HEIGHT, false);
                 boolean rightBombCheck = collisionDetector.checkCollisionWithBomb(this.x + speedRun, this.y,
                         gameMap.getPlayer().getBombList(), REAL_WIDTH, REAL_HEIGHT);
                 if (rightMapCheck || rightBombCheck) {
@@ -55,7 +55,7 @@ public class Doll extends Enemy {
             }
             if (directionStatus.equals(DirectionStatus.LEFT)) {
                 boolean leftMapCheck = collisionDetector.checkCollisionWithMap(this.x - speedRun, this.y,
-                        REAL_WIDTH, REAL_HEIGHT);
+                        REAL_WIDTH, REAL_HEIGHT, false);
                 boolean leftBombCheck = collisionDetector.checkCollisionWithBomb(this.x - speedRun, this.y,
                         gameMap.getPlayer().getBombList(), REAL_WIDTH, REAL_HEIGHT);
                 if (leftMapCheck || leftBombCheck) {
@@ -68,7 +68,7 @@ public class Doll extends Enemy {
             }
             if (directionStatus.equals(DirectionStatus.UP)) {
                 boolean upMapCheck = collisionDetector.checkCollisionWithMap(this.x, this.y - speedRun,
-                        REAL_WIDTH, REAL_HEIGHT);
+                        REAL_WIDTH, REAL_HEIGHT, false);
                 boolean upBombCheck = collisionDetector.checkCollisionWithBomb(this.x, this.y - speedRun,
                         gameMap.getPlayer().getBombList(), REAL_WIDTH, REAL_HEIGHT);
                 if (upMapCheck || upBombCheck) {
@@ -81,7 +81,7 @@ public class Doll extends Enemy {
             }
             if (directionStatus.equals(DirectionStatus.DOWN)) {
                 boolean downMapCheck = collisionDetector.checkCollisionWithMap(this.x, this.y + speedRun,
-                        REAL_WIDTH, REAL_HEIGHT);
+                        REAL_WIDTH, REAL_HEIGHT, false);
                 boolean downBombCheck = collisionDetector.checkCollisionWithBomb(this.x, this.y + speedRun,
                         gameMap.getPlayer().getBombList(), REAL_WIDTH, REAL_HEIGHT);
                 if (downMapCheck || downBombCheck) {
