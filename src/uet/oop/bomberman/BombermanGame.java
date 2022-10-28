@@ -1,7 +1,10 @@
 package uet.oop.bomberman;
 import javafx.application.Application;
 import javafx.stage.Stage;
+import uet.oop.bomberman.controllers.Audio;
 import uet.oop.bomberman.controllers.Game;
+
+import javax.sound.midi.Soundbank;
 
 public class BombermanGame extends Application {
 
@@ -10,6 +13,7 @@ public class BombermanGame extends Application {
         Game game = Game.getInstance();
         game.createGame(stage);
         stage.setResizable(false);
+//        Audio.playBgm("background");
         stage.setTitle("Bomberman OOP");
         stage.show();
         game.start();
