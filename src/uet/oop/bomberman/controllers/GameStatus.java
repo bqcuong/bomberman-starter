@@ -1,5 +1,5 @@
 package uet.oop.bomberman.controllers;
 
 public enum GameStatus {
-    PAUSE, PLAYING, OPENING
+    INIT, PAUSED, PLAYING, OPENING, WAIT_TO_LOSE, LOSE
 }

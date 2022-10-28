@@ -277,8 +277,7 @@ public class Bomber extends MovingEntity {
                     Game.getInstance().setGameStatus(GameStatus.OPENING);
                 } else {
                     setImg(null);
-                    //TO DO:
-                    //set stage start menu
+                    Game.getInstance().setGameStatus(GameStatus.WAIT_TO_LOSE);
                 }
             }
         }
@@ -344,11 +343,11 @@ public class Bomber extends MovingEntity {
         Game gameInstance = Game.getInstance();
         if (keyboardEvent.isPressed(KeyCode.P)) {
             if (gameInstance.getGameStatus().equals(GameStatus.PLAYING)) {
-                gameInstance.setGameStatus(GameStatus.PAUSE);
+                gameInstance.setGameStatus(GameStatus.PAUSED);
             }
         }
         if (keyboardEvent.isPressed(KeyCode.R)) {
-            if (gameInstance.getGameStatus().equals(GameStatus.PAUSE)) {
+            if (gameInstance.getGameStatus().equals(GameStatus.PAUSED)) {
                 gameInstance.setGameStatus(GameStatus.PLAYING);
             }
         }
@@ -413,4 +412,5 @@ public class Bomber extends MovingEntity {
     public List<Entity> getBombList() {
         return bombList;
     }
+
 }

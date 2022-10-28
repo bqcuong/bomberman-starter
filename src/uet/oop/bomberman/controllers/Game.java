@@ -7,9 +7,12 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import uet.oop.bomberman.entities.Bomber;
 import uet.oop.bomberman.entities.Entity;
+import uet.oop.bomberman.entities.LifeStatus;
 import uet.oop.bomberman.events.KeyboardEvent;
 import uet.oop.bomberman.graphics.GameMap;
 import uet.oop.bomberman.graphics.GraphicsMGR;
+import uet.oop.bomberman.graphics.Sprite;
+import uet.oop.bomberman.scenes.LoseGameScene;
 import uet.oop.bomberman.scenes.OpeningScene;
 import uet.oop.bomberman.scenes.InGameScene;
 
@@ -33,8 +36,9 @@ public class Game {
     private List<GameMap> gameMapList;
     // Tao scene
     private InGameScene inGameScene;
-
     private OpeningScene openingScene;
+
+    private LoseGameScene loseGameScene;
 
 
     // Tao keyboard event
@@ -64,24 +68,8 @@ public class Game {
             exception.printStackTrace();
         }
         this.stage = stage;
-        bomberLeft = Bomber.BOMBER_LEFT_DEFAULT;
-        bomberScore = Bomber.BOMBER_SCORE_DEFAULT;
-        itemInfo = new ItemInfo();
+        init();
         gameStatus = GameStatus.OPENING;
-
-        inGameScene = InGameScene.getInstance();
-        inGameScene.createSceneInGame(GraphicsMGR.WIDTH, GraphicsMGR.HEIGHT, font);
-
-        keyboardEvent = new KeyboardEvent(inGameScene.getInGameScene());
-
-        openingScene = OpeningScene.getInstance();
-        openingScene.createOpeningScene(GraphicsMGR.WIDTH, GraphicsMGR.HEIGHT, font);
-
-        // Tao map
-        gameMapList = new ArrayList<>(MAX_LEVEL);
-        createMapList();
-
-        gc = inGameScene.getGraphicContext();
         stage.setScene(openingScene.getOpeningScene());
     }
 
@@ -125,6 +113,7 @@ public class Game {
     public void nextLevel() {
         if (currentLevel + 1 <= MAX_LEVEL) {
             currentLevel++;
+            gameStatus = GameStatus.OPENING;
         }
     }
 
@@ -153,7 +142,6 @@ public class Game {
                     } else {
                         timer.cancel();
                         gameStatus = GameStatus.PLAYING;
-
                     }
                 }
             };
@@ -166,9 +154,46 @@ public class Game {
             inGameScene.getScoreTitle().update(getBomberLeft(),
                     getBomberScore(), inGameScene.getInGameScene());
             inGameScene.getPausedText().setVisible(false);
-        } else if (gameStatus.equals(GameStatus.PAUSE)) {
+        } else if (gameStatus.equals(GameStatus.PAUSED)) {
             getCurrentGameMap().getPlayer().updatePauseHandle();
             inGameScene.getPausedText().setVisible(true);
+        }
+        if (gameStatus.equals(GameStatus.WAIT_TO_LOSE)) {
+            Timer timer = new Timer();
+            TimerTask timerTask = new TimerTask() {
+                int count = 1;
+
+                @Override
+                public void run() {
+                    if (count > 0) {
+                        count--;
+                    } else {
+                        timer.cancel();
+                        gameStatus = GameStatus.LOSE;
+
+                    }
+                }
+            };
+            timer.schedule(timerTask, 0, 1000);
+        }
+        if (gameStatus.equals(GameStatus.LOSE)) {
+            stage.setScene(LoseGameScene.getInstance().getLoseGameScene());
+            init();
+            Timer timer = new Timer();
+            TimerTask timerTask = new TimerTask() {
+                int count = 2;
+
+                @Override
+                public void run() {
+                    if (count > 0) {
+                        count--;
+                    } else {
+                        timer.cancel();
+                        gameStatus = GameStatus.OPENING;
+                    }
+                }
+            };
+            timer.schedule(timerTask, 0, 1000);
         }
     }
 
@@ -226,7 +251,27 @@ public class Game {
         this.gameStatus = gameStatus;
     }
 
-    public void restart() {
+    public void init() {
+        currentLevel = 1;
+        bomberLeft = Bomber.BOMBER_LEFT_DEFAULT;
+        bomberScore = Bomber.BOMBER_SCORE_DEFAULT;
+        itemInfo = new ItemInfo();
 
+        inGameScene = InGameScene.getInstance();
+        inGameScene.createSceneInGame(GraphicsMGR.WIDTH, GraphicsMGR.HEIGHT, font);
+
+        keyboardEvent = new KeyboardEvent(inGameScene.getInGameScene());
+
+        openingScene = OpeningScene.getInstance();
+        openingScene.createOpeningScene(GraphicsMGR.WIDTH, GraphicsMGR.HEIGHT, font);
+
+        loseGameScene = LoseGameScene.getInstance();
+        loseGameScene.createLoseGameScene(GraphicsMGR.WIDTH, GraphicsMGR.HEIGHT, font);
+
+        // Tao map
+        gameMapList = new ArrayList<>(MAX_LEVEL);
+        createMapList();
+
+        gc = inGameScene.getGraphicContext();
     }
 }
