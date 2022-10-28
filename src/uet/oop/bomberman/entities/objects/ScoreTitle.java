@@ -24,10 +24,10 @@ public class ScoreTitle {
     private ScoreTitle() {
     }
 
-    public void createScoreTitle(Group root) {
+    public void createScoreTitle(Group root, Font font) {
         try {
 //            font = Font.font("Abyssinica SIL", FontWeight.BOLD, 80);
-            font = Font.loadFont("file:res/PixelEmulator-xq08.ttf", 80);
+            this.font = font;
             timeTexture = new Text();
             scoreTexture = new Text();
             leftTexture = new Text();

@@ -5,6 +5,7 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import uet.oop.bomberman.controllers.CollisionDetector;
 import uet.oop.bomberman.controllers.Game;
+import uet.oop.bomberman.controllers.GameStatus;
 import uet.oop.bomberman.controllers.ItemInfo;
 import uet.oop.bomberman.entities.bomb.Bomb;
 import uet.oop.bomberman.entities.enemies.Enemy;
@@ -61,7 +62,7 @@ public class Bomber extends MovingEntity {
         bombList = this.gameMap.getBombList();
     }
 
-    public void initItemInfo(ItemInfo itemInfo){
+    public void initItemInfo(ItemInfo itemInfo) {
         setBombLevel(itemInfo.getItemFlamesCount());
         setSpeedRun(itemInfo.getItemSpeedCount());
         setBombListMaxSize(itemInfo.getItemBombsCount());
@@ -330,6 +331,20 @@ public class Bomber extends MovingEntity {
             Bomb bomb = (Bomb) bombList.get(0);
             if (bomb.getBombStatus() == Bomb.BombStatus.DISAPEAR) {
                 bombList.remove(0);
+            }
+        }
+    }
+
+    public void updatePauseHandle() {
+        Game gameInstance = Game.getInstance();
+        if (keyboardEvent.isPressed(KeyCode.P)) {
+            if (gameInstance.getGameStatus().equals(GameStatus.PLAYING)) {
+                gameInstance.setGameStatus(GameStatus.PAUSE);
+            }
+        }
+        if (keyboardEvent.isPressed(KeyCode.R)) {
+            if (gameInstance.getGameStatus().equals(GameStatus.PAUSE)) {
+                gameInstance.setGameStatus(GameStatus.PLAYING);
             }
         }
     }

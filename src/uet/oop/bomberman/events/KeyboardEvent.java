@@ -12,6 +12,9 @@ public class KeyboardEvent implements EventHandler<KeyEvent> {
     private boolean isKeyRight = false;
     private boolean isKeySpace = false;
 
+    private boolean isKeyP = false;
+    private boolean isKeyR = false;
+
 
     public KeyboardEvent(Scene scene) {
         scene.setOnKeyPressed(this);
@@ -34,6 +37,12 @@ public class KeyboardEvent implements EventHandler<KeyEvent> {
                 case W:
                     isKeyUp = true;
                     break;
+                case P:
+                    isKeyP = true;
+                    break;
+                case R:
+                    isKeyR = true;
+                    break;
                 case SPACE:
                     isKeySpace = true;
                     break;
@@ -52,6 +61,11 @@ public class KeyboardEvent implements EventHandler<KeyEvent> {
                 case W:
                     isKeyUp = false;
                     break;
+                case P:
+                    isKeyP = false;
+                    break;
+                case R:
+                    isKeyR = false;
                 case SPACE:
                     isKeySpace = false;
                     break;
@@ -76,6 +90,12 @@ public class KeyboardEvent implements EventHandler<KeyEvent> {
                 break;
             case SPACE:
                 result = isKeySpace;
+                break;
+            case P:
+                result = isKeyP;
+                break;
+            case R:
+                result = isKeyR;
                 break;
         }
         return result;
