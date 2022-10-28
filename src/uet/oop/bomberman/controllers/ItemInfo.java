@@ -1,5 +1,7 @@
 package uet.oop.bomberman.controllers;
 
+import uet.oop.bomberman.entities.Bomber;
+
 public class ItemInfo {
     private int itemSpeedCount;
     private int itemFlamesCount;
@@ -18,9 +20,9 @@ public class ItemInfo {
     }
 
     public ItemInfo() {
-        itemBombsCount = 1;
-        itemSpeedCount = 2;
-        itemFlamesCount = 1;
+        itemBombsCount = Bomber.BOMBER_BOMB_LIST_SIZE_DEFAULT;
+        itemSpeedCount = Bomber.BOMBER_SPEED_DEFAULT;
+        itemFlamesCount = Bomber.BOMBER_BOMB_LEVEL_DEFAULT;
     }
 
     public int getItemBombsCount() {
@@ -36,8 +38,8 @@ public class ItemInfo {
     }
 
     public void reset() {
-        itemBombsCount = 1;
-        itemSpeedCount = 2;
-        itemFlamesCount = 1;
+        itemBombsCount = Bomber.BOMBER_BOMB_LIST_SIZE_DEFAULT;
+        itemSpeedCount = Bomber.BOMBER_SPEED_DEFAULT;
+        itemFlamesCount = Bomber.BOMBER_BOMB_LEVEL_DEFAULT;
     }
 }

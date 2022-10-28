@@ -8,7 +8,6 @@ import uet.oop.bomberman.controllers.Game;
 import uet.oop.bomberman.controllers.GameStatus;
 import uet.oop.bomberman.controllers.ItemInfo;
 import uet.oop.bomberman.entities.bomb.Bomb;
-import uet.oop.bomberman.entities.enemies.Enemy;
 import uet.oop.bomberman.entities.objects.Brick;
 import uet.oop.bomberman.entities.objects.Grass;
 import uet.oop.bomberman.entities.objects.Wall;
@@ -26,6 +25,12 @@ public class Bomber extends MovingEntity {
 
     //Main game map
     private GameMap gameMap;
+
+    public static int BOMBER_LEFT_DEFAULT = 2;
+    public static int BOMBER_SCORE_DEFAULT = 0;
+    public static int BOMBER_BOMB_LEVEL_DEFAULT = 1;
+    public static int BOMBER_SPEED_DEFAULT = 2;
+    public static int BOMBER_BOMB_LIST_SIZE_DEFAULT = 1;
 
     //Real Width of bomber
     public static int REAL_WIDTH = 30;
@@ -108,7 +113,7 @@ public class Bomber extends MovingEntity {
                                 (yUnit - 1) * Sprite.SCALED_SIZE) instanceof Grass
                                 && gameMap.getBrickAtPosition(xUnit * Sprite.SCALED_SIZE,
                                 (yUnit - 1) * Sprite.SCALED_SIZE) == null) {
-                            super.updateDirection(directionStatus.LEFT, true, speedRun);
+                            super.updateDirection(DirectionStatus.LEFT, true, speedRun);
                         }
 
                         if (verticalMovingSupport2 >= 15
@@ -121,14 +126,14 @@ public class Bomber extends MovingEntity {
                                 (yUnit - 1) * Sprite.SCALED_SIZE) instanceof Grass
                                 && gameMap.getBrickAtPosition((xUnit + 1) * Sprite.SCALED_SIZE,
                                 (yUnit - 1) * Sprite.SCALED_SIZE) == null) {
-                            super.updateDirection(directionStatus.RIGHT, true, speedRun);
+                            super.updateDirection(DirectionStatus.RIGHT, true, speedRun);
 
                         }
                     }
-                    super.updateDirection(directionStatus.UP, false, speedRun);
+                    super.updateDirection(DirectionStatus.UP, false, speedRun);
                     indexBomberSprite = 0;
                 } else {
-                    super.updateDirection(directionStatus.UP, true, speedRun);
+                    super.updateDirection(DirectionStatus.UP, true, speedRun);
                 }
                 setImg(Sprite.movingSprite(Sprite.player_up, Sprite.player_up_1,
                         Sprite.player_up_2, indexBomberSprite, 15).getImage());
@@ -146,7 +151,7 @@ public class Bomber extends MovingEntity {
                                 (yUnit + 1) * Sprite.SCALED_SIZE) instanceof Grass
                                 && gameMap.getBrickAtPosition(xUnit * Sprite.SCALED_SIZE,
                                 (yUnit + 1) * Sprite.SCALED_SIZE) == null) {
-                            super.updateDirection(directionStatus.LEFT, true, speedRun);
+                            super.updateDirection(DirectionStatus.LEFT, true, speedRun);
                         }
 
                         if (verticalMovingSupport2 >= 15
@@ -159,13 +164,13 @@ public class Bomber extends MovingEntity {
                                 (yUnit + 1) * Sprite.SCALED_SIZE) instanceof Grass
                                 && gameMap.getBrickAtPosition((xUnit + 1) * Sprite.SCALED_SIZE,
                                 (yUnit + 1) * Sprite.SCALED_SIZE) == null) {
-                            super.updateDirection(directionStatus.RIGHT, true, speedRun);
+                            super.updateDirection(DirectionStatus.RIGHT, true, speedRun);
                         }
                     }
                     indexBomberSprite = 0;
-                    super.updateDirection(directionStatus.DOWN, false, speedRun);
+                    super.updateDirection(DirectionStatus.DOWN, false, speedRun);
                 } else {
-                    super.updateDirection(directionStatus.DOWN, true, speedRun);
+                    super.updateDirection(DirectionStatus.DOWN, true, speedRun);
                 }
                 setImg(Sprite.movingSprite(Sprite.player_down, Sprite.player_down_1,
                         Sprite.player_down_2, indexBomberSprite, 15).getImage());
@@ -183,7 +188,7 @@ public class Bomber extends MovingEntity {
                                 yUnit * Sprite.SCALED_SIZE) instanceof Grass
                                 && gameMap.getBrickAtPosition((xUnit - 1) * Sprite.SCALED_SIZE,
                                 yUnit * Sprite.SCALED_SIZE) == null) {
-                            super.updateDirection(directionStatus.UP, true, speedRun);
+                            super.updateDirection(DirectionStatus.UP, true, speedRun);
                         }
                         if (horizontalMovingSupport2 >= 18
                                 && (gameMap.getWallsAndGrassAtPosition((xUnit - 1) * Sprite.SCALED_SIZE,
@@ -195,13 +200,13 @@ public class Bomber extends MovingEntity {
                                 (yUnit + 1) * Sprite.SCALED_SIZE) instanceof Grass
                                 && gameMap.getBrickAtPosition((xUnit - 1) * Sprite.SCALED_SIZE,
                                 (yUnit + 1) * Sprite.SCALED_SIZE) == null)) {
-                            super.updateDirection(directionStatus.DOWN, true, speedRun);
+                            super.updateDirection(DirectionStatus.DOWN, true, speedRun);
                         }
                     }
-                    super.updateDirection(directionStatus.LEFT, false, speedRun);
+                    super.updateDirection(DirectionStatus.LEFT, false, speedRun);
                     indexBomberSprite = 0;
                 } else {
-                    super.updateDirection(directionStatus.LEFT, true, speedRun);
+                    super.updateDirection(DirectionStatus.LEFT, true, speedRun);
                 }
 
                 setImg(Sprite.movingSprite(Sprite.player_left, Sprite.player_left_1,
@@ -220,7 +225,7 @@ public class Bomber extends MovingEntity {
                                 yUnit * Sprite.SCALED_SIZE) instanceof Grass
                                 && gameMap.getBrickAtPosition((xUnit + 1) * Sprite.SCALED_SIZE,
                                 yUnit * Sprite.SCALED_SIZE) == null) {
-                            super.updateDirection(directionStatus.UP, true, speedRun);
+                            super.updateDirection(DirectionStatus.UP, true, speedRun);
                         }
                         if (horizontalMovingSupport2 >= 18
                                 && (gameMap.getWallsAndGrassAtPosition((xUnit + 1) * Sprite.SCALED_SIZE,
@@ -231,13 +236,13 @@ public class Bomber extends MovingEntity {
                                 (yUnit + 1) * Sprite.SCALED_SIZE) instanceof Grass
                                 && gameMap.getBrickAtPosition((xUnit + 1) * Sprite.SCALED_SIZE,
                                 (yUnit + 1) * Sprite.SCALED_SIZE) == null)) {
-                            super.updateDirection(directionStatus.DOWN, true, speedRun);
+                            super.updateDirection(DirectionStatus.DOWN, true, speedRun);
                         }
                     }
-                    super.updateDirection(directionStatus.RIGHT, false, speedRun);
+                    super.updateDirection(DirectionStatus.RIGHT, false, speedRun);
                     indexBomberSprite = 0;
                 } else {
-                    super.updateDirection(directionStatus.RIGHT, true, speedRun);
+                    super.updateDirection(DirectionStatus.RIGHT, true, speedRun);
                 }
                 setImg(Sprite.movingSprite(Sprite.player_right, Sprite.player_right_1,
                         Sprite.player_right_2, indexBomberSprite, 15).getImage());
@@ -253,15 +258,14 @@ public class Bomber extends MovingEntity {
 
             if (!isPressed) {
                 indexBomberSprite = 0;
-                isPlantBomb = false;
             } else {
                 ++indexBomberSprite;
             }
         }
         if (lifeStatus.equals(LifeStatus.DEAD)) {
             setImg(Sprite.movingSprite(Sprite.player_dead1, Sprite.player_dead2,
-                    Sprite.player_dead3, indexBomberSprite, 40).getImage());
-            if (indexBomberSprite < 40) {
+                    Sprite.player_dead3, indexBomberSprite, 60).getImage());
+            if (indexBomberSprite < 60) {
                 ++indexBomberSprite;
             } else {
                 if (Game.getInstance().getBomberLeft() > 0) {
@@ -270,6 +274,7 @@ public class Bomber extends MovingEntity {
                     setX(Sprite.SCALED_SIZE * gameMap.getxUnitBomberInit());
                     setY(Sprite.SCALED_SIZE * gameMap.getyUnitBomberInit());
                     setImg(Sprite.player_right.getImage());
+                    Game.getInstance().setGameStatus(GameStatus.OPENING);
                 } else {
                     setImg(null);
                     //TO DO:
@@ -396,10 +401,10 @@ public class Bomber extends MovingEntity {
     public Entity getBombAtPosition(int x, int y) {
         int xUnit = x / Sprite.SCALED_SIZE;
         int yUnit = y / Sprite.SCALED_SIZE;
-        for (int i = 0; i < bombList.size(); i++) {
-            if ((bombList.get(i).getX() / Sprite.SCALED_SIZE) == xUnit
-                    && (bombList.get(i).getY() / Sprite.SCALED_SIZE) == yUnit) {
-                return bombList.get(i);
+        for (Entity entity : bombList) {
+            if ((entity.getX() / Sprite.SCALED_SIZE) == xUnit
+                    && (entity.getY() / Sprite.SCALED_SIZE) == yUnit) {
+                return entity;
             }
         }
         return null;

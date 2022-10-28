@@ -42,7 +42,6 @@ public class CollisionDetector {
         final int FIX_POSITION = 12;
         Rectangle rectEnemy = new Rectangle(x, y, REAL_WIDTH, REAL_HEIGHT);
         for (Entity element : bombList) {
-            Bomb bomb = (Bomb) element;
             if (rectEnemy.intersects(element.getX() + FIX_POSITION,
                     element.getY() + FIX_POSITION,
                     Sprite.SCALED_SIZE - FIX_POSITION * 2,

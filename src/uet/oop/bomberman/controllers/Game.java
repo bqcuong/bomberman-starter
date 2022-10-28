@@ -1,31 +1,27 @@
 package uet.oop.bomberman.controllers;
 
 import javafx.animation.AnimationTimer;
-import javafx.scene.Group;
-import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
+import uet.oop.bomberman.entities.Bomber;
 import uet.oop.bomberman.entities.Entity;
-import uet.oop.bomberman.entities.objects.ScoreTitle;
 import uet.oop.bomberman.events.KeyboardEvent;
 import uet.oop.bomberman.graphics.GameMap;
 import uet.oop.bomberman.graphics.GraphicsMGR;
-import uet.oop.bomberman.graphics.Sprite;
+import uet.oop.bomberman.scenes.OpeningScene;
+import uet.oop.bomberman.scenes.InGameScene;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Game {
     private int currentLevel = 1;
     public final static int MAX_LEVEL = 3;
     // Tao root container
-    private Group root = new Group();
 
     private ItemInfo itemInfo;
 
@@ -36,17 +32,16 @@ public class Game {
 
     private List<GameMap> gameMapList;
     // Tao scene
-    private Scene sceneInGame;
+    private InGameScene inGameScene;
+
+    private OpeningScene openingScene;
+
 
     // Tao keyboard event
     private KeyboardEvent keyboardEvent;
-    private ScoreTitle scoreTitle;
     // Tao Canvas.
-    public Canvas canvas;
     public GraphicsContext gc;
     public Stage stage;
-
-    private Text pausedText;
 
     private Font font;
     private static final Game instance = new Game();
@@ -69,40 +64,25 @@ public class Game {
             exception.printStackTrace();
         }
         this.stage = stage;
-        bomberLeft = 2;
-        bomberScore = 0;
+        bomberLeft = Bomber.BOMBER_LEFT_DEFAULT;
+        bomberScore = Bomber.BOMBER_SCORE_DEFAULT;
         itemInfo = new ItemInfo();
-        gameStatus = GameStatus.PLAYING;
+        gameStatus = GameStatus.OPENING;
 
-        canvas = new Canvas(Sprite.SCALED_SIZE * GraphicsMGR.WIDTH, Sprite.SCALED_SIZE * GraphicsMGR.HEIGHT);
-        gc = canvas.getGraphicsContext2D();
+        inGameScene = InGameScene.getInstance();
+        inGameScene.createSceneInGame(GraphicsMGR.WIDTH, GraphicsMGR.HEIGHT, font);
 
-        root.getChildren().add(canvas);
+        keyboardEvent = new KeyboardEvent(inGameScene.getInGameScene());
 
-        scoreTitle = ScoreTitle.getInstance();
-        scoreTitle.createScoreTitle(root, font);
-        sceneInGame = new Scene(root);
-        keyboardEvent = new KeyboardEvent(sceneInGame);
+        openingScene = OpeningScene.getInstance();
+        openingScene.createOpeningScene(GraphicsMGR.WIDTH, GraphicsMGR.HEIGHT, font);
 
         // Tao map
         gameMapList = new ArrayList<>(MAX_LEVEL);
         createMapList();
 
-        pausedText = new Text("PAUSED");
-        pausedText.setFill(Color.YELLOW);
-        pausedText.setStroke(Color.DIMGRAY);
-        pausedText.setStrokeWidth(3);
-        pausedText.setFont(font);
-        pausedText.setX((Sprite.SCALED_SIZE * GraphicsMGR.WIDTH
-                - pausedText.getBoundsInLocal().getWidth()) / 2);
-        pausedText.setY((Sprite.SCALED_SIZE * GraphicsMGR.HEIGHT
-                - pausedText.getBoundsInLocal().getHeight()) / 2 + Sprite.SCALED_SIZE);
-        pausedText.setVisible(false);
-
-        root.getChildren().add(pausedText);
-
-
-        stage.setScene(sceneInGame);
+        gc = inGameScene.getGraphicContext();
+        stage.setScene(openingScene.getOpeningScene());
     }
 
     public void increaseBomberLeft() {
@@ -133,6 +113,7 @@ public class Game {
         }
     };
 
+
     public void createMapList() {
         for (int i = 1; i <= MAX_LEVEL; i++) {
             GameMap gameMap = new GameMap();
@@ -148,7 +129,7 @@ public class Game {
     }
 
     public void render() {
-        clrscr(canvas);
+        clrscr(inGameScene.getCanvas());
         //Render map, entities
         render(getCurrentGameMap());
     }
@@ -158,17 +139,37 @@ public class Game {
     }
 
     public void update() {
+        if (gameStatus.equals(GameStatus.OPENING)) {
+            stage.setScene(openingScene.getOpeningScene());
+            openingScene.updateStageNumber(currentLevel);
+            Timer timer = new Timer();
+            TimerTask timerTask = new TimerTask() {
+                int count = 2;
+
+                @Override
+                public void run() {
+                    if (count > 0) {
+                        count--;
+                    } else {
+                        timer.cancel();
+                        gameStatus = GameStatus.PLAYING;
+
+                    }
+                }
+            };
+            timer.schedule(timerTask, 0, 1000);
+        }
         if (gameStatus.equals(GameStatus.PLAYING)) {
+            stage.setScene(inGameScene.getInGameScene());
             getCurrentGameMap().update();
             getCurrentGameMap().getPlayer().updatePauseHandle();
-            scoreTitle.update(getBomberLeft(),
-                    getBomberScore(), sceneInGame);
-            pausedText.setVisible(false);
+            inGameScene.getScoreTitle().update(getBomberLeft(),
+                    getBomberScore(), inGameScene.getInGameScene());
+            inGameScene.getPausedText().setVisible(false);
         } else if (gameStatus.equals(GameStatus.PAUSE)) {
             getCurrentGameMap().getPlayer().updatePauseHandle();
-            pausedText.setVisible(true);
+            inGameScene.getPausedText().setVisible(true);
         }
-
     }
 
     public void renderWallAndGrass(GameMap gameMap) {
@@ -223,5 +224,9 @@ public class Game {
 
     public void setGameStatus(GameStatus gameStatus) {
         this.gameStatus = gameStatus;
+    }
+
+    public void restart() {
+
     }
 }
