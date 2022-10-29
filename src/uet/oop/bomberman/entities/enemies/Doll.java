@@ -1,7 +1,9 @@
 package uet.oop.bomberman.entities.enemies;
 
 import javafx.scene.image.Image;
+import uet.oop.bomberman.controllers.AudioController;
 import uet.oop.bomberman.controllers.CollisionDetector;
+import uet.oop.bomberman.controllers.Game;
 import uet.oop.bomberman.entities.LifeStatus;
 import uet.oop.bomberman.events.DirectionStatus;
 import uet.oop.bomberman.graphics.GameMap;
@@ -36,6 +38,9 @@ public class Doll extends Enemy {
     public void updatePosition() {
         if (lifeStatus.equals(LifeStatus.ALIVE)) {
             if (collisionDetector.checkCollisionWithFlame(x, y, REAL_WIDTH, REAL_HEIGHT)) {
+                if (!Game.getInstance().getAudioController().isPlaying(AudioController.AudioType.ENEMY_DIE)) {
+                    Game.getInstance().getAudioController().playSoundEffect(AudioController.AudioType.ENEMY_DIE);
+                }
                 setLifeStatus(LifeStatus.DEAD);
                 setDeadPhaseStatus(DeadPhaseStatus.PHASE_FIRST);
                 indexEnemySprite = 0;

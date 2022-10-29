@@ -38,7 +38,11 @@ public class Game {
     private InGameScene inGameScene;
     private OpeningScene openingScene;
 
+    private boolean isPassLevel = false;
+
     private LoseGameScene loseGameScene;
+
+    public AudioController audioController = AudioController.getInstance();
 
 
     // Tao keyboard event
@@ -111,8 +115,14 @@ public class Game {
     }
 
     public void nextLevel() {
-        if (currentLevel + 1 <= MAX_LEVEL) {
+        if (currentLevel + 1 <= MAX_LEVEL &&
+                !gameStatus.equals(GameStatus.OPENING)&&
+                !gameStatus.equals(GameStatus.PLAYING)) {
             currentLevel++;
+            increaseBomberLeft();
+            getCurrentGameMap().getPlayer().initItemInfo(getItemInfo());
+            System.out.println(currentLevel);
+
             gameStatus = GameStatus.OPENING;
         }
     }
@@ -128,12 +138,41 @@ public class Game {
     }
 
     public void update() {
+
+        if (gameStatus.equals(GameStatus.NEXT_LEVEL_BRIDGE)) {
+            if (audioController.isPlaying(AudioController.AudioType.GAME_BGM)) audioController.stopBgm();
+
+            if (!Game.getInstance().getAudioController().isPlaying(AudioController.AudioType.PLAYER_WIN)) {
+                Game.getInstance().getAudioController().playSoundEffect(AudioController.AudioType.PLAYER_WIN);
+            }
+            Timer timer = new Timer();
+            TimerTask timerTask = new TimerTask() {
+                int count = 6;
+
+                @Override
+                public void run() {
+                    if (count > 0) {
+                        count--;
+                    } else {
+                        timer.cancel();
+                        nextLevel();
+                    }
+                }
+            };
+            timer.schedule(timerTask, 0, 1000);
+        }
         if (gameStatus.equals(GameStatus.OPENING)) {
+            if (audioController.isPlaying(AudioController.AudioType.GAME_BGM)) audioController.stopBgm();
+
+            if (!audioController.isPlaying(AudioController.AudioType.STAGE_START)) {
+                audioController.playSoundEffect(AudioController.AudioType.STAGE_START);
+            }
+
             stage.setScene(openingScene.getOpeningScene());
             openingScene.updateStageNumber(currentLevel);
             Timer timer = new Timer();
             TimerTask timerTask = new TimerTask() {
-                int count = 2;
+                int count = 3;
 
                 @Override
                 public void run() {
@@ -148,6 +187,10 @@ public class Game {
             timer.schedule(timerTask, 0, 1000);
         }
         if (gameStatus.equals(GameStatus.PLAYING)) {
+            if (!audioController.isPlaying(AudioController.AudioType.GAME_BGM)) {
+                audioController.restartBgm();
+            }
+
             stage.setScene(inGameScene.getInGameScene());
             getCurrentGameMap().update();
             getCurrentGameMap().getPlayer().updatePauseHandle();
@@ -158,30 +201,17 @@ public class Game {
             getCurrentGameMap().getPlayer().updatePauseHandle();
             inGameScene.getPausedText().setVisible(true);
         }
-        if (gameStatus.equals(GameStatus.WAIT_TO_LOSE)) {
-            Timer timer = new Timer();
-            TimerTask timerTask = new TimerTask() {
-                int count = 1;
 
-                @Override
-                public void run() {
-                    if (count > 0) {
-                        count--;
-                    } else {
-                        timer.cancel();
-                        gameStatus = GameStatus.LOSE;
-
-                    }
-                }
-            };
-            timer.schedule(timerTask, 0, 1000);
-        }
         if (gameStatus.equals(GameStatus.LOSE)) {
+            if (audioController.isPlaying(AudioController.AudioType.GAME_BGM)) audioController.stopBgm();
+            if (!audioController.isPlaying(AudioController.AudioType.PLAYER_LOSE)) {
+                audioController.playSoundEffect(AudioController.AudioType.PLAYER_LOSE);
+            }
             stage.setScene(LoseGameScene.getInstance().getLoseGameScene());
             init();
             Timer timer = new Timer();
             TimerTask timerTask = new TimerTask() {
-                int count = 2;
+                int count = 5;
 
                 @Override
                 public void run() {
@@ -273,5 +303,9 @@ public class Game {
         createMapList();
 
         gc = inGameScene.getGraphicContext();
+    }
+
+    public AudioController getAudioController() {
+        return audioController;
     }
 }

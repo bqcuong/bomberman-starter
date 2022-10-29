@@ -2,7 +2,9 @@ package uet.oop.bomberman.entities.bomb;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import uet.oop.bomberman.controllers.AudioController;
 import uet.oop.bomberman.controllers.BombFlameInfo;
+import uet.oop.bomberman.controllers.Game;
 import uet.oop.bomberman.entities.objects.Brick;
 import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.entities.objects.IObstacle;
@@ -22,6 +24,7 @@ public class Bomb extends Entity implements IObstacle {
     public enum WentOffPhraseStatus {
         OPENING, CLOSING
     }
+
     public enum BombStatus {
         WAIT, WENTOFF, DISAPEAR
     }
@@ -358,6 +361,9 @@ public class Bomb extends Entity implements IObstacle {
                 setImg(Sprite.movingSprite(Sprite.bomb, Sprite.bomb_1, Sprite.bomb_2, indexBombSprite, 60).getImage());
                 break;
             case WENTOFF:
+                if (!Game.getInstance().getAudioController().isPlaying(AudioController.AudioType.BOMB_DESTROY)) {
+                    Game.getInstance().getAudioController().playSoundEffect(AudioController.AudioType.BOMB_DESTROY);
+                }
                 if (wentOffPhrase == WentOffPhraseStatus.OPENING) {
                     ++indexBombSprite;
                     this.setImg(Sprite.movingSprite(Sprite.bomb_exploded,

@@ -3,10 +3,7 @@ package uet.oop.bomberman.entities;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
-import uet.oop.bomberman.controllers.CollisionDetector;
-import uet.oop.bomberman.controllers.Game;
-import uet.oop.bomberman.controllers.GameStatus;
-import uet.oop.bomberman.controllers.ItemInfo;
+import uet.oop.bomberman.controllers.*;
 import uet.oop.bomberman.entities.bomb.Bomb;
 import uet.oop.bomberman.entities.objects.Brick;
 import uet.oop.bomberman.entities.objects.Grass;
@@ -80,6 +77,8 @@ public class Bomber extends MovingEntity {
             int xUnit = this.x / Sprite.SCALED_SIZE;
             int yUnit = this.y / Sprite.SCALED_SIZE;
 
+            AudioController instance= Game.getInstance().getAudioController();
+
             //horizontal support
             int horizontalMovingSupport2 = (this.y + Bomber.REAL_HEIGHT)
                     - (yUnit * Sprite.SCALED_SIZE + Sprite.SCALED_SIZE);
@@ -133,6 +132,9 @@ public class Bomber extends MovingEntity {
                     super.updateDirection(DirectionStatus.UP, false, speedRun);
                     indexBomberSprite = 0;
                 } else {
+                    if (!instance.isPlaying(AudioController.AudioType.PLAYER_MOVING_VERTICAL)){
+                        instance.playSoundEffect(AudioController.AudioType.PLAYER_MOVING_VERTICAL);
+                    }
                     super.updateDirection(DirectionStatus.UP, true, speedRun);
                 }
                 setImg(Sprite.movingSprite(Sprite.player_up, Sprite.player_up_1,
@@ -170,6 +172,9 @@ public class Bomber extends MovingEntity {
                     indexBomberSprite = 0;
                     super.updateDirection(DirectionStatus.DOWN, false, speedRun);
                 } else {
+                    if (!instance.isPlaying(AudioController.AudioType.PLAYER_MOVING_VERTICAL)){
+                        instance.playSoundEffect(AudioController.AudioType.PLAYER_MOVING_VERTICAL);
+                    }
                     super.updateDirection(DirectionStatus.DOWN, true, speedRun);
                 }
                 setImg(Sprite.movingSprite(Sprite.player_down, Sprite.player_down_1,
@@ -206,6 +211,9 @@ public class Bomber extends MovingEntity {
                     super.updateDirection(DirectionStatus.LEFT, false, speedRun);
                     indexBomberSprite = 0;
                 } else {
+                    if (!instance.isPlaying(AudioController.AudioType.PLAYER_MOVING_HORIZONTAL)){
+                        instance.playSoundEffect(AudioController.AudioType.PLAYER_MOVING_HORIZONTAL);
+                    }
                     super.updateDirection(DirectionStatus.LEFT, true, speedRun);
                 }
 
@@ -242,6 +250,9 @@ public class Bomber extends MovingEntity {
                     super.updateDirection(DirectionStatus.RIGHT, false, speedRun);
                     indexBomberSprite = 0;
                 } else {
+                    if (!instance.isPlaying(AudioController.AudioType.PLAYER_MOVING_HORIZONTAL)){
+                        instance.playSoundEffect(AudioController.AudioType.PLAYER_MOVING_HORIZONTAL);
+                    }
                     super.updateDirection(DirectionStatus.RIGHT, true, speedRun);
                 }
                 setImg(Sprite.movingSprite(Sprite.player_right, Sprite.player_right_1,
@@ -264,8 +275,15 @@ public class Bomber extends MovingEntity {
         }
         if (lifeStatus.equals(LifeStatus.DEAD)) {
             setImg(Sprite.movingSprite(Sprite.player_dead1, Sprite.player_dead2,
-                    Sprite.player_dead3, indexBomberSprite, 60).getImage());
-            if (indexBomberSprite < 60) {
+                    Sprite.player_dead3, indexBomberSprite, 100).getImage());
+            AudioController instance = Game.getInstance().getAudioController();
+            if (instance.isPlaying(AudioController.AudioType.GAME_BGM)) instance.stopBgm();
+
+            if (!instance.isPlaying(AudioController.AudioType.PLAYER_DIE)) {
+                instance.playSoundEffect(AudioController.AudioType.PLAYER_DIE);
+            }
+
+            if (indexBomberSprite < 100) {
                 ++indexBomberSprite;
             } else {
                 if (Game.getInstance().getBomberLeft() > 0) {
@@ -277,7 +295,7 @@ public class Bomber extends MovingEntity {
                     Game.getInstance().setGameStatus(GameStatus.OPENING);
                 } else {
                     setImg(null);
-                    Game.getInstance().setGameStatus(GameStatus.WAIT_TO_LOSE);
+                    Game.getInstance().setGameStatus(GameStatus.LOSE);
                 }
             }
         }
@@ -317,11 +335,13 @@ public class Bomber extends MovingEntity {
                 }
                 if (!isNotAllowed) {
                     bombList.add(new Bomb(xUnit, yUnit, Sprite.bomb.getImage(), bombLevel, gameMap));
+                    Game.getInstance().getAudioController().playSoundEffect(AudioController.AudioType.BOMB_PLANTED);
                 }
 
             }
             if (bombList.isEmpty() && isPlantBomb) {
                 bombList.add(new Bomb(xUnit, yUnit, Sprite.bomb.getImage(), bombLevel, gameMap));
+                Game.getInstance().audioController.playSoundEffect(AudioController.AudioType.BOMB_PLANTED);
             }
         }
         isPlantBomb = false;

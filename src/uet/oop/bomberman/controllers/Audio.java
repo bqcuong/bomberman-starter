@@ -1,4 +1,5 @@
 package uet.oop.bomberman.controllers;
+
 import uet.oop.bomberman.Main;
 
 import javax.sound.sampled.AudioInputStream;
@@ -6,36 +7,66 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 
 public class Audio {
-    public static void playBgm(String sound) {
-        new Thread(new Runnable() {
-            public void run() {
-                try {
-                    Clip clip = AudioSystem.getClip();
-                    AudioInputStream inputStream = AudioSystem.getAudioInputStream(
-                            getClass().getResourceAsStream("/sounds/" + sound + ".wav"));
-                    clip.open(inputStream);
-                    clip.start();
-                    clip.loop(Clip.LOOP_CONTINUOUSLY);
-                } catch (Exception e) {
-                    System.err.println(e.getMessage());
-                }
-            }
-        }).start();
+    private String filename;
+    private Clip clip;
+
+    public Audio(String filename) {
+        this.filename = filename;
+        try {
+            clip = AudioSystem.getClip();
+            AudioInputStream audioInputStream
+                    = AudioSystem.getAudioInputStream(
+                    getClass().getResourceAsStream("/sounds/" + this.filename + ".wav"));
+            clip.open(audioInputStream);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-    public static void playSoundEffect(String sound) {
-        new Thread(new Runnable() {
-            public void run() {
-                try {
-                    Clip clip = AudioSystem.getClip();
-                    AudioInputStream inputStream = AudioSystem.getAudioInputStream(
-                            Main.class.getResourceAsStream("/sounds/" + sound + ".wav"));
-                    clip.open(inputStream);
-                    clip.start();
-                } catch (Exception e) {
-                    System.err.println(e.getMessage());
-                }
+
+    public void playBgm() {
+        try {
+            if (!isPlaying()) {
+                clip.start();
+                clip.loop(Clip.LOOP_CONTINUOUSLY);
             }
-        }).start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void stopBgm() {
+        try {
+            if (isPlaying()) {
+                clip.stop();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void restartBgm() {
+
+        try {
+            if (!isPlaying()) {
+                clip.setMicrosecondPosition(0);
+                playBgm();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void playSoundEffect() {
+        try {
+            clip.setMicrosecondPosition(0);
+            clip.start();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean isPlaying() {
+        return clip.isRunning();
     }
 }
-

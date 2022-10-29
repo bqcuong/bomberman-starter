@@ -121,25 +121,33 @@ public class CollisionDetector {
                     && gameMap.getBrickAtPosition(gameMap.getItems().get(i).getX(), gameMap.getItems().get(i).getY()) == null) {
                 Game gameInstance = Game.getInstance();
                 if (gameMap.getItems().get(i) instanceof ItemSpeed) {
+                    if (!Game.getInstance().getAudioController().isPlaying(AudioController.AudioType.ITEM_COLLECTED)) {
+                        Game.getInstance().getAudioController().playSoundEffect(AudioController.AudioType.ITEM_COLLECTED);
+                    }
                     bomber.setSpeedRun(bomber.getSpeedRun() + 1);
                     gameInstance.getItemInfo().increaseItemSpeedCount();
                     delPos = i;
                 }
                 if (gameMap.getItems().get(i) instanceof ItemBombs) {
+                    if (!Game.getInstance().getAudioController().isPlaying(AudioController.AudioType.ITEM_COLLECTED)) {
+                        Game.getInstance().getAudioController().playSoundEffect(AudioController.AudioType.ITEM_COLLECTED);
+                    }
                     bomber.increaseBombListMaxSize();
                     gameInstance.getItemInfo().increaseItemBombsCount();
                     delPos = i;
                 }
                 if (gameMap.getItems().get(i) instanceof ItemFlames) {
+                    if (!Game.getInstance().getAudioController().isPlaying(AudioController.AudioType.ITEM_COLLECTED)) {
+                        Game.getInstance().getAudioController().playSoundEffect(AudioController.AudioType.ITEM_COLLECTED);
+                    }
                     bomber.increaseBombLevel();
                     gameInstance.getItemInfo().increaseItemFlamesCount();
                     delPos = i;
                 }
                 if (gameMap.getItems().get(i) instanceof Portal
-                        && gameMap.getEnemies().size() == 0) {
-                    gameInstance.nextLevel();
-                    gameInstance.increaseBomberLeft();
-                    gameInstance.getCurrentGameMap().getPlayer().initItemInfo(gameInstance.getItemInfo());
+                        && gameMap.getEnemies().size() == 0
+                        && Game.getInstance().getGameStatus().equals(GameStatus.PLAYING)) {
+                    Game.getInstance().setGameStatus(GameStatus.NEXT_LEVEL_BRIDGE);
                 }
             }
         }
