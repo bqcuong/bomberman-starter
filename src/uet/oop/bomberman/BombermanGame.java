@@ -104,8 +104,7 @@ public class BombermanGame extends Application {
             if (!input.contains("W") && !input.contains("S")){
               bomberman.setDy(0);
             }
-            if (!input.contains("W") && !input.contains("S") && !input.contains("A") && !input.contains("D")) {
-            }
+
             ((Bomber)bomberman).moveBomber(WIDTH, HEIGHT);
           }
         };
