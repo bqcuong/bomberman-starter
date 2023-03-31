@@ -3,6 +3,7 @@ package uet.oop.bomberman;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.event.EventHandler;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -17,11 +18,14 @@ import uet.oop.bomberman.graphics.Sprite;
 
 import java.util.ArrayList;
 import java.util.List;
+import static uet.oop.bomberman.graphics.Sprite.SCALED_SIZE;
 
 public class BombermanGame extends Application {
 
   public static final int WIDTH = 31;
   public static final int HEIGHT = 13;
+
+  public static final int SPEED = 4;
 
   private GraphicsContext gc;
   private Canvas canvas;
@@ -35,7 +39,8 @@ public class BombermanGame extends Application {
   @Override
   public void start(Stage stage) {
     // Tao Canvas
-    canvas = new Canvas(Sprite.SCALED_SIZE * WIDTH, Sprite.SCALED_SIZE * HEIGHT);
+    stage.setTitle("Bomberman");
+    canvas = new Canvas(SCALED_SIZE * WIDTH, SCALED_SIZE * HEIGHT);
     gc = canvas.getGraphicsContext2D();
 
     // Tao root container
@@ -52,32 +57,28 @@ public class BombermanGame extends Application {
     Entity bomberman = new Bomber(1, 1, Sprite.player_right.getFxImage());
     entities.add(bomberman);
 
+
     ArrayList<String> input = new ArrayList<String>();
 
     scene.setOnKeyPressed(
-        new EventHandler<KeyEvent>() {
+        e-> {
 
-          public void handle(KeyEvent e) {
+          String code = e.getCode().toString();
 
-            String code = e.getCode().toString();
+          // only add once... prevent duplicates
 
-            // only add once... prevent duplicates
-
-            if (!input.contains(code)) {
-              input.add(code);
-              ((Bomber)bomberman).setDirection(code);
-            }
+          if (!input.contains(code)) {
+            input.add(code);
+            ((Bomber) bomberman).setDirection(code);
           }
         });
 
     scene.setOnKeyReleased(
-        new EventHandler<KeyEvent>() {
-          public void handle(KeyEvent e) {
+        e-> {
 
-            String code = e.getCode().toString();
+          String code = e.getCode().toString();
 
-            input.remove(code);
-          }
+          input.remove(code);
         });
 
     AnimationTimer timer =
@@ -86,33 +87,39 @@ public class BombermanGame extends Application {
           public void handle(long l) {
             render();
             update();
-            if (input.contains("D")){
-              bomberman.setDx(Sprite.SCALED_SIZE / 16);
+            if (input.contains("D")) {
+              bomberman.setDx(SPEED);
+              bomberman.setMoving(true);
             }
-            if (input.contains("A")){
-              bomberman.setDx(-Sprite.SCALED_SIZE / 16);
+            if (input.contains("A")) {
+              bomberman.setDx(-SPEED);
+              bomberman.setMoving(true);
             }
-            if (input.contains("W")){
-              bomberman.setDy(-Sprite.SCALED_SIZE / 16);
+            if (input.contains("W")) {
+              bomberman.setDy(-SPEED);
+              bomberman.setMoving(true);
             }
-            if (input.contains("S")){
-              bomberman.setDy(Sprite.SCALED_SIZE / 16);
+            if (input.contains("S")) {
+              bomberman.setDy(SPEED);
+              bomberman.setMoving(true);
             }
-            if (!input.contains("D") && !input.contains("A")){
+            if (!input.contains("D") && !input.contains("A")) {
               bomberman.setDx(0);
             }
-            if (!input.contains("W") && !input.contains("S")){
+            if (!input.contains("W") && !input.contains("S")) {
               bomberman.setDy(0);
             }
 
-            ((Bomber)bomberman).moveBomber(WIDTH, HEIGHT);
+            if (!input.contains("W")
+                && !input.contains("A")
+                && !input.contains("S")
+                && !input.contains("D")) bomberman.setMoving(false);
+
           }
         };
     timer.start();
 
     createMap();
-
-
   }
 
   public void createMap() {
