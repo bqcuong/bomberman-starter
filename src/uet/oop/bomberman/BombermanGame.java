@@ -87,34 +87,35 @@ public class BombermanGame extends Application {
           public void handle(long l) {
             render();
             update();
-            if (input.contains("D")) {
-              bomberman.setDx(SPEED);
-              bomberman.setMoving(true);
+            if (!input.isEmpty()) {
+              if (input.get(input.size() - 1).equalsIgnoreCase("D")) {
+                bomberman.setDx(SPEED);
+                bomberman.setMoving(true);
+                ((Bomber) bomberman).setDirection("D");
+              } else if (input.get(input.size() - 1).equalsIgnoreCase("A")) {
+                bomberman.setDx(-SPEED);
+                bomberman.setMoving(true);
+                ((Bomber) bomberman).setDirection("A");
+              } else if (input.get(input.size() - 1).equalsIgnoreCase("W")) {
+                bomberman.setDy(-SPEED);
+                bomberman.setMoving(true);
+                ((Bomber) bomberman).setDirection("W");
+              } else if (input.get(input.size() - 1).equalsIgnoreCase("S")) {
+                bomberman.setDy(SPEED);
+                bomberman.setMoving(true);
+                ((Bomber) bomberman).setDirection("S");
+              }
+              if (!input.contains("D") && !input.contains("A")) {
+                bomberman.setDx(0);
+              }
+              if (!input.contains("W") && !input.contains("S")) {
+                bomberman.setDy(0);
+              }
             }
-            if (input.contains("A")) {
-              bomberman.setDx(-SPEED);
-              bomberman.setMoving(true);
-            }
-            if (input.contains("W")) {
-              bomberman.setDy(-SPEED);
-              bomberman.setMoving(true);
-            }
-            if (input.contains("S")) {
-              bomberman.setDy(SPEED);
-              bomberman.setMoving(true);
-            }
-            if (!input.contains("D") && !input.contains("A")) {
-              bomberman.setDx(0);
-            }
-            if (!input.contains("W") && !input.contains("S")) {
-              bomberman.setDy(0);
-            }
-
             if (!input.contains("W")
                 && !input.contains("A")
                 && !input.contains("S")
                 && !input.contains("D")) bomberman.setMoving(false);
-
           }
         };
     timer.start();

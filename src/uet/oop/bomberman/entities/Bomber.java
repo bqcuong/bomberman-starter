@@ -90,21 +90,15 @@ public class Bomber extends Entity {
         System.out.println(pastDirection + " " + getDirection() + " " + cnt);
         pastDirection = direction;
       }
-      switch (getDirection()) {
-        case "right":
-          this.img = player_right.get(cnt / 15);
-          break;
-        case "left":
-          this.img = player_left.get(cnt / 15);
-          break;
-        case "up":
-          this.img = player_up.get(cnt / 15);
-          break;
-        case "down":
-          this.img = player_down.get(cnt / 15);
-          break;
+      if (getDirection().equalsIgnoreCase("right")) {
+        this.img = player_right.get(cnt / 15);
+      } else if (getDirection().equalsIgnoreCase("left")) {
+        this.img = player_left.get(cnt / 15);
+      } else if (getDirection().equalsIgnoreCase("up")) {
+        this.img = player_up.get(cnt / 15);
+      } else if (getDirection().equalsIgnoreCase("down")) {
+        this.img = player_down.get(cnt / 15);
       }
-
     }
   }
 
