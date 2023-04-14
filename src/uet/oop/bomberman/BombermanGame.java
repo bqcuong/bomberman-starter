@@ -35,7 +35,7 @@ public class BombermanGame extends Application {
 
   @Override
   public void start(Stage stage) {
-    File file = new File("C:\\Users\\HI\\Documents\\GitHub\\bomberman-starter\\res\\levels\\Level1.txt");
+    File file = new File("C:\\Users\\HI\\Documents\\GitHub\\datacode\\res\\levels\\Level1.txt");
     try {
       Scanner scanner = new Scanner(file);
       int height = scanner.nextInt();
@@ -67,6 +67,12 @@ public class BombermanGame extends Application {
               break;
             case '*' :
               entities.add(new Brick(j, i, Sprite.brick.getFxImage()));
+              break;
+            case '1' :
+              entities.add(new Balloom(j, i, Sprite.balloom_right1.getFxImage()));
+              break;
+            case '2' :
+              entities.add(new Doll(j, i, Sprite.doll_right1.getFxImage()));
               break;
           }
 
@@ -130,7 +136,7 @@ public class BombermanGame extends Application {
                     bomberman.setDy(0);
                   }
 
-                  ((Bomber)bomberman).moveBomber(WIDTH, HEIGHT);
+                  //((Bomber)bomberman).moveBomber(WIDTH, HEIGHT);
                 }
               };
       timer.start();
