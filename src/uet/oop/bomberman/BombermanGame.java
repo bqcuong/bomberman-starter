@@ -29,12 +29,15 @@ public class BombermanGame extends Application {
   private List<Entity> entities = new ArrayList<>();
   private List<Entity> stillObjects = new ArrayList<>();
 
+  public static final int SPEED = 4;
+
   public static void main(String[] args) {
     Application.launch(BombermanGame.class);
   }
 
   @Override
   public void start(Stage stage) {
+
     File file = new File("C:\\Users\\HI\\Documents\\GitHub\\bomberman-starter\\res\\levels\\Level1.txt");
     try {
       Scanner scanner = new Scanner(file);
@@ -117,26 +120,35 @@ public class BombermanGame extends Application {
                 public void handle(long l) {
                   render();
                   update();
-                  if (input.contains("D")){
-                    bomberman.setDx(Sprite.SCALED_SIZE / 16);
+                  if (!input.isEmpty()) {
+                    if (input.get(input.size() - 1).equalsIgnoreCase("D")) {
+                      bomberman.setDx(SPEED);
+                      bomberman.setMoving(true);
+                      ((Bomber) bomberman).setDirection("D");
+                    } else if (input.get(input.size() - 1).equalsIgnoreCase("A")) {
+                      bomberman.setDx(-SPEED);
+                      bomberman.setMoving(true);
+                      ((Bomber) bomberman).setDirection("A");
+                    } else if (input.get(input.size() - 1).equalsIgnoreCase("W")) {
+                      bomberman.setDy(-SPEED);
+                      bomberman.setMoving(true);
+                      ((Bomber) bomberman).setDirection("W");
+                    } else if (input.get(input.size() - 1).equalsIgnoreCase("S")) {
+                      bomberman.setDy(SPEED);
+                      bomberman.setMoving(true);
+                      ((Bomber) bomberman).setDirection("S");
+                    }
+                    if (!input.contains("D") && !input.contains("A")) {
+                      bomberman.setDx(0);
+                    }
+                    if (!input.contains("W") && !input.contains("S")) {
+                      bomberman.setDy(0);
+                    }
                   }
-                  if (input.contains("A")){
-                    bomberman.setDx(-Sprite.SCALED_SIZE / 16);
-                  }
-                  if (input.contains("W")){
-                    bomberman.setDy(-Sprite.SCALED_SIZE / 16);
-                  }
-                  if (input.contains("S")){
-                    bomberman.setDy(Sprite.SCALED_SIZE / 16);
-                  }
-                  if (!input.contains("D") && !input.contains("A")){
-                    bomberman.setDx(0);
-                  }
-                  if (!input.contains("W") && !input.contains("S")){
-                    bomberman.setDy(0);
-                  }
-
-                  //((Bomber)bomberman).moveBomber(WIDTH, HEIGHT);
+                  if (!input.contains("W")
+                          && !input.contains("A")
+                          && !input.contains("S")
+                          && !input.contains("D")) bomberman.setMoving(false);
                 }
               };
       timer.start();
