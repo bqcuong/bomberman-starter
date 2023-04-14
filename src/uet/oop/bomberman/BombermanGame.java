@@ -35,7 +35,7 @@ public class BombermanGame extends Application {
 
   @Override
   public void start(Stage stage) {
-    File file = new File("C:\\Users\\HI\\Documents\\GitHub\\datacode\\res\\levels\\Level1.txt");
+    File file = new File("C:\\Users\\HI\\Documents\\GitHub\\bomberman-starter\\res\\levels\\Level1.txt");
     try {
       Scanner scanner = new Scanner(file);
       int height = scanner.nextInt();
