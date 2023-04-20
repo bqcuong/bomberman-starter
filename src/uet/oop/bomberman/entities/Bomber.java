@@ -13,11 +13,21 @@ import uet.oop.bomberman.gamelogic.*;
 public class Bomber extends Entity {
   private int cnt = 0;
 
+  private int maxBomb = 2;
+
+  private int bombLength;
+
+  public int getMaxBomb() {
+    return maxBomb;
+  }
+
+  public void setMaxBomb(int maxBomb) {
+    this.maxBomb = maxBomb;
+  }
+
   public Bomber(int x, int y, Image img) {
     super(x, y, img);
   }
-
-
 
   ArrayList<Image> player_left =
       new ArrayList<>(
@@ -34,18 +44,18 @@ public class Bomber extends Entity {
               Sprite.player_right_2.getFxImage()));
 
   ArrayList<Image> player_up =
-          new ArrayList<>(
-                  Arrays.asList(
-                          Sprite.player_up.getFxImage(),
-                          Sprite.player_up_1.getFxImage(),
-                          Sprite.player_up_2.getFxImage()));
+      new ArrayList<>(
+          Arrays.asList(
+              Sprite.player_up.getFxImage(),
+              Sprite.player_up_1.getFxImage(),
+              Sprite.player_up_2.getFxImage()));
 
   ArrayList<Image> player_down =
-          new ArrayList<>(
-                  Arrays.asList(
-                          Sprite.player_down.getFxImage(),
-                          Sprite.player_down_1.getFxImage(),
-                          Sprite.player_down_2.getFxImage()));
+      new ArrayList<>(
+          Arrays.asList(
+              Sprite.player_down.getFxImage(),
+              Sprite.player_down_1.getFxImage(),
+              Sprite.player_down_2.getFxImage()));
 
   private String direction = "right";
   private String pastDirection = "";
@@ -67,8 +77,8 @@ public class Bomber extends Entity {
   }
 
   public void moveBomber() {
-      this.x += getDx();
-      this.y += getDy();
+    this.x += getDx();
+    this.y += getDy();
   }
 
   public void checkAnimation() {
@@ -87,7 +97,6 @@ public class Bomber extends Entity {
       if (cnt == 44) cnt = 0;
       if (!pastDirection.equalsIgnoreCase(direction)) {
         cnt = 0;
-        System.out.println(pastDirection + " " + getDirection() + " " + cnt);
         pastDirection = direction;
       }
       if (getDirection().equalsIgnoreCase("right")) {
