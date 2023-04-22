@@ -23,7 +23,7 @@ public abstract class Entity {
 
   protected boolean moving;
 
-  protected Rectangle2D boundingBox = new Rectangle2D(x, y, SCALED_SIZE, SCALED_SIZE);
+  /*protected Rectangle2D boundingBox = new Rectangle2D(x, y, SCALED_SIZE, SCALED_SIZE);
 
   public Rectangle2D getBoundingBox() {
     return boundingBox;
@@ -31,7 +31,7 @@ public abstract class Entity {
 
   public void setBoundingBox(Rectangle2D boundingBox) {
     this.boundingBox = boundingBox;
-  }
+  }*/
 
   public void setMoving(boolean moving) {
     this.moving = moving;

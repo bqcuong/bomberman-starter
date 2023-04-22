@@ -14,14 +14,19 @@ import uet.oop.bomberman.graphics.Sprite;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.Delayed;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class BombermanGame extends Application {
 
-  public static int WIDTH ;
-  public static int HEIGHT ;
+  public static int WIDTH;
+  public static int HEIGHT;
 
   private GraphicsContext gc;
   private Canvas canvas;
@@ -29,13 +34,100 @@ public class BombermanGame extends Application {
   private List<Entity> entities = new ArrayList<>();
   private List<Entity> stillObjects = new ArrayList<>();
 
+  public static final int SPEED = 4;
+  private int bombDelayCnter = 0;
+
+  private ArrayList<String> input = new ArrayList<String>();
+
+  // Loại bỏ bomb sau khi nổ
+  private void bombRemoval() {
+    entities.removeIf(bomb -> bomb instanceof Bomb && ((Bomb) bomb).isDisappear());
+    entities.removeIf(
+        explosion -> explosion instanceof Explosion && ((Explosion) explosion).isDisappear());
+  }
+
+  // Đặt bom theo input của người chơi
+  private void bombPlant(Bomber bomberman) {
+    if (((Bomber) bomberman).getMaxBomb() > 0 && input.contains("SPACE") && bombDelayCnter == 0) {
+      entities.add(
+          new Bomb((bomberman.getX() / 32), (bomberman.getY() / 32), Sprite.bomb.getFxImage()));
+      ((Bomber) bomberman).setMaxBomb(((Bomber) bomberman).getMaxBomb() - 1);
+      bombDelayCnter = 11;
+      System.out.println((bomberman.getX() / 32) + " " + (bomberman.getY() / 32));
+    }
+    for (int i = 0; i < entities.size(); i++) {
+      if (entities.get(i) instanceof Bomb && ((Bomb) entities.get(i)).getDetonateCnter() == 15) {
+        entities.add(
+            new Explosion(
+                (entities.get(i).getX() / 32 - 1),
+                (entities.get(i).getY() / 32),
+                Sprite.explosion_horizontal_left_last.getFxImage(),
+                "left"));
+        entities.add(
+            new Explosion(
+                (entities.get(i).getX() / 32 + 1),
+                (entities.get(i).getY() / 32),
+                Sprite.explosion_horizontal_right_last.getFxImage(),
+                "right"));
+        entities.add(
+            new Explosion(
+                (entities.get(i).getX() / 32),
+                (entities.get(i).getY() / 32 - 1),
+                Sprite.explosion_vertical_top_last.getFxImage(),
+                "up"));
+        entities.add(
+            new Explosion(
+                (entities.get(i).getX() / 32),
+                (entities.get(i).getY() / 32 + 1),
+                Sprite.explosion_vertical_down_last.getFxImage(),
+                "down"));
+        break;
+      }
+    }
+  }
+
+  // Điều khiển di chuyển
+  private void movementControl(Bomber bomberman) {
+    if (!input.isEmpty()) {
+      if (input.get(input.size() - 1).equalsIgnoreCase("D")) {
+        bomberman.setDx(SPEED);
+        bomberman.setMoving(true);
+        ((Bomber) bomberman).setDirection("D");
+      } else if (input.get(input.size() - 1).equalsIgnoreCase("A")) {
+        bomberman.setDx(-SPEED);
+        bomberman.setMoving(true);
+        ((Bomber) bomberman).setDirection("A");
+      } else if (input.get(input.size() - 1).equalsIgnoreCase("W")) {
+        bomberman.setDy(-SPEED);
+        bomberman.setMoving(true);
+        ((Bomber) bomberman).setDirection("W");
+      } else if (input.get(input.size() - 1).equalsIgnoreCase("S")) {
+        bomberman.setDy(SPEED);
+        bomberman.setMoving(true);
+        ((Bomber) bomberman).setDirection("S");
+      }
+      if (!input.contains("D") && !input.contains("A")) {
+        bomberman.setDx(0);
+      }
+      if (!input.contains("W") && !input.contains("S")) {
+        bomberman.setDy(0);
+      }
+    }
+    if (!input.contains("W")
+        && !input.contains("A")
+        && !input.contains("S")
+        && !input.contains("D")) bomberman.setMoving(false);
+  }
+
   public static void main(String[] args) {
     Application.launch(BombermanGame.class);
   }
 
   @Override
   public void start(Stage stage) {
-    File file = new File("C:\\Users\\HI\\Documents\\GitHub\\datacode\\res\\levels\\Level1.txt");
+    // Create map
+    File file =
+        new File("C:\\Users\\HI\\Documents\\GitHub\\bomberman-starter\\res\\levels\\Level1.txt");
     try {
       Scanner scanner = new Scanner(file);
       int height = scanner.nextInt();
@@ -62,20 +154,19 @@ public class BombermanGame extends Application {
         for (int j = 0; j < width; j++) {
           stillObjects.add(new Grass(j, i, Sprite.grass.getFxImage()));
           switch (cur.charAt(j)) {
-            case '#' :
+            case '#':
               stillObjects.add(new Wall(j, i, Sprite.wall.getFxImage()));
               break;
-            case '*' :
+            case '*':
               entities.add(new Brick(j, i, Sprite.brick.getFxImage()));
               break;
-            case '1' :
+            case '1':
               entities.add(new Balloom(j, i, Sprite.balloom_right1.getFxImage()));
               break;
-            case '2' :
+            case '2':
               entities.add(new Doll(j, i, Sprite.doll_right1.getFxImage()));
               break;
           }
-
         }
       }
       scanner.close();
@@ -83,62 +174,38 @@ public class BombermanGame extends Application {
       Entity bomberman = new Bomber(1, 1, Sprite.player_right.getFxImage());
       entities.add(bomberman);
 
-      ArrayList<String> input = new ArrayList<String>();
-
+      // Xử lí input
       scene.setOnKeyPressed(
-              new EventHandler<KeyEvent>() {
+          e -> {
+            String code = e.getCode().toString();
 
-                public void handle(KeyEvent e) {
-
-                  String code = e.getCode().toString();
-
-                  // only add once... prevent duplicates
-
-                  if (!input.contains(code)) {
-                    input.add(code);
-                    ((Bomber)bomberman).setDirection(code);
-                  }
-                }
-              });
+            // only add once... prevent duplicates
+            if (!input.contains(code)) {
+              input.add(code);
+              ((Bomber) bomberman).setDirection(code);
+            }
+          });
 
       scene.setOnKeyReleased(
-              new EventHandler<KeyEvent>() {
-                public void handle(KeyEvent e) {
+          e -> {
+            String code = e.getCode().toString();
 
-                  String code = e.getCode().toString();
-
-                  input.remove(code);
-                }
-              });
+            input.remove(code);
+          });
 
       AnimationTimer timer =
-              new AnimationTimer() {
-                @Override
-                public void handle(long l) {
-                  render();
-                  update();
-                  if (input.contains("D")){
-                    bomberman.setDx(Sprite.SCALED_SIZE / 16);
-                  }
-                  if (input.contains("A")){
-                    bomberman.setDx(-Sprite.SCALED_SIZE / 16);
-                  }
-                  if (input.contains("W")){
-                    bomberman.setDy(-Sprite.SCALED_SIZE / 16);
-                  }
-                  if (input.contains("S")){
-                    bomberman.setDy(Sprite.SCALED_SIZE / 16);
-                  }
-                  if (!input.contains("D") && !input.contains("A")){
-                    bomberman.setDx(0);
-                  }
-                  if (!input.contains("W") && !input.contains("S")){
-                    bomberman.setDy(0);
-                  }
-
-                  //((Bomber)bomberman).moveBomber(WIDTH, HEIGHT);
-                }
-              };
+          new AnimationTimer() {
+            @Override
+            public void handle(long l) {
+              render();
+              update();
+              // Đếm thời gian giữa 2 lần đặt bom
+              if (bombDelayCnter > 0) bombDelayCnter--;
+              movementControl((Bomber) bomberman);
+              bombPlant((Bomber) bomberman);
+              bombRemoval();
+            }
+          };
       timer.start();
 
       createMap();
