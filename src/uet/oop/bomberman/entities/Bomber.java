@@ -15,7 +15,7 @@ public class Bomber extends Entity {
 
   private int maxBomb = 2;
 
-  private int bombLength;
+  private int bombLength = 3;
 
   public int getMaxBomb() {
     return maxBomb;
@@ -23,6 +23,14 @@ public class Bomber extends Entity {
 
   public void setMaxBomb(int maxBomb) {
     this.maxBomb = maxBomb;
+  }
+
+  public int getBombLength() {
+    return bombLength;
+  }
+
+  public void setBombLength(int bombLength) {
+    this.bombLength = bombLength;
   }
 
   public Bomber(int x, int y, Image img) {

@@ -7,6 +7,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import uet.oop.bomberman.graphics.Sprite;
+
+import java.util.Objects;
+
 import static uet.oop.bomberman.graphics.Sprite.SCALED_SIZE;
 
 public abstract class Entity {
@@ -86,4 +89,17 @@ public abstract class Entity {
   }
 
   public abstract void update();
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof Entity)) return false;
+    Entity entity = (Entity) o;
+    return getX() == entity.getX() && getY() == entity.getY();
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(getX(), getY());
+  }
 }

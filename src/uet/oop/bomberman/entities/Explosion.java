@@ -10,6 +10,7 @@ public class Explosion extends Entity {
   private int disappearTime = 15;
   private boolean disappear = false;
   private String direction;
+  private boolean edge = false;
 
   private final ArrayList<Image> explosionEndLeft =
       new ArrayList<>(
@@ -39,9 +40,32 @@ public class Explosion extends Entity {
               Sprite.explosion_vertical_down_last1.getFxImage(),
               Sprite.explosion_vertical_down_last.getFxImage()));
 
-  public Explosion(int x, int y, Image img, String direction) {
+  private final ArrayList<Image> explosionHorizontal =
+      new ArrayList<>(
+          Arrays.asList(
+              Sprite.explosion_horizontal2.getFxImage(),
+              Sprite.explosion_horizontal1.getFxImage(),
+              Sprite.explosion_horizontal.getFxImage()));
+
+  private final ArrayList<Image> explosionVertical =
+          new ArrayList<>(
+                  Arrays.asList(
+                          Sprite.explosion_vertical2.getFxImage(),
+                          Sprite.explosion_vertical1.getFxImage(),
+                          Sprite.explosion_vertical.getFxImage()));
+
+  public boolean isEdge() {
+    return edge;
+  }
+
+  public void setEdge(boolean edge) {
+    this.edge = edge;
+  }
+
+  public Explosion(int x, int y, Image img, String direction, boolean edge) {
     super(x, y, img);
     this.direction = direction;
+    this.edge = edge;
   }
 
   public String getDirection() {
@@ -74,11 +98,33 @@ public class Explosion extends Entity {
   }
 
   @Override
+  public void playAnimation() {
+    switch (direction) {
+      case "right":
+        this.img = explosionHorizontal.get(disappearTime / 5);
+        break;
+      case "left":
+        this.img = explosionHorizontal.get(disappearTime / 5);
+        break;
+      case "up":
+        this.img = explosionVertical.get(disappearTime / 5);
+        break;
+      case "down":
+        this.img = explosionVertical.get(disappearTime / 5);
+        break;
+    }
+  }
+
+  @Override
   public void update() {
     disappearTime--;
     if (disappearTime == 0) {
       disappear = true;
     }
-    playAnimationEdge();
+    if (edge == true) {
+      playAnimationEdge();
+    } else {
+      playAnimation();
+    }
   }
 }
