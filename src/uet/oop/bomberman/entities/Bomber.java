@@ -1,14 +1,10 @@
 package uet.oop.bomberman.entities;
 
-import javafx.scene.SnapshotParameters;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.paint.Color;
-import uet.oop.bomberman.graphics.Sprite;
 import java.util.ArrayList;
 import java.util.Arrays;
+import javafx.scene.image.Image;
 import uet.oop.bomberman.gamelogic.*;
+import uet.oop.bomberman.graphics.Sprite;
 
 public class Bomber extends Entity {
   private int cnt = 0;
@@ -102,19 +98,19 @@ public class Bomber extends Entity {
       }
     } else {
       cnt++;
-      if (cnt == 44) cnt = 0;
+      if (cnt == 29) cnt = 0;
       if (!pastDirection.equalsIgnoreCase(direction)) {
         cnt = 0;
         pastDirection = direction;
       }
       if (getDirection().equalsIgnoreCase("right")) {
-        this.img = player_right.get(cnt / 15);
+        this.img = player_right.get(cnt / 10);
       } else if (getDirection().equalsIgnoreCase("left")) {
-        this.img = player_left.get(cnt / 15);
+        this.img = player_left.get(cnt / 10);
       } else if (getDirection().equalsIgnoreCase("up")) {
-        this.img = player_up.get(cnt / 15);
+        this.img = player_up.get(cnt / 10);
       } else if (getDirection().equalsIgnoreCase("down")) {
-        this.img = player_down.get(cnt / 15);
+        this.img = player_down.get(cnt / 10);
       }
     }
   }

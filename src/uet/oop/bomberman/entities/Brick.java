@@ -12,4 +12,12 @@ public class Brick extends Entity {
     public void update() {
 
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Brick)) return false;
+        Brick entity = (Brick) o;
+        return getX() == entity.getX() && getY() == entity.getY();
+    }
 }
