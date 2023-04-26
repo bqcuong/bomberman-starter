@@ -101,14 +101,10 @@ public class Explosion extends Entity {
   public void playAnimation() {
     switch (direction) {
       case "right":
-        this.img = explosionHorizontal.get(disappearTime / 5);
-        break;
       case "left":
         this.img = explosionHorizontal.get(disappearTime / 5);
         break;
       case "up":
-        this.img = explosionVertical.get(disappearTime / 5);
-        break;
       case "down":
         this.img = explosionVertical.get(disappearTime / 5);
         break;

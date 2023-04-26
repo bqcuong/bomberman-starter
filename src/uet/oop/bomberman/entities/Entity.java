@@ -1,9 +1,11 @@
 package uet.oop.bomberman.entities;
 
-import static uet.oop.bomberman.graphics.Sprite.SCALED_SIZE;
-
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.shape.Rectangle;
+import uet.oop.bomberman.graphics.Sprite;
+
+import static uet.oop.bomberman.graphics.Sprite.SCALED_SIZE;
 
 public abstract class Entity {
   // Tọa độ X tính từ góc trái trên trong Canvas
@@ -19,15 +21,16 @@ public abstract class Entity {
 
   protected boolean moving;
 
-  /*protected Rectangle2D boundingBox = new Rectangle2D(x, y, SCALED_SIZE, SCALED_SIZE);
 
-  public Rectangle2D getBoundingBox() {
+  private Rectangle boundingBox = new Rectangle(x, y, SCALED_SIZE, SCALED_SIZE);
+
+  public Rectangle getBoundingBox() {
     return boundingBox;
   }
 
-  public void setBoundingBox(Rectangle2D boundingBox) {
-    this.boundingBox = boundingBox;
-  }*/
+
+
+
 
   public void setMoving(boolean moving) {
     this.moving = moving;
@@ -75,6 +78,8 @@ public abstract class Entity {
     this.x = xUnit * SCALED_SIZE;
     this.y = yUnit * SCALED_SIZE;
     this.img = img;
+    this.boundingBox.setX(xUnit * SCALED_SIZE);
+    this.boundingBox.setY(yUnit * SCALED_SIZE);
   }
 
   public void render(GraphicsContext gc) {
