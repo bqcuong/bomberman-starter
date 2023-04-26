@@ -1,13 +1,9 @@
 package uet.oop.bomberman.entities;
 
-import javafx.geometry.Rectangle2D;
-import javafx.scene.SnapshotParameters;
+import static uet.oop.bomberman.graphics.Sprite.SCALED_SIZE;
+
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.paint.Color;
-import uet.oop.bomberman.graphics.Sprite;
-import static uet.oop.bomberman.graphics.Sprite.SCALED_SIZE;
 
 public abstract class Entity {
   // Tọa độ X tính từ góc trái trên trong Canvas
@@ -86,4 +82,14 @@ public abstract class Entity {
   }
 
   public abstract void update();
+
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof Entity)) return false;
+    Entity entity = (Entity) o;
+    return getX() == entity.getX() && getY() == entity.getY();
+  }
+
 }

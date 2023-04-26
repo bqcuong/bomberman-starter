@@ -1,27 +1,19 @@
 package uet.oop.bomberman;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import uet.oop.bomberman.entities.*;
 import uet.oop.bomberman.graphics.Sprite;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.sql.Time;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-import java.util.concurrent.Delayed;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class BombermanGame extends Application {
 
@@ -34,10 +26,10 @@ public class BombermanGame extends Application {
   private List<Entity> entities = new ArrayList<>();
   private List<Entity> stillObjects = new ArrayList<>();
 
-  public static final int SPEED = 4;
+  public static final int SPEED = 2;
   private int bombDelayCnter = 0;
 
-  private ArrayList<String> input = new ArrayList<String>();
+  private ArrayList<String> input = new ArrayList<>();
 
   // Loại bỏ bomb sau khi nổ
   private void bombRemoval() {
@@ -48,39 +40,163 @@ public class BombermanGame extends Application {
 
   // Đặt bom theo input của người chơi
   private void bombPlant(Bomber bomberman) {
-    if (((Bomber) bomberman).getMaxBomb() > 0 && input.contains("SPACE") && bombDelayCnter == 0) {
+    if (bomberman.getMaxBomb() > 0 && input.contains("SPACE") && bombDelayCnter == 0) {
+      int bombLengthLeft = bomberman.getBombLength();
+      int bombLengthRight = bomberman.getBombLength();
+      int bombLengthUp = bomberman.getBombLength();
+      int bombLengthDown = bomberman.getBombLength();
+      for (int i = 1; i <= bomberman.getBombLength(); i++) {
+        // Find obstacle on the left
+        if (stillObjects.contains(
+            new Wall(bomberman.getX() / 32 - i, bomberman.getY() / 32, Sprite.wall.getFxImage()))) {
+          bombLengthLeft = i - 1;
+          System.out.println(bombLengthLeft);
+          break;
+        }
+      }
+      for (int i = 1; i <= bomberman.getBombLength(); i++) {
+        if (entities.contains(
+            new Brick(bomberman.getX() / 32 - i, bomberman.getY() / 32, Sprite.brick.getFxImage()))) {
+          bombLengthLeft = i;
+          System.out.println((bombLengthLeft));
+          break;
+        }
+      }
+      for (int i = 1; i <= bomberman.getBombLength(); i++) {
+        if (stillObjects.contains(
+            new Wall(bomberman.getX() / 32 + i, bomberman.getY() / 32, Sprite.wall.getFxImage()))) {
+          bombLengthRight = i - 1;
+          System.out.println(bombLengthRight);
+          break;
+        }
+        if (entities.contains(
+            new Brick(bomberman.getX() / 32 + i, bomberman.getY() / 32, Sprite.brick.getFxImage()))) {
+          bombLengthRight = i;
+          System.out.println((bombLengthRight));
+          break;
+        }
+      }
+      for (int i = 1; i <= bomberman.getBombLength(); i++) {
+        if (stillObjects.contains(
+            new Wall(bomberman.getX() / 32, bomberman.getY() / 32 - i, Sprite.wall.getFxImage()))) {
+          bombLengthUp = i - 1;
+          System.out.println(bombLengthUp);
+          break;
+        }
+        if (entities.contains(
+            new Brick(bomberman.getX() / 32, bomberman.getY() / 32 - i, Sprite.brick.getFxImage()))) {
+          bombLengthUp = i;
+          System.out.println((bombLengthUp));
+          break;
+        }
+      }
+      for (int i = 1; i <= bomberman.getBombLength(); i++) {
+        if (stillObjects.contains(
+            new Wall(bomberman.getX() / 32, bomberman.getY() / 32 + i, Sprite.wall.getFxImage()))) {
+          bombLengthDown = i - 1;
+          System.out.println(bombLengthDown);
+          break;
+        }
+        if (entities.contains(
+            new Brick(bomberman.getX() / 32, bomberman.getY() / 32 + i, Sprite.brick.getFxImage()))) {
+          bombLengthDown = i;
+          System.out.println((bombLengthDown));
+          break;
+        }
+      }
       entities.add(
-          new Bomb((bomberman.getX() / 32), (bomberman.getY() / 32), Sprite.bomb.getFxImage()));
-      ((Bomber) bomberman).setMaxBomb(((Bomber) bomberman).getMaxBomb() - 1);
+          new Bomb(
+              (bomberman.getX() / 32),
+              (bomberman.getY() / 32),
+              Sprite.bomb.getFxImage(),
+              bombLengthLeft,
+              bombLengthRight,
+              bombLengthUp,
+              bombLengthDown));
+      bomberman.setMaxBomb(bomberman.getMaxBomb() - 1);
       bombDelayCnter = 11;
-      System.out.println((bomberman.getX() / 32) + " " + (bomberman.getY() / 32));
+      // System.out.println((bomberman.getX() / 32) + " " + (bomberman.getY() / 32));
     }
+
     for (int i = 0; i < entities.size(); i++) {
-      if (entities.get(i) instanceof Bomb && ((Bomb) entities.get(i)).getDetonateCnter() == 15) {
-        entities.add(
-            new Explosion(
-                (entities.get(i).getX() / 32 - 1),
-                (entities.get(i).getY() / 32),
-                Sprite.explosion_horizontal_left_last.getFxImage(),
-                "left"));
-        entities.add(
-            new Explosion(
-                (entities.get(i).getX() / 32 + 1),
-                (entities.get(i).getY() / 32),
-                Sprite.explosion_horizontal_right_last.getFxImage(),
-                "right"));
-        entities.add(
-            new Explosion(
-                (entities.get(i).getX() / 32),
-                (entities.get(i).getY() / 32 - 1),
-                Sprite.explosion_vertical_top_last.getFxImage(),
-                "up"));
-        entities.add(
-            new Explosion(
-                (entities.get(i).getX() / 32),
-                (entities.get(i).getY() / 32 + 1),
-                Sprite.explosion_vertical_down_last.getFxImage(),
-                "down"));
+      if (entities.get(i) instanceof Bomb
+          && ((Bomb) entities.get(i)).getDetonateCnter() == 15
+          && !(((Bomb) entities.get(i)).isPlant())) {
+        Bomb bomb = (Bomb) entities.get(i);
+        bomb.setPlant(true);
+        if (bomb.getBombLengthLeft() > 0) {
+          entities.add(
+              new Explosion(
+                  (bomb.getX() / 32 - bomb.getBombLengthLeft()),
+                  (entities.get(i).getY() / 32),
+                  Sprite.explosion_horizontal_left_last.getFxImage(),
+                  "left",
+                  true));
+        }
+        if (bomb.getBombLengthRight() > 0) {
+          entities.add(
+              new Explosion(
+                  (entities.get(i).getX() / 32 + bomb.getBombLengthRight()),
+                  (entities.get(i).getY() / 32),
+                  Sprite.explosion_horizontal_right_last.getFxImage(),
+                  "right",
+                  true));
+        }
+        if (bomb.getBombLengthUp() > 0) {
+          entities.add(
+              new Explosion(
+                  (entities.get(i).getX() / 32),
+                  (entities.get(i).getY() / 32 - bomb.getBombLengthUp()),
+                  Sprite.explosion_vertical_top_last.getFxImage(),
+                  "up",
+                  true));
+        }
+        if (bomb.getBombLengthDown() > 0) {
+          entities.add(
+              new Explosion(
+                  (entities.get(i).getX() / 32),
+                  (entities.get(i).getY() / 32 + bomb.getBombLengthDown()),
+                  Sprite.explosion_vertical_down_last.getFxImage(),
+                  "down",
+                  true));
+        }
+        for (int j = 1; j < bomb.getBombLengthLeft(); j++) {
+          entities.add(
+              new Explosion(
+                  (entities.get(i).getX() / 32 - j),
+                  (entities.get(i).getY() / 32),
+                  Sprite.explosion_horizontal.getFxImage(),
+                  "left",
+                  false));
+        }
+        for (int j = 1; j < bomb.getBombLengthRight(); j++) {
+          entities.add(
+              new Explosion(
+                  (entities.get(i).getX() / 32 + j),
+                  (entities.get(i).getY() / 32),
+                  Sprite.explosion_horizontal.getFxImage(),
+                  "right",
+                  false));
+        }
+        for (int j = 1; j < bomb.getBombLengthDown(); j++) {
+          entities.add(
+              new Explosion(
+                  (entities.get(i).getX() / 32),
+                  (entities.get(i).getY() / 32 + j),
+                  Sprite.explosion_vertical.getFxImage(),
+                  "down",
+                  false));
+        }
+        for (int j = 1; j < bomb.getBombLengthUp(); j++) {
+          entities.add(
+              new Explosion(
+                  (entities.get(i).getX() / 32),
+                  (entities.get(i).getY() / 32 - j),
+                  Sprite.explosion_vertical.getFxImage(),
+                  "up",
+                  false));
+        }
+        bomberman.setMaxBomb(bomberman.getMaxBomb() + 1);
         break;
       }
     }
@@ -89,22 +205,25 @@ public class BombermanGame extends Application {
   // Điều khiển di chuyển
   private void movementControl(Bomber bomberman) {
     if (!input.isEmpty()) {
+      if (input.contains("J")) {
+        bomberman.setBombLength(bomberman.getBombLength() + 1);
+      }
       if (input.get(input.size() - 1).equalsIgnoreCase("D")) {
         bomberman.setDx(SPEED);
         bomberman.setMoving(true);
-        ((Bomber) bomberman).setDirection("D");
+        bomberman.setDirection("D");
       } else if (input.get(input.size() - 1).equalsIgnoreCase("A")) {
         bomberman.setDx(-SPEED);
         bomberman.setMoving(true);
-        ((Bomber) bomberman).setDirection("A");
+        bomberman.setDirection("A");
       } else if (input.get(input.size() - 1).equalsIgnoreCase("W")) {
         bomberman.setDy(-SPEED);
         bomberman.setMoving(true);
-        ((Bomber) bomberman).setDirection("W");
+        bomberman.setDirection("W");
       } else if (input.get(input.size() - 1).equalsIgnoreCase("S")) {
         bomberman.setDy(SPEED);
         bomberman.setMoving(true);
-        ((Bomber) bomberman).setDirection("S");
+        bomberman.setDirection("S");
       }
       if (!input.contains("D") && !input.contains("A")) {
         bomberman.setDx(0);
@@ -125,6 +244,7 @@ public class BombermanGame extends Application {
 
   @Override
   public void start(Stage stage) {
+
     // Create map
     File file =
         new File("C:\\Users\\HI\\Documents\\GitHub\\bomberman-starter\\res\\levels\\Level1.txt");
@@ -164,13 +284,15 @@ public class BombermanGame extends Application {
               entities.add(new Balloom(j, i, Sprite.balloom_right1.getFxImage()));
               break;
             case '2':
-              entities.add(new Doll(j, i, Sprite.doll_right1.getFxImage()));
+              entities.add(new Oneal(j, i, Sprite.oneal_right1.getFxImage()));
+              break;
+            case 'x':
+              stillObjects.add(new Portal(j, i, Sprite.portal.getFxImage()));
               break;
           }
         }
       }
       scanner.close();
-
       Entity bomberman = new Bomber(1, 1, Sprite.player_right.getFxImage());
       entities.add(bomberman);
 
@@ -207,20 +329,8 @@ public class BombermanGame extends Application {
             }
           };
       timer.start();
-
-      createMap();
     } catch (FileNotFoundException e) {
       System.out.println(e.getMessage());
-    }
-  }
-
-  public void createMap() {
-    for (int i = 0; i < WIDTH; i++) {
-      for (int j = 0; j < HEIGHT; j++) {
-        if (j == 0 || j == HEIGHT - 1 || i == 0 || i == WIDTH - 1) {
-          stillObjects.add(new Wall(i, j, Sprite.wall.getFxImage()));
-        }
-      }
     }
   }
 

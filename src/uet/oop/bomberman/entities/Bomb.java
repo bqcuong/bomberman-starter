@@ -1,45 +1,67 @@
 package uet.oop.bomberman.entities;
 
-import javafx.scene.SnapshotParameters;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.paint.Color;
-import uet.oop.bomberman.graphics.Sprite;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-
-import uet.oop.bomberman.gamelogic.*;
+import javafx.scene.image.Image;
+import uet.oop.bomberman.graphics.Sprite;
 
 public class Bomb extends Entity {
   private int detonateCounter = 105;
   private boolean disappear = false;
+  private final int bombLengthLeft;
+  private final int bombLengthRight;
+  private final int bombLengthUp;
+  private final int bombLengthDown;
+  private boolean plant = false;
 
   // List sprite của bomb khi chưa nổ
-  private ArrayList<Image> bombAlive =
+  private final ArrayList<Image> bombAlive =
       new ArrayList<>(
           Arrays.asList(
               Sprite.bomb_2.getFxImage(), Sprite.bomb_1.getFxImage(), Sprite.bomb.getFxImage()));
 
   // List sprite của bomb khi đang nổ
-  private ArrayList<Image> bombExplode =
+  private final ArrayList<Image> bombExplode =
       new ArrayList<>(
           Arrays.asList(
               Sprite.bomb_exploded2.getFxImage(),
               Sprite.bomb_exploded1.getFxImage(),
               Sprite.bomb_exploded.getFxImage()));
 
-  public Bomb(int x, int y, Image img) {
+  public Bomb(int x, int y, Image img, int bombLengthLeft, int bombLengthRight, int bombLengthUp, int bombLengthDown) {
     super(x, y, img);
+    this.bombLengthLeft = bombLengthLeft;
+    this.bombLengthRight = bombLengthRight;
+    this.bombLengthUp = bombLengthUp;
+    this.bombLengthDown = bombLengthDown;
+  }
+
+  public boolean isPlant() {
+    return plant;
+  }
+
+  public void setPlant(boolean plant) {
+    this.plant = plant;
+  }
+
+  public int getBombLengthLeft() {
+    return bombLengthLeft;
+  }
+
+  public int getBombLengthRight() {
+    return bombLengthRight;
+  }
+
+  public int getBombLengthUp() {
+    return bombLengthUp;
+  }
+
+  public int getBombLengthDown() {
+    return bombLengthDown;
   }
 
   public int getDetonateCnter() {
     return detonateCounter;
-  }
-
-  public void setDetonateCnter(int detonateCnter) {
-    this.detonateCounter = detonateCnter;
   }
 
   public boolean isDisappear() {
