@@ -6,7 +6,9 @@ import javafx.scene.image.Image;
 import uet.oop.bomberman.graphics.Sprite;
 
 public class Bomb extends Entity {
-  private int detonateCounter = 105;
+  public static final int DISAPPEARTIME = 105;
+  public static final int DETONATETIME = 90;
+  private int detonateCounter = 0;
   private boolean disappear = false;
   private final int bombLengthLeft;
   private final int bombLengthRight;
@@ -15,18 +17,18 @@ public class Bomb extends Entity {
   private boolean plant = false;
 
   // List sprite của bomb khi chưa nổ
-  private final ArrayList<Image> bombAlive =
+  private final ArrayList<Sprite> bombAlive =
       new ArrayList<>(
           Arrays.asList(
-              Sprite.bomb_2.getFxImage(), Sprite.bomb_1.getFxImage(), Sprite.bomb.getFxImage()));
+              Sprite.bomb_2, Sprite.bomb_1, Sprite.bomb));
 
   // List sprite của bomb khi đang nổ
-  private final ArrayList<Image> bombExplode =
+  private final ArrayList<Sprite> bombExplode =
       new ArrayList<>(
           Arrays.asList(
-              Sprite.bomb_exploded2.getFxImage(),
-              Sprite.bomb_exploded1.getFxImage(),
-              Sprite.bomb_exploded.getFxImage()));
+              Sprite.bomb_exploded2,
+              Sprite.bomb_exploded1,
+              Sprite.bomb_exploded));
 
   public Bomb(int x, int y, Image img, int bombLengthLeft, int bombLengthRight, int bombLengthUp, int bombLengthDown) {
     super(x, y, img);
@@ -80,14 +82,14 @@ public class Bomb extends Entity {
 
   @Override
   public void update() {
-    detonateCounter--;
-    if (detonateCounter > 15) {
-      this.img = bombAlive.get((detonateCounter - 15) / 30);
-    } else if (detonateCounter < 15) {
-      this.img = bombExplode.get(detonateCounter / 5);
+    detonateCounter++;
+    if (detonateCounter < DETONATETIME) {
+      this.img = Sprite.movingSprite(Sprite.bomb, Sprite.bomb_1, Sprite.bomb_2, detonateCounter, DETONATETIME).getFxImage(); 
+    } else if (detonateCounter > DETONATETIME) {
+      this.img = Sprite.movingSprite(Sprite.bomb_exploded, Sprite.bomb_exploded1, Sprite.bomb_exploded2, detonateCounter - DETONATETIME, DISAPPEARTIME - DETONATETIME).getFxImage();
     }
 
-    if (detonateCounter == 0) {
+    if (detonateCounter == DISAPPEARTIME) {
       disappear = true;
     }
   }

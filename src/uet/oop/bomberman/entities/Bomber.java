@@ -2,22 +2,17 @@ package uet.oop.bomberman.entities;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-
-import javafx.geometry.Rectangle2D;
 import javafx.scene.image.Image;
-import javafx.scene.shape.Rectangle;
 import uet.oop.bomberman.gamelogic.*;
 import uet.oop.bomberman.graphics.Sprite;
 
 public class Bomber extends Entity {
+  public static final int ANIMATIONTIME = 9;
   private int cnt = 0;
 
   private int maxBomb = 2;
 
   private int bombLength = 3;
-
-
-
 
   public int getMaxBomb() {
     return maxBomb;
@@ -40,33 +35,20 @@ public class Bomber extends Entity {
     this.getBoundingBox().setWidth(24);
   }
 
-  ArrayList<Image> player_left =
+  ArrayList<Sprite> player_left =
       new ArrayList<>(
-          Arrays.asList(
-              Sprite.player_left.getFxImage(),
-              Sprite.player_left_1.getFxImage(),
-              Sprite.player_left_2.getFxImage()));
+          Arrays.asList(Sprite.player_left, Sprite.player_left_1, Sprite.player_left_2));
 
-  ArrayList<Image> player_right =
+  ArrayList<Sprite> player_right =
       new ArrayList<>(
-          Arrays.asList(
-              Sprite.player_right.getFxImage(),
-              Sprite.player_right_1.getFxImage(),
-              Sprite.player_right_2.getFxImage()));
+          Arrays.asList(Sprite.player_right, Sprite.player_right_1, Sprite.player_right_2));
 
-  ArrayList<Image> player_up =
-      new ArrayList<>(
-          Arrays.asList(
-              Sprite.player_up.getFxImage(),
-              Sprite.player_up_1.getFxImage(),
-              Sprite.player_up_2.getFxImage()));
+  ArrayList<Sprite> player_up =
+      new ArrayList<>(Arrays.asList(Sprite.player_up, Sprite.player_up_1, Sprite.player_up_2));
 
-  ArrayList<Image> player_down =
+  ArrayList<Sprite> player_down =
       new ArrayList<>(
-          Arrays.asList(
-              Sprite.player_down.getFxImage(),
-              Sprite.player_down_1.getFxImage(),
-              Sprite.player_down_2.getFxImage()));
+          Arrays.asList(Sprite.player_down, Sprite.player_down_1, Sprite.player_down_2));
 
   private String direction = "right";
   private String pastDirection = "";
@@ -105,19 +87,29 @@ public class Bomber extends Entity {
       }
     } else {
       cnt++;
-      if (cnt == 29) cnt = 0;
       if (!pastDirection.equalsIgnoreCase(direction)) {
         cnt = 0;
         pastDirection = direction;
       }
       if (getDirection().equalsIgnoreCase("right")) {
-        this.img = player_right.get(cnt / 10);
+        this.img =
+            Sprite.movingSprite(
+                    Sprite.player_right, Sprite.player_right_1, Sprite.player_right_2, cnt, ANIMATIONTIME)
+                .getFxImage();
       } else if (getDirection().equalsIgnoreCase("left")) {
-        this.img = player_left.get(cnt / 10);
+        this.img =
+            Sprite.movingSprite(
+                    Sprite.player_left, Sprite.player_left_1, Sprite.player_left_2, cnt, ANIMATIONTIME)
+                .getFxImage();
       } else if (getDirection().equalsIgnoreCase("up")) {
-        this.img = player_up.get(cnt / 10);
+        this.img =
+            Sprite.movingSprite(Sprite.player_up, Sprite.player_up_1, Sprite.player_up_2, cnt, ANIMATIONTIME)
+                .getFxImage();
       } else if (getDirection().equalsIgnoreCase("down")) {
-        this.img = player_down.get(cnt / 10);
+        this.img =
+            Sprite.movingSprite(
+                    Sprite.player_down, Sprite.player_down_1, Sprite.player_down_2, cnt, ANIMATIONTIME)
+                .getFxImage();
       }
     }
   }
@@ -131,6 +123,5 @@ public class Bomber extends Entity {
     this.getBoundingBox().setX(x);
 
     this.getBoundingBox().setY(y);
-
   }
 }
