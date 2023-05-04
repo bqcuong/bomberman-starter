@@ -1,7 +1,5 @@
 package uet.oop.bomberman.entities;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import javafx.scene.image.Image;
 import uet.oop.bomberman.gamelogic.*;
 import uet.oop.bomberman.graphics.Sprite;
@@ -34,21 +32,6 @@ public class Bomber extends Entity {
     super(x, y, img);
     this.getBoundingBox().setWidth(24);
   }
-
-  ArrayList<Sprite> player_left =
-      new ArrayList<>(
-          Arrays.asList(Sprite.player_left, Sprite.player_left_1, Sprite.player_left_2));
-
-  ArrayList<Sprite> player_right =
-      new ArrayList<>(
-          Arrays.asList(Sprite.player_right, Sprite.player_right_1, Sprite.player_right_2));
-
-  ArrayList<Sprite> player_up =
-      new ArrayList<>(Arrays.asList(Sprite.player_up, Sprite.player_up_1, Sprite.player_up_2));
-
-  ArrayList<Sprite> player_down =
-      new ArrayList<>(
-          Arrays.asList(Sprite.player_down, Sprite.player_down_1, Sprite.player_down_2));
 
   private String direction = "right";
   private String pastDirection = "";

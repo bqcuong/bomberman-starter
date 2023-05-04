@@ -22,7 +22,7 @@ public class BombermanGame extends Application {
 
   public static int WIDTH;
   public static int HEIGHT;
-  public static double SCALING = 1.5;
+  public static final double SCALING = 1;
 
   private static double VIEW_X;
   private static double VIEW_Y;
@@ -41,7 +41,7 @@ public class BombermanGame extends Application {
   private List<Entity> entities = new ArrayList<>();
   private List<Entity> stillObjects = new ArrayList<>();
 
-  public static final int SPEED = 2;
+  public static int SPEED = 2;
   private int bombDelayCnter = 0;
 
   private ArrayList<String> input = new ArrayList<>();
@@ -154,8 +154,6 @@ public class BombermanGame extends Application {
               bombLengthDown));
       bomberman.setMaxBomb(bomberman.getMaxBomb() - 1);
       bombDelayCnter = 11;
-      // System.out.println((bomberman.getX() / SCALED_SIZE) + " " + (bomberman.getY() /
-      // SCALED_SIZE));
     }
 
     for (int i = 0; i < entities.size(); i++) {
@@ -249,7 +247,11 @@ public class BombermanGame extends Application {
         bomberman.setBombLength(bomberman.getBombLength() + 1);
       }
       if (input.get(input.size() - 1).equalsIgnoreCase("D")) {
-        bomberman.setDx(SPEED);
+        if (Collision.checkLegalMove(bomberman, "right", stillObjects)) {
+          bomberman.setDx(SPEED);
+        } else {
+          bomberman.setDx(0);
+        }
         bomberman.setDy(0);
         bomberman.setMoving(true);
         bomberman.setDirection("D");
@@ -280,9 +282,7 @@ public class BombermanGame extends Application {
     }
   }
 
-  
-
-  public void testCamera(Bomber bomber) {
+  public void Camera(Bomber bomber) {
     camX = bomber.getX() - (VIEW_X / 2);
     camY = bomber.getY() - (VIEW_Y / 2);
     if (camX > offsetMaxX) {
@@ -316,8 +316,8 @@ public class BombermanGame extends Application {
       scanner.nextLine();
       HEIGHT = height;
       WIDTH = width;
-      VIEW_X = (double) (SCALED_SIZE * WIDTH / SCALING);
-      VIEW_Y = (double) (SCALED_SIZE * HEIGHT / SCALING);
+      VIEW_X = (SCALED_SIZE * WIDTH / SCALING);
+      VIEW_Y = (SCALED_SIZE * HEIGHT / SCALING);
       offsetMaxX = WIDTH * SCALED_SIZE - VIEW_X;
       offsetMaxY = HEIGHT * SCALED_SIZE - VIEW_Y;
       // Tao Canvas
@@ -335,14 +335,16 @@ public class BombermanGame extends Application {
 
       // Them scene vao stage
       stage.setScene(scene);
-      
-      
+
       stage.show();
       for (int i = 0; i < height; i++) {
         String cur = scanner.nextLine();
         for (int j = 0; j < width; j++) {
           stillObjects.add(new Grass(j, i, Sprite.grass.getFxImage()));
           switch (cur.charAt(j)) {
+            case 'p':
+            case ' ':
+              break;
             case '#':
               stillObjects.add(new Wall(j, i, Sprite.wall.getFxImage()));
               break;
@@ -357,7 +359,22 @@ public class BombermanGame extends Application {
               break;
             case 'x':
               stillObjects.add(new Portal(j, i, Sprite.portal.getFxImage()));
+              stillObjects.add(new Brick(j, i, Sprite.brick.getFxImage()));
               break;
+            case 'b':
+              stillObjects.add(new BombItem(j, i, Sprite.powerup_bombs.getFxImage()));
+              stillObjects.add(new Brick(j, i, Sprite.brick.getFxImage()));
+              break;
+            case 'f':
+              stillObjects.add(new FlameItem(j, i, Sprite.powerup_flames.getFxImage()));
+              stillObjects.add(new Brick(j, i, Sprite.brick.getFxImage()));
+              break;
+            case 's':
+              stillObjects.add(new SpeedItem(j, i, Sprite.powerup_speed.getFxImage()));
+              stillObjects.add(new Brick(j, i, Sprite.brick.getFxImage()));
+              break;
+            default:
+              throw new IllegalStateException("Unexpected value: " + cur.charAt(j));
           }
         }
       }
@@ -396,7 +413,7 @@ public class BombermanGame extends Application {
               bombPlant((Bomber) bomberman);
               bombRemoval();
               Collision.checkCollision1(((Bomber) bomberman), entities);
-              testCamera((Bomber) bomberman);
+              Camera((Bomber) bomberman);
             }
           };
       timer.start();

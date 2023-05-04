@@ -3,63 +3,14 @@ package uet.oop.bomberman.entities;
 import javafx.scene.image.Image;
 import uet.oop.bomberman.graphics.Sprite;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 public class Explosion extends Entity {
   public static final int DISAPPEARTIME = 15;
   private int disappearTime = 0;
   private boolean disappear = false;
-  private String direction;
-  private boolean edge = false;
+  private final String direction;
+  private final boolean edge;
 
-  private final ArrayList<Sprite> explosionEndLeft =
-      new ArrayList<>(
-          Arrays.asList(
-              Sprite.explosion_horizontal_left_last2,
-              Sprite.explosion_horizontal_left_last1,
-              Sprite.explosion_horizontal_left_last));
 
-  private final ArrayList<Sprite> explosionEndRight =
-      new ArrayList<>(
-          Arrays.asList(
-              Sprite.explosion_horizontal_right_last2,
-              Sprite.explosion_horizontal_right_last1,
-              Sprite.explosion_horizontal_right_last));
-
-  private final ArrayList<Sprite> explosionEndUp =
-      new ArrayList<>(
-          Arrays.asList(
-              Sprite.explosion_vertical_top_last2,
-              Sprite.explosion_vertical_top_last1,
-              Sprite.explosion_vertical_top_last));
-
-  private final ArrayList<Sprite> explosionEndDown =
-      new ArrayList<>(
-          Arrays.asList(
-              Sprite.explosion_vertical_down_last2,
-              Sprite.explosion_vertical_down_last1,
-              Sprite.explosion_vertical_down_last));
-
-  private final ArrayList<Sprite> explosionHorizontal =
-      new ArrayList<>(
-          Arrays.asList(
-              Sprite.explosion_horizontal2,
-              Sprite.explosion_horizontal1,
-              Sprite.explosion_horizontal));
-
-  private final ArrayList<Sprite> explosionVertical =
-      new ArrayList<>(
-          Arrays.asList(
-              Sprite.explosion_vertical2, Sprite.explosion_vertical1, Sprite.explosion_vertical));
-
-  public boolean isEdge() {
-    return edge;
-  }
-
-  public void setEdge(boolean edge) {
-    this.edge = edge;
-  }
 
   public Explosion(int x, int y, Image img, String direction, boolean edge) {
     super(x, y, img);
@@ -67,13 +18,7 @@ public class Explosion extends Entity {
     this.edge = edge;
   }
 
-  public String getDirection() {
-    return direction;
-  }
 
-  public void setDirection(String direction) {
-    this.direction = direction;
-  }
 
   public boolean isDisappear() {
     return disappear;
@@ -116,7 +61,7 @@ public class Explosion extends Entity {
                         Sprite.explosion_vertical_down_last2,
                         disappearTime,
                         DISAPPEARTIME)
-                .getFxImage();;
+                .getFxImage();
         break;
     }
   }
@@ -153,7 +98,7 @@ public class Explosion extends Entity {
     if (disappearTime == DISAPPEARTIME) {
       disappear = true;
     }
-    if (edge == true) {
+    if (edge) {
       playAnimationEdge();
     } else {
       playAnimation();
