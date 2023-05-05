@@ -1,11 +1,10 @@
 package uet.oop.bomberman.entities;
 
+import static uet.oop.bomberman.graphics.Sprite.SCALED_SIZE;
+
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.shape.Rectangle;
-import uet.oop.bomberman.graphics.Sprite;
-
-import static uet.oop.bomberman.graphics.Sprite.SCALED_SIZE;
 
 public abstract class Entity {
   // Tọa độ X tính từ góc trái trên trong Canvas
@@ -80,6 +79,11 @@ public abstract class Entity {
     this.img = img;
     this.boundingBox.setX(xUnit * SCALED_SIZE);
     this.boundingBox.setY(yUnit * SCALED_SIZE);
+  }
+  
+  public boolean isSameLocation(Entity e2) {
+    return this.getX() / 32 == e2.getX() / 32 &&
+            this.getY() / 32 == e2.getY() / 32;
   }
 
   public void render(GraphicsContext gc) {

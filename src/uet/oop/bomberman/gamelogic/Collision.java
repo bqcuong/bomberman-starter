@@ -1,8 +1,5 @@
 package uet.oop.bomberman.gamelogic;
 
-
-import static uet.oop.bomberman.BombermanGame.SPEED;
-
 import java.util.List;
 import javafx.scene.shape.Shape;
 import uet.oop.bomberman.entities.*;
@@ -30,16 +27,28 @@ public class Collision {
   public static boolean checkLegalMove(Bomber bomber, String direction, List<Entity> stillObject) {
     switch (direction) {
       case "right":
-        return !checkWall((bomber.getX() + 22 + SPEED )/ 32, bomber.getY() / 32, stillObject) &&
-                !checkWall((bomber.getX() + 22 + SPEED )/ 32, (bomber.getY() + 31 )/ 32, stillObject)&&
-                !checkBrick((bomber.getX() + 22 + SPEED )/ 32, bomber.getY() / 32, stillObject) &&
-                !checkBrick((bomber.getX() + 22 + SPEED )/ 32, (bomber.getY() + 31 )/ 32, stillObject);
-
-
-        
+        return !checkWall((bomber.getX() + 24 + 1) / 32, bomber.getY() / 32, stillObject)
+            && !checkWall((bomber.getX() + 24 + 1) / 32, (bomber.getY() + 31) / 32, stillObject)
+            && !checkBrick((bomber.getX() + 24 + 1) / 32, bomber.getY() / 32, stillObject)
+            && !checkBrick((bomber.getX() + 24 + 1) / 32, (bomber.getY() + 31) / 32, stillObject);
       case "left":
-        return true;
+        return !checkWall((bomber.getX() - 1) / 32, bomber.getY() / 32, stillObject)
+            && !checkWall((bomber.getX() - 1) / 32, (bomber.getY() + 31) / 32, stillObject)
+            && !checkBrick((bomber.getX() - 1) / 32, bomber.getY() / 32, stillObject)
+            && !checkBrick((bomber.getX() - 1) / 32, (bomber.getY() + 31) / 32, stillObject);
+      case "up":
+        return !checkWall(bomber.getX() / 32, (bomber.getY() - 1) / 32, stillObject)
+            && !checkWall((bomber.getX() + 22) / 32, (bomber.getY() - 1) / 32, stillObject)
+            && !checkBrick(bomber.getX() / 32, (bomber.getY() - 1) / 32, stillObject)
+            && !checkBrick((bomber.getX() + 22) / 32, (bomber.getY() - 1) / 32, stillObject);
+      case "down":
+        return !checkWall(bomber.getX() / 32, (bomber.getY() + 32) / 32, stillObject)
+                && !checkWall((bomber.getX() + 22) / 32, (bomber.getY() + 32) / 32, stillObject)
+                && !checkBrick(bomber.getX() / 32, (bomber.getY() + 32) / 32, stillObject)
+                && !checkBrick((bomber.getX() + 22) / 32, (bomber.getY() + 32) / 32, stillObject);
+
+      default:
+        throw new IllegalStateException("Unexpected direction: " + direction);
     }
-    return true;
   }
 }

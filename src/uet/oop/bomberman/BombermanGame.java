@@ -22,7 +22,7 @@ public class BombermanGame extends Application {
 
   public static int WIDTH;
   public static int HEIGHT;
-  public static final double SCALING = 1;
+  public static final double SCALING = 1.3;
 
   private static double VIEW_X;
   private static double VIEW_Y;
@@ -48,9 +48,19 @@ public class BombermanGame extends Application {
 
   // Loại bỏ bomb sau khi nổ
   private void bombRemoval() {
+
     entities.removeIf(bomb -> bomb instanceof Bomb && ((Bomb) bomb).isDisappear());
     entities.removeIf(
         explosion -> explosion instanceof Explosion && ((Explosion) explosion).isDisappear());
+    for (Entity explosion : entities) {
+      for (Entity brick : stillObjects) {
+        if (explosion instanceof Explosion
+            && brick instanceof Brick
+            && explosion.isSameLocation(brick)) {
+          ((Brick) brick).setDamaged(true);
+        }
+      }
+    }
   }
 
   // Đặt bom theo input của người chơi
@@ -73,7 +83,7 @@ public class BombermanGame extends Application {
         }
       }
       for (int i = 1; i <= bomberman.getBombLength(); i++) {
-        if (entities.contains(
+        if (stillObjects.contains(
             new Brick(
                 (bomberman.getX() + SCALED_SIZE / 2) / SCALED_SIZE - i,
                 (bomberman.getY() + SCALED_SIZE / 2) / SCALED_SIZE,
@@ -93,7 +103,7 @@ public class BombermanGame extends Application {
           System.out.println(bombLengthRight);
           break;
         }
-        if (entities.contains(
+        if (stillObjects.contains(
             new Brick(
                 (bomberman.getX() + SCALED_SIZE / 2) / SCALED_SIZE + i,
                 (bomberman.getY() + SCALED_SIZE / 2) / SCALED_SIZE,
@@ -113,7 +123,7 @@ public class BombermanGame extends Application {
           System.out.println(bombLengthUp);
           break;
         }
-        if (entities.contains(
+        if (stillObjects.contains(
             new Brick(
                 (bomberman.getX() + SCALED_SIZE / 2) / SCALED_SIZE,
                 (bomberman.getY() + SCALED_SIZE / 2) / SCALED_SIZE - i,
@@ -133,7 +143,7 @@ public class BombermanGame extends Application {
           System.out.println(bombLengthDown);
           break;
         }
-        if (entities.contains(
+        if (stillObjects.contains(
             new Brick(
                 (bomberman.getX() + SCALED_SIZE / 2) / SCALED_SIZE,
                 (bomberman.getY() + SCALED_SIZE / 2) / SCALED_SIZE + i,
@@ -247,26 +257,46 @@ public class BombermanGame extends Application {
         bomberman.setBombLength(bomberman.getBombLength() + 1);
       }
       if (input.get(input.size() - 1).equalsIgnoreCase("D")) {
-        if (Collision.checkLegalMove(bomberman, "right", stillObjects)) {
-          bomberman.setDx(SPEED);
-        } else {
-          bomberman.setDx(0);
+        for (int i = 0; i < SPEED; i++) {
+          if (Collision.checkLegalMove(bomberman, "right", stillObjects)) {
+            bomberman.setX(bomberman.getX() + 1);
+          } else {
+            break;
+          }
         }
         bomberman.setDy(0);
         bomberman.setMoving(true);
         bomberman.setDirection("D");
       } else if (input.get(input.size() - 1).equalsIgnoreCase("A")) {
-        bomberman.setDx(-SPEED);
+        for (int i = 0; i < SPEED; i++) {
+          if (Collision.checkLegalMove(bomberman, "left", stillObjects)) {
+            bomberman.setX(bomberman.getX() - 1);
+          } else {
+            break;
+          }
+        }
         bomberman.setDy(0);
         bomberman.setMoving(true);
         bomberman.setDirection("A");
       } else if (input.get(input.size() - 1).equalsIgnoreCase("W")) {
-        bomberman.setDy(-SPEED);
+        for (int i = 0; i < SPEED; i++) {
+          if (Collision.checkLegalMove(bomberman, "up", stillObjects)) {
+            bomberman.setY(bomberman.getY() - 1);
+          } else {
+            break;
+          }
+        }
         bomberman.setDx(0);
         bomberman.setMoving(true);
         bomberman.setDirection("W");
       } else if (input.get(input.size() - 1).equalsIgnoreCase("S")) {
-        bomberman.setDy(SPEED);
+        for (int i = 0; i < SPEED; i++) {
+          if (Collision.checkLegalMove(bomberman, "down", stillObjects)) {
+            bomberman.setY(bomberman.getY() + 1);
+          } else {
+            break;
+          }
+        }
         bomberman.setDx(0);
         bomberman.setMoving(true);
         bomberman.setDirection("S");
@@ -305,10 +335,7 @@ public class BombermanGame extends Application {
   public void start(Stage stage) {
 
     // Create map
-    File file =
-        new File(
-            System.getProperty("user.home")
-                + "\\Documents\\GitHub\\bomberman-starter\\res\\levels\\Level1.txt");
+    File file = new File(System.getProperty("user.dir") + "\\res\\levels\\Level1.txt");
     try {
       Scanner scanner = new Scanner(file);
       int height = scanner.nextInt();
@@ -349,7 +376,7 @@ public class BombermanGame extends Application {
               stillObjects.add(new Wall(j, i, Sprite.wall.getFxImage()));
               break;
             case '*':
-              entities.add(new Brick(j, i, Sprite.brick.getFxImage()));
+              stillObjects.add(new Brick(j, i, Sprite.brick.getFxImage()));
               break;
             case '1':
               entities.add(new Balloom(j, i, Sprite.balloom_right1.getFxImage()));

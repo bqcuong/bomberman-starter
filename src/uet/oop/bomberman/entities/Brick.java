@@ -4,9 +4,18 @@ import javafx.scene.image.Image;
 import uet.oop.bomberman.graphics.Sprite;
 
 public class Brick extends Entity {
-  private boolean destroyed = false;
+  private boolean damaged = false;
+  private boolean isDisappear = false;
   public final int DISAPPEAR_TIME = 15;
   private int disappear = 0;
+
+  public void setDamaged(boolean damaged) {
+    this.damaged = damaged;
+  }
+
+  public boolean isDisappear() {
+    return isDisappear;
+  }
 
   public Brick(int x, int y, Image img) {
     super(x, y, img);
@@ -14,13 +23,15 @@ public class Brick extends Entity {
 
   @Override
   public void update() {
-    if (destroyed) disappear++;
+    if (damaged) disappear++;
+    if (disappear == 15) isDisappear = true;
     if (disappear > 0) {
       this.img =
           Sprite.movingSprite(
-                  Sprite.bomb_exploded, Sprite.bomb_exploded1, Sprite.bomb_exploded2, disappear, 15)
+                  Sprite.brick_exploded, Sprite.brick_exploded1, Sprite.brick_exploded2, disappear, 15)
               .getFxImage();
     }
+
   }
 
   @Override

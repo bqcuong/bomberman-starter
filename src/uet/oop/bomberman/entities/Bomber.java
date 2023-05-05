@@ -52,10 +52,7 @@ public class Bomber extends Entity {
     return this.direction;
   }
 
-  public void moveBomber() {
-    this.x += getDx();
-    this.y += getDy();
-  }
+  
 
   public void checkAnimation() {
     if (!isMoving()) {
@@ -100,9 +97,7 @@ public class Bomber extends Entity {
   @Override
   public void update() {
     checkAnimation();
-    if (isMoving()) {
-      moveBomber();
-    }
+    
     this.getBoundingBox().setX(x);
 
     this.getBoundingBox().setY(y);
