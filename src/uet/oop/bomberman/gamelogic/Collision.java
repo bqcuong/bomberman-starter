@@ -3,6 +3,10 @@ package uet.oop.bomberman.gamelogic;
 import java.util.List;
 import javafx.scene.shape.Shape;
 import uet.oop.bomberman.entities.*;
+import uet.oop.bomberman.entities.Enemy.*;
+import uet.oop.bomberman.entities.Map.*;
+import uet.oop.bomberman.entities.Player.*;
+import uet.oop.bomberman.entities.Powerup.*;
 import uet.oop.bomberman.graphics.Sprite;
 
 public class Collision {
@@ -14,6 +18,11 @@ public class Collision {
         System.out.println("Collide " + entity.getClass());
       }
     }
+  }
+
+  public static boolean checkCollision2(Entity e1, Entity e2) {
+    Shape intersect1 = Shape.intersect(e1.getBoundingBox(), e2.getBoundingBox());
+    return intersect1.getBoundsInLocal().getWidth() != -1;
   }
 
   public static boolean checkWall(int x, int y, List<Entity> entityList) {
@@ -43,9 +52,9 @@ public class Collision {
             && !checkBrick((bomber.getX() + 22) / 32, (bomber.getY() - 1) / 32, stillObject);
       case "down":
         return !checkWall(bomber.getX() / 32, (bomber.getY() + 32) / 32, stillObject)
-                && !checkWall((bomber.getX() + 22) / 32, (bomber.getY() + 32) / 32, stillObject)
-                && !checkBrick(bomber.getX() / 32, (bomber.getY() + 32) / 32, stillObject)
-                && !checkBrick((bomber.getX() + 22) / 32, (bomber.getY() + 32) / 32, stillObject);
+            && !checkWall((bomber.getX() + 22) / 32, (bomber.getY() + 32) / 32, stillObject)
+            && !checkBrick(bomber.getX() / 32, (bomber.getY() + 32) / 32, stillObject)
+            && !checkBrick((bomber.getX() + 22) / 32, (bomber.getY() + 32) / 32, stillObject);
 
       default:
         throw new IllegalStateException("Unexpected direction: " + direction);

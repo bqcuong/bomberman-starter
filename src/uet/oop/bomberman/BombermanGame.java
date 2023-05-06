@@ -1,6 +1,7 @@
 package uet.oop.bomberman;
 
 import static uet.oop.bomberman.graphics.Sprite.SCALED_SIZE;
+import static uet.oop.bomberman.graphics.Sprite.brick;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -15,6 +16,10 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.stage.Stage;
 import uet.oop.bomberman.entities.*;
+import uet.oop.bomberman.entities.Enemy.*;
+import uet.oop.bomberman.entities.Map.*;
+import uet.oop.bomberman.entities.Player.*;
+import uet.oop.bomberman.entities.Powerup.*;
 import uet.oop.bomberman.gamelogic.Collision;
 import uet.oop.bomberman.graphics.Sprite;
 
@@ -47,18 +52,37 @@ public class BombermanGame extends Application {
   private ArrayList<String> input = new ArrayList<>();
 
   // Loại bỏ bomb sau khi nổ
-  private void bombRemoval() {
-
+  private void bombRemoval(Bomber bomber) {
+    for (Entity brick : stillObjects) {
+      for (Entity explosion : entities) {
+        if ((explosion instanceof Explosion)
+            && (brick instanceof Brick)
+            && Collision.checkCollision2(brick, explosion)) {
+          ((Brick) brick).setDamaged(true);
+        }
+      }
+    }
     entities.removeIf(bomb -> bomb instanceof Bomb && ((Bomb) bomb).isDisappear());
     entities.removeIf(
         explosion -> explosion instanceof Explosion && ((Explosion) explosion).isDisappear());
-    for (Entity explosion : entities) {
-      for (Entity brick : stillObjects) {
-        if (explosion instanceof Explosion
-            && brick instanceof Brick
-            && explosion.isSameLocation(brick)) {
-          ((Brick) brick).setDamaged(true);
-        }
+    stillObjects.removeIf(brick -> brick instanceof Brick && ((Brick) brick).isDisappear());
+    for (Entity powerup : stillObjects) {
+      if (powerup instanceof FlameItem && Collision.checkCollision2(bomber, powerup)) {
+        stillObjects.remove(powerup);
+        bomber.setBombLength(bomber.getBombLength() + 1);
+        System.out.println(powerup + " consumed");
+        break;
+      }
+      else if (powerup instanceof BombItem && Collision.checkCollision2(bomber, powerup)) {
+        stillObjects.remove(powerup);
+        bomber.setMaxBomb(bomber.getMaxBomb() + 1);
+        System.out.println(powerup + " consumed");
+        break;
+      } else if (powerup instanceof SpeedItem && Collision.checkCollision2(bomber, powerup)) {
+        stillObjects.remove(powerup);
+        SPEED++;
+        System.out.println(powerup + " consumed");
+        break;
       }
     }
   }
@@ -87,7 +111,7 @@ public class BombermanGame extends Application {
             new Brick(
                 (bomberman.getX() + SCALED_SIZE / 2) / SCALED_SIZE - i,
                 (bomberman.getY() + SCALED_SIZE / 2) / SCALED_SIZE,
-                Sprite.brick.getFxImage()))) {
+                brick.getFxImage()))) {
           bombLengthLeft = i;
           System.out.println((bombLengthLeft));
           break;
@@ -107,7 +131,7 @@ public class BombermanGame extends Application {
             new Brick(
                 (bomberman.getX() + SCALED_SIZE / 2) / SCALED_SIZE + i,
                 (bomberman.getY() + SCALED_SIZE / 2) / SCALED_SIZE,
-                Sprite.brick.getFxImage()))) {
+                brick.getFxImage()))) {
           bombLengthRight = i;
           System.out.println((bombLengthRight));
           break;
@@ -127,7 +151,7 @@ public class BombermanGame extends Application {
             new Brick(
                 (bomberman.getX() + SCALED_SIZE / 2) / SCALED_SIZE,
                 (bomberman.getY() + SCALED_SIZE / 2) / SCALED_SIZE - i,
-                Sprite.brick.getFxImage()))) {
+                brick.getFxImage()))) {
           bombLengthUp = i;
           System.out.println((bombLengthUp));
           break;
@@ -147,7 +171,7 @@ public class BombermanGame extends Application {
             new Brick(
                 (bomberman.getX() + SCALED_SIZE / 2) / SCALED_SIZE,
                 (bomberman.getY() + SCALED_SIZE / 2) / SCALED_SIZE + i,
-                Sprite.brick.getFxImage()))) {
+                brick.getFxImage()))) {
           bombLengthDown = i;
           System.out.println((bombLengthDown));
           break;
@@ -168,7 +192,7 @@ public class BombermanGame extends Application {
 
     for (int i = 0; i < entities.size(); i++) {
       if (entities.get(i) instanceof Bomb
-          && ((Bomb) entities.get(i)).getDetonateCnter() == Bomb.DETONATETIME
+          && ((Bomb) entities.get(i)).getDetonateCnter() == Bomb.DETONATE_TIME
           && !(((Bomb) entities.get(i)).isPlant())) {
         Bomb bomb = (Bomb) entities.get(i);
         bomb.setPlant(true);
@@ -252,6 +276,44 @@ public class BombermanGame extends Application {
 
   // Điều khiển di chuyển
   private void movementControl(Bomber bomberman) {
+
+    if (input.size() >= 2) {
+      if (input.get(input.size() - 2).equalsIgnoreCase("D")) {
+        for (int i = 0; i < SPEED; i++) {
+          if (Collision.checkLegalMove(bomberman, "right", stillObjects)) {
+            bomberman.setX(bomberman.getX() + 1);
+          } else {
+            break;
+          }
+        }
+      } else if (input.get(input.size() - 2).equalsIgnoreCase("A")) {
+        for (int i = 0; i < SPEED; i++) {
+          if (Collision.checkLegalMove(bomberman, "left", stillObjects)) {
+            bomberman.setX(bomberman.getX() - 1);
+          } else {
+            break;
+          }
+        }
+      } else if (input.get(input.size() - 2).equalsIgnoreCase("W")) {
+        for (int i = 0; i < SPEED; i++) {
+          if (Collision.checkLegalMove(bomberman, "up", stillObjects)) {
+            bomberman.setY(bomberman.getY() - 1);
+          } else {
+            break;
+          }
+        }
+
+      } else if (input.get(input.size() - 2).equalsIgnoreCase("S")) {
+        for (int i = 0; i < SPEED; i++) {
+          if (Collision.checkLegalMove(bomberman, "down", stillObjects)) {
+            bomberman.setY(bomberman.getY() + 1);
+          } else {
+            break;
+          }
+        }
+      }
+    }
+
     if (!input.isEmpty()) {
       if (input.contains("J")) {
         bomberman.setBombLength(bomberman.getBombLength() + 1);
@@ -260,48 +322,52 @@ public class BombermanGame extends Application {
         for (int i = 0; i < SPEED; i++) {
           if (Collision.checkLegalMove(bomberman, "right", stillObjects)) {
             bomberman.setX(bomberman.getX() + 1);
+
           } else {
             break;
           }
         }
-        bomberman.setDy(0);
         bomberman.setMoving(true);
         bomberman.setDirection("D");
+
       } else if (input.get(input.size() - 1).equalsIgnoreCase("A")) {
         for (int i = 0; i < SPEED; i++) {
           if (Collision.checkLegalMove(bomberman, "left", stillObjects)) {
             bomberman.setX(bomberman.getX() - 1);
+
           } else {
             break;
           }
         }
-        bomberman.setDy(0);
         bomberman.setMoving(true);
         bomberman.setDirection("A");
+
       } else if (input.get(input.size() - 1).equalsIgnoreCase("W")) {
         for (int i = 0; i < SPEED; i++) {
           if (Collision.checkLegalMove(bomberman, "up", stillObjects)) {
             bomberman.setY(bomberman.getY() - 1);
+
           } else {
             break;
           }
         }
-        bomberman.setDx(0);
         bomberman.setMoving(true);
         bomberman.setDirection("W");
+
       } else if (input.get(input.size() - 1).equalsIgnoreCase("S")) {
         for (int i = 0; i < SPEED; i++) {
           if (Collision.checkLegalMove(bomberman, "down", stillObjects)) {
             bomberman.setY(bomberman.getY() + 1);
+
           } else {
             break;
           }
         }
-        bomberman.setDx(0);
         bomberman.setMoving(true);
         bomberman.setDirection("S");
       }
     }
+
     if (!input.contains("W")
         && !input.contains("A")
         && !input.contains("S")
@@ -438,7 +504,7 @@ public class BombermanGame extends Application {
               if (bombDelayCnter > 0) bombDelayCnter--;
               movementControl((Bomber) bomberman);
               bombPlant((Bomber) bomberman);
-              bombRemoval();
+              bombRemoval((Bomber) bomberman);
               Collision.checkCollision1(((Bomber) bomberman), entities);
               Camera((Bomber) bomberman);
             }
@@ -450,6 +516,7 @@ public class BombermanGame extends Application {
   }
 
   public void update() {
+    stillObjects.forEach(Entity::update);
     entities.forEach(Entity::update);
   }
 

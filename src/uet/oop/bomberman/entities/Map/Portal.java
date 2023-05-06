@@ -1,10 +1,11 @@
-package uet.oop.bomberman.entities;
+package uet.oop.bomberman.entities.Map;
 
 import javafx.scene.image.Image;
+import uet.oop.bomberman.entities.Entity;
 
-public class Wall extends Entity {
+public class Portal extends Entity {
 
-    public Wall(int x, int y, Image img) {
+    public Portal(int x, int y, Image img) {
         super(x, y, img);
     }
 
@@ -16,8 +17,8 @@ public class Wall extends Entity {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Wall)) return false;
-        Wall entity = (Wall) o;
+        if (!(o instanceof Portal)) return false;
+        Portal entity = (Portal) o;
         return getX() == entity.getX() && getY() == entity.getY();
     }
 }

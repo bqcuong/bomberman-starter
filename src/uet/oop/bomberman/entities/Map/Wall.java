@@ -1,10 +1,11 @@
-package uet.oop.bomberman.entities;
+package uet.oop.bomberman.entities.Map;
 
 import javafx.scene.image.Image;
+import uet.oop.bomberman.entities.Entity;
 
-public class SpeedItem extends Entity {
+public class Wall extends Entity {
 
-    public SpeedItem(int x, int y, Image img) {
+    public Wall(int x, int y, Image img) {
         super(x, y, img);
     }
 
@@ -16,8 +17,8 @@ public class SpeedItem extends Entity {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof SpeedItem)) return false;
-        SpeedItem entity = (SpeedItem) o;
+        if (!(o instanceof Wall)) return false;
+        Wall entity = (Wall) o;
         return getX() == entity.getX() && getY() == entity.getY();
     }
 }

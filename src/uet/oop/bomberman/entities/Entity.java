@@ -82,8 +82,8 @@ public abstract class Entity {
   }
   
   public boolean isSameLocation(Entity e2) {
-    return this.getX() / 32 == e2.getX() / 32 &&
-            this.getY() / 32 == e2.getY() / 32;
+    return getX() / 32 == e2.getX() / 32 &&
+            getY() / 32 == e2.getY() / 32;
   }
 
   public void render(GraphicsContext gc) {

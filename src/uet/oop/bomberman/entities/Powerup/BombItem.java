@@ -1,10 +1,11 @@
-package uet.oop.bomberman.entities;
+package uet.oop.bomberman.entities.Powerup;
 
 import javafx.scene.image.Image;
+import uet.oop.bomberman.entities.Entity;
 
-public class Portal extends Entity {
+public class BombItem extends Entity {
 
-    public Portal(int x, int y, Image img) {
+    public BombItem(int x, int y, Image img) {
         super(x, y, img);
     }
 
@@ -16,8 +17,8 @@ public class Portal extends Entity {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Portal)) return false;
-        Portal entity = (Portal) o;
+        if (!(o instanceof BombItem)) return false;
+        BombItem entity = (BombItem) o;
         return getX() == entity.getX() && getY() == entity.getY();
     }
 }
