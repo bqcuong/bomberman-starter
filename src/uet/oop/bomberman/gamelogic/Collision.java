@@ -11,10 +11,11 @@ import uet.oop.bomberman.graphics.Sprite;
 
 public class Collision {
 
-  public static void checkCollision1(Bomber bomber, List<Entity> entities) {
+  public static void checkCollisionBomber1(Bomber bomber, List<Entity> entities) {
     for (Entity entity : entities) {
       Shape intersect1 = Shape.intersect(bomber.getBoundingBox(), entity.getBoundingBox());
-      if (intersect1.getBoundsInLocal().getWidth() != -1 && !(entity instanceof Bomber)) {
+      if (intersect1.getBoundsInLocal().getWidth() != -1
+          && !(entity instanceof Bomber || entity instanceof Grass || entity instanceof Wall)) {
         System.out.println("Collide " + entity.getClass());
       }
     }

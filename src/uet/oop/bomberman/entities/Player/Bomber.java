@@ -8,10 +8,11 @@ import uet.oop.bomberman.graphics.Sprite;
 public class Bomber extends Entity {
   public static final int ANIMATIONTIME = 9;
   private int cnt = 0;
+  private int live = 3;
 
-  private int maxBomb = 2;
+  private int maxBomb = 1;
 
-  private int bombLength = 3;
+  private int bombLength = 1;
 
   public int getMaxBomb() {
     return maxBomb;

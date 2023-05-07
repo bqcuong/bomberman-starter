@@ -53,18 +53,32 @@ public class BombermanGame extends Application {
 
   // Loại bỏ bomb sau khi nổ
   private void bombRemoval(Bomber bomber) {
-    for (Entity brick : stillObjects) {
-      for (Entity explosion : entities) {
-        if ((explosion instanceof Explosion)
-            && (brick instanceof Brick)
-            && Collision.checkCollision2(brick, explosion)) {
-          ((Brick) brick).setDamaged(true);
+    for (Entity explosion : stillObjects) {
+      if (explosion instanceof Explosion) {
+        for (Entity brick : stillObjects) {
+          if ((brick instanceof Brick) && Collision.checkCollision2(brick, explosion)) {
+            ((Brick) brick).setDamaged(true);
+          }
         }
+        for (Entity enemy : entities) {
+          if (enemy instanceof Balloom && Collision.checkCollision2(enemy, explosion)) {
+            ((Balloom) enemy).setDead(true);
+          }
+          if (enemy instanceof Oneal && Collision.checkCollision2(enemy, explosion)) {
+            ((Oneal) enemy).setDead(true);
+          }
+          if (enemy instanceof Doll && Collision.checkCollision2(enemy, explosion)) {
+            ((Oneal) enemy).setDead(true);
+          }
+        }
+        
       }
     }
-    entities.removeIf(bomb -> bomb instanceof Bomb && ((Bomb) bomb).isDisappear());
-    entities.removeIf(
+    stillObjects.removeIf(bomb -> bomb instanceof Bomb && ((Bomb) bomb).isDisappear());
+    stillObjects.removeIf(
         explosion -> explosion instanceof Explosion && ((Explosion) explosion).isDisappear());
+    entities.removeIf(balloom -> balloom instanceof Balloom && ((Balloom) balloom).isDisappear());
+    entities.removeIf(oneal -> oneal instanceof Oneal && ((Oneal) oneal).isDisappear());
     stillObjects.removeIf(brick -> brick instanceof Brick && ((Brick) brick).isDisappear());
     for (Entity powerup : stillObjects) {
       if (powerup instanceof FlameItem && Collision.checkCollision2(bomber, powerup)) {
@@ -72,8 +86,7 @@ public class BombermanGame extends Application {
         bomber.setBombLength(bomber.getBombLength() + 1);
         System.out.println(powerup + " consumed");
         break;
-      }
-      else if (powerup instanceof BombItem && Collision.checkCollision2(bomber, powerup)) {
+      } else if (powerup instanceof BombItem && Collision.checkCollision2(bomber, powerup)) {
         stillObjects.remove(powerup);
         bomber.setMaxBomb(bomber.getMaxBomb() + 1);
         System.out.println(powerup + " consumed");
@@ -102,7 +115,7 @@ public class BombermanGame extends Application {
                 (bomberman.getY() + SCALED_SIZE / 2) / SCALED_SIZE,
                 Sprite.wall.getFxImage()))) {
           bombLengthLeft = i - 1;
-          System.out.println(bombLengthLeft);
+
           break;
         }
       }
@@ -113,7 +126,7 @@ public class BombermanGame extends Application {
                 (bomberman.getY() + SCALED_SIZE / 2) / SCALED_SIZE,
                 brick.getFxImage()))) {
           bombLengthLeft = i;
-          System.out.println((bombLengthLeft));
+
           break;
         }
       }
@@ -124,7 +137,7 @@ public class BombermanGame extends Application {
                 (bomberman.getY() + SCALED_SIZE / 2) / SCALED_SIZE,
                 Sprite.wall.getFxImage()))) {
           bombLengthRight = i - 1;
-          System.out.println(bombLengthRight);
+
           break;
         }
         if (stillObjects.contains(
@@ -133,7 +146,7 @@ public class BombermanGame extends Application {
                 (bomberman.getY() + SCALED_SIZE / 2) / SCALED_SIZE,
                 brick.getFxImage()))) {
           bombLengthRight = i;
-          System.out.println((bombLengthRight));
+
           break;
         }
       }
@@ -144,7 +157,7 @@ public class BombermanGame extends Application {
                 (bomberman.getY() + SCALED_SIZE / 2) / SCALED_SIZE - i,
                 Sprite.wall.getFxImage()))) {
           bombLengthUp = i - 1;
-          System.out.println(bombLengthUp);
+
           break;
         }
         if (stillObjects.contains(
@@ -153,7 +166,7 @@ public class BombermanGame extends Application {
                 (bomberman.getY() + SCALED_SIZE / 2) / SCALED_SIZE - i,
                 brick.getFxImage()))) {
           bombLengthUp = i;
-          System.out.println((bombLengthUp));
+
           break;
         }
       }
@@ -164,7 +177,7 @@ public class BombermanGame extends Application {
                 (bomberman.getY() + SCALED_SIZE / 2) / SCALED_SIZE + i,
                 Sprite.wall.getFxImage()))) {
           bombLengthDown = i - 1;
-          System.out.println(bombLengthDown);
+
           break;
         }
         if (stillObjects.contains(
@@ -173,11 +186,11 @@ public class BombermanGame extends Application {
                 (bomberman.getY() + SCALED_SIZE / 2) / SCALED_SIZE + i,
                 brick.getFxImage()))) {
           bombLengthDown = i;
-          System.out.println((bombLengthDown));
+
           break;
         }
       }
-      entities.add(
+      stillObjects.add(
           new Bomb(
               ((bomberman.getX() + SCALED_SIZE / 2) / SCALED_SIZE),
               ((bomberman.getY() + SCALED_SIZE / 2) / SCALED_SIZE),
@@ -190,80 +203,80 @@ public class BombermanGame extends Application {
       bombDelayCnter = 11;
     }
 
-    for (int i = 0; i < entities.size(); i++) {
-      if (entities.get(i) instanceof Bomb
-          && ((Bomb) entities.get(i)).getDetonateCnter() == Bomb.DETONATE_TIME
-          && !(((Bomb) entities.get(i)).isPlant())) {
-        Bomb bomb = (Bomb) entities.get(i);
+    for (Entity entity : stillObjects) {
+      if (entity instanceof Bomb
+          && ((Bomb) entity).getDetonateCnter() == Bomb.DETONATE_TIME
+          && !(((Bomb) entity).isPlant())) {
+        Bomb bomb = (Bomb) entity;
         bomb.setPlant(true);
         if (bomb.getBombLengthLeft() > 0) {
-          entities.add(
+          stillObjects.add(
               new Explosion(
                   (bomb.getX() / SCALED_SIZE - bomb.getBombLengthLeft()),
-                  (entities.get(i).getY() / SCALED_SIZE),
+                  (entity.getY() / SCALED_SIZE),
                   Sprite.explosion_horizontal_left_last.getFxImage(),
                   "left",
                   true));
         }
         if (bomb.getBombLengthRight() > 0) {
-          entities.add(
+          stillObjects.add(
               new Explosion(
-                  (entities.get(i).getX() / SCALED_SIZE + bomb.getBombLengthRight()),
-                  (entities.get(i).getY() / SCALED_SIZE),
+                  (entity.getX() / SCALED_SIZE + bomb.getBombLengthRight()),
+                  (entity.getY() / SCALED_SIZE),
                   Sprite.explosion_horizontal_right_last.getFxImage(),
                   "right",
                   true));
         }
         if (bomb.getBombLengthUp() > 0) {
-          entities.add(
+          stillObjects.add(
               new Explosion(
-                  (entities.get(i).getX() / SCALED_SIZE),
-                  (entities.get(i).getY() / SCALED_SIZE - bomb.getBombLengthUp()),
+                  (entity.getX() / SCALED_SIZE),
+                  (entity.getY() / SCALED_SIZE - bomb.getBombLengthUp()),
                   Sprite.explosion_vertical_top_last.getFxImage(),
                   "up",
                   true));
         }
         if (bomb.getBombLengthDown() > 0) {
-          entities.add(
+          stillObjects.add(
               new Explosion(
-                  (entities.get(i).getX() / SCALED_SIZE),
-                  (entities.get(i).getY() / SCALED_SIZE + bomb.getBombLengthDown()),
+                  (entity.getX() / SCALED_SIZE),
+                  (entity.getY() / SCALED_SIZE + bomb.getBombLengthDown()),
                   Sprite.explosion_vertical_down_last.getFxImage(),
                   "down",
                   true));
         }
         for (int j = 1; j < bomb.getBombLengthLeft(); j++) {
-          entities.add(
+          stillObjects.add(
               new Explosion(
-                  (entities.get(i).getX() / SCALED_SIZE - j),
-                  (entities.get(i).getY() / SCALED_SIZE),
+                  (entity.getX() / SCALED_SIZE - j),
+                  (entity.getY() / SCALED_SIZE),
                   Sprite.explosion_horizontal.getFxImage(),
                   "left",
                   false));
         }
         for (int j = 1; j < bomb.getBombLengthRight(); j++) {
-          entities.add(
+          stillObjects.add(
               new Explosion(
-                  (entities.get(i).getX() / SCALED_SIZE + j),
-                  (entities.get(i).getY() / SCALED_SIZE),
+                  (entity.getX() / SCALED_SIZE + j),
+                  (entity.getY() / SCALED_SIZE),
                   Sprite.explosion_horizontal.getFxImage(),
                   "right",
                   false));
         }
         for (int j = 1; j < bomb.getBombLengthDown(); j++) {
-          entities.add(
+          stillObjects.add(
               new Explosion(
-                  (entities.get(i).getX() / SCALED_SIZE),
-                  (entities.get(i).getY() / SCALED_SIZE + j),
+                  (entity.getX() / SCALED_SIZE),
+                  (entity.getY() / SCALED_SIZE + j),
                   Sprite.explosion_vertical.getFxImage(),
                   "down",
                   false));
         }
         for (int j = 1; j < bomb.getBombLengthUp(); j++) {
-          entities.add(
+          stillObjects.add(
               new Explosion(
-                  (entities.get(i).getX() / SCALED_SIZE),
-                  (entities.get(i).getY() / SCALED_SIZE - j),
+                  (entity.getX() / SCALED_SIZE),
+                  (entity.getY() / SCALED_SIZE - j),
                   Sprite.explosion_vertical.getFxImage(),
                   "up",
                   false));
@@ -450,6 +463,9 @@ public class BombermanGame extends Application {
             case '2':
               entities.add(new Oneal(j, i, Sprite.oneal_right1.getFxImage()));
               break;
+            case '3':
+              entities.add(new Doll(j, i, Sprite.doll_right1.getFxImage()));
+              break;
             case 'x':
               stillObjects.add(new Portal(j, i, Sprite.portal.getFxImage()));
               stillObjects.add(new Brick(j, i, Sprite.brick.getFxImage()));
@@ -505,7 +521,8 @@ public class BombermanGame extends Application {
               movementControl((Bomber) bomberman);
               bombPlant((Bomber) bomberman);
               bombRemoval((Bomber) bomberman);
-              Collision.checkCollision1(((Bomber) bomberman), entities);
+              Collision.checkCollisionBomber1(((Bomber) bomberman), entities);
+              Collision.checkCollisionBomber1(((Bomber) bomberman), stillObjects);
               Camera((Bomber) bomberman);
             }
           };
