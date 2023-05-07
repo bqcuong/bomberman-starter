@@ -5,6 +5,9 @@ import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.gamelogic.*;
 import uet.oop.bomberman.graphics.Sprite;
 
+/**
+ * Nhân vật của người chơi
+ */
 public class Bomber extends Entity {
   public static final int ANIMATIONTIME = 9;
   private int cnt = 0;
@@ -37,7 +40,9 @@ public class Bomber extends Entity {
 
   private String direction = "right";
   private String pastDirection = "";
-
+  
+  
+//Chỉnh hướng nhìn nhân vật theo input
   public void setDirection(String input) {
     if (input.equalsIgnoreCase("d")) {
       this.direction = "right";
@@ -55,7 +60,7 @@ public class Bomber extends Entity {
   }
 
   
-
+//Quản lí hoạt ảnh
   public void checkAnimation() {
     if (!isMoving()) {
       if (getDirection().equalsIgnoreCase("right")) {

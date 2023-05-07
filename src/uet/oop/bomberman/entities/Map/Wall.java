@@ -3,6 +3,9 @@ package uet.oop.bomberman.entities.Map;
 import javafx.scene.image.Image;
 import uet.oop.bomberman.entities.Entity;
 
+/**
+ * Tường
+ */
 public class Wall extends Entity {
 
     public Wall(int x, int y, Image img) {

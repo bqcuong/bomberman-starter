@@ -3,6 +3,9 @@ package uet.oop.bomberman.entities.Powerup;
 import javafx.scene.image.Image;
 import uet.oop.bomberman.entities.Entity;
 
+/**
+ * Powerup tăng tốc độ
+ */
 public class SpeedItem extends Entity {
 
   public SpeedItem(int x, int y, Image img) {

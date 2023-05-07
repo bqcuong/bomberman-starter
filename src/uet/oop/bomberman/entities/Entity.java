@@ -6,6 +6,9 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.shape.Rectangle;
 
+/**
+ * Vật thể
+ */
 public abstract class Entity {
   // Tọa độ X tính từ góc trái trên trong Canvas
   protected int x;
@@ -20,16 +23,11 @@ public abstract class Entity {
 
   protected boolean moving;
 
-
   private Rectangle boundingBox = new Rectangle(x, y, SCALED_SIZE, SCALED_SIZE);
 
   public Rectangle getBoundingBox() {
     return boundingBox;
   }
-
-
-
-
 
   public void setMoving(boolean moving) {
     this.moving = moving;
@@ -80,10 +78,10 @@ public abstract class Entity {
     this.boundingBox.setX(xUnit * SCALED_SIZE);
     this.boundingBox.setY(yUnit * SCALED_SIZE);
   }
-  
+
+  // Kiểm tra 2 vật thể có cùng vị trí trên bản đồ
   public boolean isSameLocation(Entity e2) {
-    return getX() / 32 == e2.getX() / 32 &&
-            getY() / 32 == e2.getY() / 32;
+    return getX() / 32 == e2.getX() / 32 && getY() / 32 == e2.getY() / 32;
   }
 
   public void render(GraphicsContext gc) {
@@ -92,7 +90,6 @@ public abstract class Entity {
 
   public abstract void update();
 
-
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -100,5 +97,4 @@ public abstract class Entity {
     Entity entity = (Entity) o;
     return getX() == entity.getX() && getY() == entity.getY();
   }
-
 }

@@ -4,6 +4,9 @@ import javafx.scene.image.Image;
 import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.graphics.Sprite;
 
+/**
+ * Kẻ địch Balloom
+ */
 public class Balloom extends Entity {
     private boolean isDead = false;
     private boolean isDisappear = false;

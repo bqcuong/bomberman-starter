@@ -23,13 +23,17 @@ import uet.oop.bomberman.entities.Powerup.*;
 import uet.oop.bomberman.gamelogic.Collision;
 import uet.oop.bomberman.graphics.Sprite;
 
+/**
+ * Class chính
+ */
+
 public class BombermanGame extends Application {
   public static final int SCREEN_SIZE_X = 800;
   public static final int SCREEN_SIZE_Y = 600;
 
   public static int WIDTH;
   public static int HEIGHT;
-  public static final double SCALING = 2;
+  public static final double SCALING = 1.75;
 
   private static double VIEW_X;
   private static double VIEW_Y;
@@ -53,8 +57,8 @@ public class BombermanGame extends Application {
 
   private ArrayList<String> input = new ArrayList<>();
 
-  // Loại bỏ bomb sau khi nổ
-  private void bombRemoval(Bomber bomber) {
+  // Loại bỏ vật thể bị biến mất
+  private void itemRemoval(Bomber bomber) {
     for (Entity explosion : stillObjects) {
       if (explosion instanceof Explosion) {
         for (Entity brick : stillObjects) {
@@ -393,6 +397,7 @@ public class BombermanGame extends Application {
     }
   }
 
+  //Tính toán camera
   public void Camera(Bomber bomber) {
     camX = bomber.getX() - (VIEW_X / 2);
     camY = bomber.getY() - (VIEW_Y / 2);
@@ -408,6 +413,7 @@ public class BombermanGame extends Application {
     }
   }
 
+  
   public static void main(String[] args) {
     Application.launch(BombermanGame.class);
   }
@@ -522,7 +528,7 @@ public class BombermanGame extends Application {
               if (bombDelayCnter > 0) bombDelayCnter--;
               movementControl((Bomber) bomberman);
               bombPlant((Bomber) bomberman);
-              bombRemoval((Bomber) bomberman);
+              itemRemoval((Bomber) bomberman);
               Collision.checkCollisionBomber1(((Bomber) bomberman), entities);
               Collision.checkCollisionBomber1(((Bomber) bomberman), stillObjects);
               Camera((Bomber) bomberman);

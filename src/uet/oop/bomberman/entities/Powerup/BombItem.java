@@ -3,6 +3,10 @@ package uet.oop.bomberman.entities.Powerup;
 import javafx.scene.image.Image;
 import uet.oop.bomberman.entities.Entity;
 
+/**
+ * Powerup thêm số Bomb
+ */
+
 public class BombItem extends Entity {
 
     public BombItem(int x, int y, Image img) {

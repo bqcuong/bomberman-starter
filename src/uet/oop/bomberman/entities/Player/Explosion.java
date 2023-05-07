@@ -4,6 +4,9 @@ import javafx.scene.image.Image;
 import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.graphics.Sprite;
 
+/**
+ * Tia lửa do Bomb tạo ra
+ */
 public class Explosion extends Entity {
   public static final int DISAPPEARTIME = 15;
   private int disappearTime = 0;
@@ -25,6 +28,7 @@ public class Explosion extends Entity {
     return disappear;
   }
 
+  //Xử lí hoạt ảnh của tia lửa cuối
   private void playAnimationEdge() {
     switch (direction) {
       case "right":
@@ -67,6 +71,7 @@ public class Explosion extends Entity {
     }
   }
 
+  //Xử lí hoạt ảnh tia lửa ở giữa
   @Override
   public void playAnimation() {
     switch (direction) {

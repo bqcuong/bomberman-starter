@@ -4,6 +4,7 @@ import javafx.scene.image.Image;
 import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.graphics.Sprite;
 
+/** Bomb do người chơi đặt ra */
 public class Bomb extends Entity {
   public static final int DISAPPEAR_TIME = 105;
   public static final int DETONATE_TIME = 90;
@@ -15,9 +16,14 @@ public class Bomb extends Entity {
   private final int bombLengthDown;
   private boolean plant = false;
 
-
-
-  public Bomb(int x, int y, Image img, int bombLengthLeft, int bombLengthRight, int bombLengthUp, int bombLengthDown) {
+  public Bomb(
+      int x,
+      int y,
+      Image img,
+      int bombLengthLeft,
+      int bombLengthRight,
+      int bombLengthUp,
+      int bombLengthDown) {
     super(x, y, img);
     this.bombLengthLeft = bombLengthLeft;
     this.bombLengthRight = bombLengthRight;
@@ -70,12 +76,24 @@ public class Bomb extends Entity {
   @Override
   public void update() {
     detonateCounter++;
+    //Xử lí hoạt ảnh của Bomb
     if (detonateCounter < DETONATE_TIME) {
-      this.img = Sprite.movingSprite(Sprite.bomb, Sprite.bomb_1, Sprite.bomb_2, detonateCounter, DETONATE_TIME).getFxImage();
+      this.img =
+          Sprite.movingSprite(
+                  Sprite.bomb, Sprite.bomb_1, Sprite.bomb_2, detonateCounter, DETONATE_TIME)
+              .getFxImage();
     } else if (detonateCounter > DETONATE_TIME) {
-      this.img = Sprite.movingSprite(Sprite.bomb_exploded, Sprite.bomb_exploded1, Sprite.bomb_exploded2, detonateCounter - DETONATE_TIME, DISAPPEAR_TIME - DETONATE_TIME).getFxImage();
+      this.img =
+          Sprite.movingSprite(
+                  Sprite.bomb_exploded,
+                  Sprite.bomb_exploded1,
+                  Sprite.bomb_exploded2,
+                  detonateCounter - DETONATE_TIME,
+                  DISAPPEAR_TIME - DETONATE_TIME)
+              .getFxImage();
     }
 
+    //Xử lí vật thể biến mất
     if (detonateCounter == DISAPPEAR_TIME) {
       disappear = true;
     }
