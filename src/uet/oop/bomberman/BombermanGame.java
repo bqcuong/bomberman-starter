@@ -24,10 +24,12 @@ import uet.oop.bomberman.gamelogic.Collision;
 import uet.oop.bomberman.graphics.Sprite;
 
 public class BombermanGame extends Application {
+  public static final int SCREEN_SIZE_X = 800;
+  public static final int SCREEN_SIZE_Y = 600;
 
   public static int WIDTH;
   public static int HEIGHT;
-  public static final double SCALING = 1.3;
+  public static final double SCALING = 2;
 
   private static double VIEW_X;
   private static double VIEW_Y;
@@ -422,12 +424,12 @@ public class BombermanGame extends Application {
       scanner.nextLine();
       HEIGHT = height;
       WIDTH = width;
-      VIEW_X = (SCALED_SIZE * WIDTH / SCALING);
-      VIEW_Y = (SCALED_SIZE * HEIGHT / SCALING);
-      offsetMaxX = WIDTH * SCALED_SIZE - VIEW_X;
-      offsetMaxY = HEIGHT * SCALED_SIZE - VIEW_Y;
+      VIEW_X = (SCREEN_SIZE_X / SCALING);
+      VIEW_Y = (SCREEN_SIZE_Y / SCALING);
+      offsetMaxX = WIDTH * SCALED_SIZE - SCREEN_SIZE_X / SCALING;
+      offsetMaxY = HEIGHT * SCALED_SIZE - SCREEN_SIZE_Y / SCALING;
       // Tao Canvas
-      canvas = new Canvas(SCALED_SIZE * WIDTH, SCALED_SIZE * HEIGHT);
+      canvas = new Canvas(SCREEN_SIZE_X, SCREEN_SIZE_Y);
       gc = canvas.getGraphicsContext2D();
       gc.scale(SCALING, SCALING);
       gc.save();

@@ -99,6 +99,20 @@ public class Bomber extends Entity {
   @Override
   public void update() {
     checkAnimation();
+    if (x % 2 != 0) {
+      if (Math.random() > 0.5) {
+        x++;
+      } else {
+        x--;
+      }
+    }
+    if (y % 2 != 0) {
+      if (Math.random() > 0.5) {
+        y++;
+      } else {
+        y--;
+      }
+    }
     
     this.getBoundingBox().setX(x);
 
