@@ -23,10 +23,7 @@ import uet.oop.bomberman.entities.Powerup.*;
 import uet.oop.bomberman.gamelogic.Collision;
 import uet.oop.bomberman.graphics.Sprite;
 
-/**
- * Class chính
- */
-
+/** Class chính */
 public class BombermanGame extends Application {
   public static final int SCREEN_SIZE_X = 800;
   public static final int SCREEN_SIZE_Y = 600;
@@ -74,10 +71,9 @@ public class BombermanGame extends Application {
             ((Oneal) enemy).setDead(true);
           }
           if (enemy instanceof Doll && Collision.checkCollision2(enemy, explosion)) {
-            ((Oneal) enemy).setDead(true);
+            ((Doll) enemy).setDead(true);
           }
         }
-        
       }
     }
     stillObjects.removeIf(bomb -> bomb instanceof Bomb && ((Bomb) bomb).isDisappear());
@@ -397,7 +393,7 @@ public class BombermanGame extends Application {
     }
   }
 
-  //Tính toán camera
+  // Tính toán camera
   public void Camera(Bomber bomber) {
     camX = bomber.getX() - (VIEW_X / 2);
     camY = bomber.getY() - (VIEW_Y / 2);
@@ -413,7 +409,6 @@ public class BombermanGame extends Application {
     }
   }
 
-  
   public static void main(String[] args) {
     Application.launch(BombermanGame.class);
   }
@@ -449,6 +444,7 @@ public class BombermanGame extends Application {
 
       // Them scene vao stage
       stage.setScene(scene);
+      stage.setResizable(false);
 
       stage.show();
       for (int i = 0; i < height; i++) {
