@@ -4,7 +4,7 @@ Trong bài tập lớn này, nhiệm vụ của bạn là viết một phiên b�
 
 <img src="res/demo.png" alt="drawing" width="400"/>
 
-Bạn có thể sử dụng mã nguồn tại repository này để phát triển hoặc tự phát triển từ đầu.
+Mẫu tệp cấu hình xem [tại đây](https://raw.githubusercontent.com/21020083/bomberman-starter-starter-2/blob/main/res/levels/Level1sample.txtt))
 
 ## Mô tả về các đối tượng trong trò chơi
 Nếu bạn đã từng chơi Bomberman, bạn sẽ cảm thấy quen thuộc với những đối tượng này. Chúng được được chia làm hai loại chính là nhóm đối tượng động (*Bomber*, *Enemy*, *Bomb*) và nhóm đối tượng tĩnh (*Grass*, *Wall*, *Brick*, *Door*, *Item*).
