@@ -244,7 +244,9 @@ public class Sprite {
 		return _pixels[i];
 	}
 
+  Image cached;
 	public Image getFxImage() {
+        if (cached != null) return cached;
         WritableImage wr = new WritableImage(SIZE, SIZE);
         PixelWriter pw = wr.getPixelWriter();
         for (int x = 0; x < SIZE; x++) {
@@ -258,7 +260,7 @@ public class Sprite {
             }
         }
         Image input = new ImageView(wr).getImage();
-        return resample(input, SCALED_SIZE / DEFAULT_SIZE);
+        return cached = resample(input, SCALED_SIZE / DEFAULT_SIZE);
     }
 
 	private Image resample(Image input, int scaleFactor) {
